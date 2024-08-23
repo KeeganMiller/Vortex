@@ -29,6 +29,10 @@ public class Element
     public System.Action Enable;
     public System.Action Disable;
 
+    // == Parenting == //
+    public Element Parent { get; protected set; }
+    protected List<Element> _children;
+
     public Element(string name = "Element")
     {
         this.Name = name;
@@ -57,5 +61,27 @@ public class Element
     public virtual void Destroy()
     {
 
+    }
+
+    public void SetParent(Element parent)
+    {
+        if (Parent != null)
+            Parent.RemoveChild(this);
+
+        Parent = parent;
+        if (Parent != null)
+            Parent.AddChild(this);
+    }
+
+    public void AddChild(Element child)
+    {
+        if(!_children.Contains(child))
+            _children.Add(child);
+    }
+
+    public void RemoveChild(Element child)
+    {
+        if(_children.Contains(child))
+            _children.Remove(child);
     }
 }
