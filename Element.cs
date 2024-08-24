@@ -57,12 +57,12 @@ public class Element
 
     public virtual void Update(float dt)
     {
-
+        UpdateComponents(dt);
     }
 
     public virtual void Draw()
     {
-
+        DrawComponents();
     }
 
     public virtual void Destroy()
@@ -131,5 +131,33 @@ public class Element
         }
 
         return null;
+    }
+
+    private void UpdateComponents(float dt)
+    {
+        foreach(var comp in _components)
+        {
+            if (comp.HasStarted && comp.IsActive)
+                comp.Update(dt);
+        }
+
+        if(_hasComponentToStart)
+        {
+            foreach(var comp in _components)
+            {
+                if (!comp.HasStarted && comp.IsActive)
+                {
+                    comp.Start();
+                    _hasComponentToStart = false;
+                }
+            }
+        }
+    }
+
+    private void DrawComponents()
+    {
+        foreach (var comp in _components)
+            if (comp.HasStarted && comp.IsActive)
+                comp.Draw();
     }
 }
