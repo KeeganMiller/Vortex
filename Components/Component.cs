@@ -9,7 +9,28 @@ public class Component
     public string Name;
     public Element Owner { get; private set; }
 
+
+    // == Active Status == //
     public bool HasStarted { get; private set; } = false;
+    private bool _isActive = true;
+    public bool IsActive
+    {
+        get => _isActive;
+        set
+        {
+            if(value != _isActive)
+            {
+                _isActive = value;
+                if (_isActive)
+                    Enable?.Invoke();
+                else
+                    Disable?.Invoke();
+            }
+        }
+    }
+
+    public System.Action Enable;
+    public System.Action Disable;
 
     public Component(string name = "Component")
     {
