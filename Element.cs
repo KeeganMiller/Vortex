@@ -29,9 +29,14 @@ public class Element
     public System.Action Enable;
     public System.Action Disable;
 
+    public bool HasStarted { get; private set; } = false;
+
     // == Parenting == //
     public Element Parent { get; protected set; }
     protected List<Element> _children;
+
+    // == Components == //
+    private List<Component> _components = new List<Component>();
 
     public Element(string name = "Element")
     {
@@ -45,7 +50,7 @@ public class Element
 
     public virtual void Start()
     {
-
+        HasStarted = true;
     }
 
     public virtual void Update(float dt)

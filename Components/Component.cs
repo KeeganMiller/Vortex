@@ -9,6 +9,8 @@ public class Component
     public string Name;
     public Element Owner { get; private set; }
 
+    public bool HasStarted { get; private set; } = false;
+
     public Component(string name = "Component")
     {
         Name = name;
@@ -21,7 +23,7 @@ public class Component
 
     public virtual void Start()
     {
-
+        HasStarted = true;
     }
 
     public virtual void Update(float dt)
