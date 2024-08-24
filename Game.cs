@@ -9,6 +9,8 @@ public static class Game
     private static WindowProperties _windowSettings;
     public static bool IsRunning = true;
 
+    public const string ASSET_PATH = "../../../Assets/";
+
     public static void Initialize()
     {
         if(_windowSettings == null)
