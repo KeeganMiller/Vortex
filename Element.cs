@@ -8,6 +8,7 @@ public class Element
 {
     public string ObjectId { get; } = Guid.NewGuid().ToString();
     public string Name;
+    public ResourceManager Owner { get; private set; }
 
     // == Element Status == //
     private bool _isActive = true;
@@ -45,9 +46,9 @@ public class Element
         this.Name = name;
     }
 
-    public virtual void Initialize()
+    public virtual void Initialize(ResourceManager owner)
     {
-
+        Owner = owner;
     }
 
     public virtual void Start()
