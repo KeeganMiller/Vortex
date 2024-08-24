@@ -16,6 +16,10 @@ public static class Debug
 
     public static void Print(Object message, EPrintMessageType msgType, ConsoleColor customColor = ConsoleColor.White)
     {
+        if (!DebugEnabled)
+            return;
+
+
         Console.ForegroundColor = msgType == EPrintMessageType.PRINT_Custom ? customColor : GetConsoleColor(msgType);
         Console.WriteLine(message.ToString());
         Console.ForegroundColor = ConsoleColor.White;
