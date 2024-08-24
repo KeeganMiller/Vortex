@@ -15,7 +15,7 @@ public abstract class Scene
     {
         SceneName = name;
         _sceneDataPath = scenePath;
-        Resources = new ResourceManager(this);
+        Resources = new ResourceManager(this, Game.ASSET_PATH + scenePath);
     }
 
     public virtual void Enter()
