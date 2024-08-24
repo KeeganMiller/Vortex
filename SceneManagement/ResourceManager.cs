@@ -22,12 +22,27 @@ public class ResourceManager
 
     public void Update(float dt)
     {
+        foreach(var element in _elements)
+        {
+            if (element.HasStarted && element.IsActive)
+                element.Update(dt);
+        }
 
+        if(_hasElementToStart)
+        {
+            foreach(var element in _elements)
+            {
+                if (!element.HasStarted && element.IsActive)
+                    element.Start();
+            }
+        }
     }
 
     public void Draw()
     {
-
+        foreach(var element in _elements)
+            if(element.HasStarted && element.IsActive)
+                element.Draw();
     }
 
     public void Stop()
