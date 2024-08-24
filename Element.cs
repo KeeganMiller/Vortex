@@ -40,10 +40,13 @@ public class Element
     // == Components == //
     private List<Component> _components = new List<Component>();
     private bool _hasComponentToStart = false;
+    public TransformComponent Transform { get; }
 
     public Element(string name = "Element")
     {
         this.Name = name;
+        Transform = new TransformComponent();
+        AddComponent<TransformComponent>(Transform);
     }
 
     public virtual void Initialize(ResourceManager owner)
