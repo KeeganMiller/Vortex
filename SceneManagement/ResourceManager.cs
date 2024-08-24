@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Raylib_cs;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Vortex;
 
@@ -10,14 +12,19 @@ public class ResourceManager
     private List<Element> _elements = new List<Element>();
     private bool _hasElementToStart = false;
 
-    public ResourceManager(Scene owner)
+    private List<AssetData> _assets = new List<AssetData>();
+
+    private string _sceneDataPath { get; }
+
+    public ResourceManager(Scene owner, string sceneDataPath)
     {
         Owner = owner;
+        _sceneDataPath = sceneDataPath;
     }
 
     public void Start()
     {
-
+        LoadSceneResources();
     }
 
     public void Update(float dt)
@@ -47,7 +54,11 @@ public class ResourceManager
 
     public void Stop()
     {
-
+        foreach(var asset in _assets)
+        {
+            if (asset != null)
+                asset.Unload();
+        }
     }
 
     public bool AddElement(Element element)
@@ -72,5 +83,46 @@ public class ResourceManager
         }
 
         return false;
+    }
+
+    public T GetAsset<T>(string assetName) where T : AssetData
+    {
+        foreach(var asset in _assets)
+        {
+            if (asset.AssetName == assetName && asset is T assetAs)
+                return assetAs;
+        }
+
+        return null;
+    }
+
+    public void LoadSceneResources()
+    {
+        if(File.Exists(_sceneDataPath))
+        {
+            using(var sr = new StreamReader(_sceneDataPath))
+            {
+                var jsonTokens = JArray.Parse(sr.ReadToEnd());
+                foreach(var token in jsonTokens)
+                {
+                    var assetData = JsonConvert.DeserializeObject<AssetDataJson>(token.ToString());
+                    if(assetData != null)
+                    {
+                        switch((EAssetType)assetData.AssetType)
+                        {
+                            case EAssetType.ASSET_Sprite:
+                                var sprite = new SpriteData(assetData);
+                                sprite.Load();
+                                if(sprite.IsValid)
+                                    _assets.Add(sprite);
+                                break;
+                            default:
+                                Debug.Print($"Could not parse asset: {assetData.AssetName} of type: {assetData.AssetType}", EPrintMessageType.PRINT_Warning);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
