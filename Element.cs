@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Raylib_cs;
 
 namespace Vortex;
@@ -37,6 +38,7 @@ public class Element
 
     // == Components == //
     private List<Component> _components = new List<Component>();
+    private bool _hasComponentToStart = false;
 
     public Element(string name = "Element")
     {
@@ -88,5 +90,46 @@ public class Element
     {
         if(_children.Contains(child))
             _children.Remove(child);
+    }
+
+    // == Component Methods == //
+    public bool AddComponent<T>(T component) where T : Component
+    {
+        foreach(var comp in _components)
+        {
+            if (comp is T)
+                return false;
+        }
+
+        _components.Add(component);
+        component.Initialize(this);
+        _hasComponentToStart = true;
+        return true;
+    }
+
+    public bool RemoveComponent<T>() where T : Component
+    {
+        foreach(var comp in _components)
+        {
+            if(comp is T)
+            {
+                _components.Remove(comp);
+                comp.Destroy();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public T GetComponent<T>() where T : Component
+    {
+        foreach(var comp in _components)
+        {
+            if (comp is T compT)
+                return compT;
+        }
+
+        return null;
     }
 }
