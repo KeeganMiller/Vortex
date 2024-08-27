@@ -45,6 +45,13 @@ public class ResourceManager
         }
     }
 
+    public void DrawCameraRelated()
+    {
+        foreach(var element in _elements)
+            if(element.HasStarted && element.IsActive && element.IsCameraRelated)
+                element.Draw();
+    }
+
     public void Draw()
     {
         foreach(var element in _elements)

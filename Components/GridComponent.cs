@@ -55,7 +55,11 @@ public class GridComponent : Component
                     var node = _grid[x, y];
                     if(node != null)
                     {
-                        Raylib.DrawRectangle((int)node.GridPosition.X, (int)node.GridPosition.Y, GridNodeSize, GridNodeSize, toggleColor ? Color.Red : Color.Green);
+                        var position = node.GridPosition;
+                        if(Owner.IsCameraRelated)
+                            position = Game.GetPositionBasedOnCamera(position);
+
+                        Raylib.DrawRectangle((int)position.X, (int)position.Y, GridNodeSize, GridNodeSize, toggleColor ? Color.Red : Color.Green);
                         toggleColor = !toggleColor;
                     }
                 }

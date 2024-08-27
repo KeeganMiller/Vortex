@@ -23,6 +23,15 @@ public static class Input
         return inputValue;
     }
 
+    public static void Update()
+    {
+        foreach(var action in _inputActions)
+        {
+            action.IsKeyPressed();
+            action.IsKeyReleased();
+        }
+    }
+
     public static InputAction GetAction(string actionName)
     {
         foreach(var action in _inputActions)

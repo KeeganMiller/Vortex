@@ -50,4 +50,10 @@ public static class SceneManager
         foreach (var scene in _activeScenes)
             scene.Draw();
     }
+
+    public static void DrawCameraRelated()
+    {
+        foreach(var scene in _activeScenes)
+            scene.DrawCameraRelated();
+    }
 }

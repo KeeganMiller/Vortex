@@ -10,6 +10,8 @@ public class Element
     public string Name;
     public ResourceManager Owner { get; private set; }
 
+    public bool IsCameraRelated = false;
+
     // == Element Status == //
     private bool _isActive = true;
     public bool IsActive

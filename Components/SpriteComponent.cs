@@ -45,16 +45,11 @@ public class SpriteComponent : Component
         if(IsSpriteValid)
         {
             _sourceRect = new Rectangle(FramePosition, FrameSize);
-            Vector2 spriteScale = _parentTransform.Scale;
-            if(ScaleWithScreen)
-            {
-                var scaleX = (float)Game.WindowSettings.WindowWidth / (float)Sprite.Width;
-                var scaleY = (float)Game.WindowSettings.WindowHeight / (float)Sprite.Height;
-                var scale = Math.Min(scaleX, scaleY);
-                spriteScale = new Vector2(scale, scale);
-            }
+            var position = _parentTransform.Position;
+            if(Owner.IsCameraRelated)
+                position = Game.GetPositionBasedOnCamera(_parentTransform.Position);
 
-            _destRect = new Rectangle(_parentTransform.Position, FrameSize * spriteScale);
+            _destRect = new Rectangle(position, FrameSize * _parentTransform.Scale);
         }
     }
 

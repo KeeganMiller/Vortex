@@ -2,6 +2,7 @@
 using Raylib_cs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Numerics;
 
 namespace Vortex;
 
@@ -18,6 +19,7 @@ public static class Game
     private const string GENERAL_ASSET_PATH = "Assets/";
 
     private static bool _isInitialized = false;
+    public static Camera2D CameraRef { get; private set; }
 
     public static void Initialize(string[] args)
     {
@@ -73,6 +75,8 @@ public static class Game
 
         _isInitialized = true;
 
+        CameraRef = new Camera2D();
+
         // Handle Resource Creation
     }
 
@@ -86,7 +90,12 @@ public static class Game
             SceneManager.Update();
 
             Raylib.BeginDrawing();
+            
             Raylib.ClearBackground(Color.White);
+            Raylib.BeginMode2D(CameraRef);
+            SceneManager.DrawCameraRelated();
+            Raylib.EndMode2D();
+
             SceneManager.Draw();
             Raylib.EndDrawing();
         }
@@ -95,6 +104,11 @@ public static class Game
     public static string GetAssetPath()
     {
         return IsConsole ? GENERAL_ASSET_PATH : DEBUG_ASSET_PATH;
+    }
+
+    public static Vector2 GetPositionBasedOnCamera(Vector2 position)
+    {
+        return position + CameraRef.Target;
     }
 }
 
