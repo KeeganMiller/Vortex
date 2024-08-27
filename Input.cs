@@ -6,7 +6,7 @@ namespace Vortex;
 
 public static class Input
 {
-    private static List<InputAction> _inputActions = new List<InputAction>();
+    public static List<InputAction> InputActions = new List<InputAction>();
     public static Vector2 GetVectorInput(string positiveX, string negativeX, string positiveY, string negativeY)
     {
         var inputValue = Vector2.Zero;
@@ -25,7 +25,7 @@ public static class Input
 
     public static void Update()
     {
-        foreach(var action in _inputActions)
+        foreach(var action in InputActions)
         {
             action.IsKeyPressed();
             action.IsKeyReleased();
@@ -34,7 +34,7 @@ public static class Input
 
     public static InputAction GetAction(string actionName)
     {
-        foreach(var action in _inputActions)
+        foreach(var action in InputActions)
         {
             if(action.ActionName == actionName)
                 return action;
@@ -51,6 +51,12 @@ public class InputAction
 
     public System.Action KeyPressed;
     public System.Action KeyReleased;
+
+    public InputAction(string actionName, KeyboardKey key)
+    {
+        ActionName = actionName;
+        KeyValue = key;
+    }
 
     public bool IsKeyDown() => Raylib.IsKeyDown(KeyValue);
     public bool IsKeyUp() => Raylib.IsKeyUp(KeyValue);
