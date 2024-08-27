@@ -12,6 +12,8 @@ public class State
     public bool HasExit;
     public bool ClearExitStateOnExit = false;
 
+    public List<StateTransition> Transitions = new List<StateTransition>();
+
     public State(StateMachine owner, bool hasExit = false, string stateName = "")
     {
         Owner = owner;
@@ -36,7 +38,7 @@ public class State
 
     public virtual void Exit()
     {
-        
+
     }
 
 }

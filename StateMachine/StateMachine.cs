@@ -9,6 +9,8 @@ public abstract class StateMachine : Component
     public State EntryState;                            // State that will run when the state machine starts
 
     public List<StateProperty> Properties { get; private set;} = new List<StateProperty>();
+    private List<StateTransition> _possibleTransitions = new List<StateTransition>();
+    protected bool _isTransitioning = false;
 
     public override void Start()
     {
@@ -22,6 +24,22 @@ public abstract class StateMachine : Component
 
         if(_currentState != null)
             _currentState.Update(dt);
+
+        if(!_isTransitioning)
+            CheckForTransition();
+    }
+
+    private void CheckForTransition()
+    {
+        foreach(var trans in _possibleTransitions)
+        {
+            if(trans.CanTransition(Properties))
+            {
+                _isTransitioning = true;
+                SetState(trans.NextState);
+                return;
+            }
+        }
     }
 
     /// <summary>
@@ -53,7 +71,13 @@ public abstract class StateMachine : Component
 
         _currentState = state;
         if(_currentState != null)
+        {
             _currentState.Enter();
+            _possibleTransitions = _currentState.Transitions;
+        }
+            
+
+        _isTransitioning = false;
     }
 
     /// <summary>
