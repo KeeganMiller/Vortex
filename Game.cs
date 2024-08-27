@@ -11,18 +11,31 @@ public static class Game
 
     public static WindowProperties WindowSettings => _windowSettings;
 
-    public static bool IsDebug = true;
+    public static bool IsConsole = false;                    // flag if the game is started via a console with arguments
 
     private const string DEBUG_ASSET_PATH = "../../../Assets/";
     private const string GENERAL_ASSET_PATH = "Assets/";
+
+    private static bool _isInitialized = false;
 
     public static void Initialize(string[] args)
     {
         if(args.Length > 0)
         {
-            if(args[0] == "console")
+            foreach(var arg in args)
             {
-                IsDebug = false;
+                switch(arg)
+                {
+                    case "console":
+                        IsConsole = true;
+                        break;
+                    case "no-debug":
+                        Debug.DebugEnabled = false;
+                        break;
+                    default:
+                        Console.WriteLine("Failed to launch application with argument");
+                        return;
+                }
             }
         }
         
@@ -39,11 +52,16 @@ public static class Game
         Raylib.InitWindow(_windowSettings.WindowWidth, _windowSettings.WindowHeight, _windowSettings.WindowTitle);
         Raylib.SetTargetFPS(60);
 
+        _isInitialized = true;
+
         // Handle Resource Creation
     }
 
     public static void Run()
     {
+        if(!_isInitialized)
+            return;
+            
         while(!Raylib.WindowShouldClose() && IsRunning)
         {
             SceneManager.Update();
@@ -57,7 +75,7 @@ public static class Game
 
     public static string GetAssetPath()
     {
-        return IsDebug ? DEBUG_ASSET_PATH : GENERAL_ASSET_PATH;
+        return IsConsole ? DEBUG_ASSET_PATH : GENERAL_ASSET_PATH;
     }
 }
 

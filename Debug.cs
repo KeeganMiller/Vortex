@@ -12,6 +12,7 @@ public enum EPrintMessageType
 
 public static class Debug
 {
+
     public static bool DebugEnabled = true;
 
     public static void Print(Object message, EPrintMessageType msgType, ConsoleColor customColor = ConsoleColor.White)
