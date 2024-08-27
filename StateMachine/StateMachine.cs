@@ -12,10 +12,13 @@ public abstract class StateMachine : Component
     private List<StateTransition> _possibleTransitions = new List<StateTransition>();
     protected bool _isTransitioning = false;
 
+    protected List<StateUpdater> Updaters = new List<StateUpdater>();
+
     public override void Start()
     {
         base.Start();
-
+        if(EntryState != null)
+            ForceSetState(EntryState);
     }
 
     public override void Update(float dt)
@@ -25,8 +28,11 @@ public abstract class StateMachine : Component
         if(_currentState != null)
             _currentState.Update(dt);
 
+        HandleUpdaters(dt);
+
         if(!_isTransitioning)
             CheckForTransition();
+            
     }
 
     private void CheckForTransition()
@@ -78,6 +84,25 @@ public abstract class StateMachine : Component
             
 
         _isTransitioning = false;
+    }
+
+    private void HandleUpdaters(float dt)
+    {
+        foreach(var updater in Updaters)
+        {
+            if(updater.IsActive)
+                updater.Update(dt);
+
+            if(updater.StateRef == _currentState)
+            {
+                if(!updater.IsActive)
+                    updater.IsActive = true;
+            } else
+            {
+                if(updater.IsActive)
+                    updater.IsActive = false;
+            }
+        }
     }
 
     /// <summary>
