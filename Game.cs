@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Raylib_cs;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Vortex;
 
@@ -35,6 +36,24 @@ public static class Game
                     default:
                         Console.WriteLine("Failed to launch application with argument");
                         return;
+                }
+            }
+        }
+
+        if(File.Exists(GetAssetPath() + "Run.vt"))
+        {
+            using(var sr = new StreamReader(GetAssetPath() + "Run.vt"))
+            {
+                var tokens = JArray.Parse(sr.ReadToEnd());
+                foreach(var token in tokens)
+                {
+                    var runSettings = JsonConvert.DeserializeObject<RunSettingsJson>(token.ToString());
+                    if(runSettings != null)
+                    {
+                        if(runSettings.Category == "WindowSettings")
+                            _windowSettings = JsonConvert.DeserializeObject<WindowProperties>(token.ToString());
+
+                    }
                 }
             }
         }
@@ -84,4 +103,9 @@ public class WindowProperties
     [JsonProperty] public int WindowWidth;
     [JsonProperty] public int WindowHeight;
     [JsonProperty] public string WindowTitle;
+}
+
+public class RunSettingsJson
+{
+    [JsonProperty] public string Category;
 }
