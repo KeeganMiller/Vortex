@@ -13,7 +13,7 @@ public class TransformComponent : Component
         {
             if(Owner.IsCameraRelated)
             {
-                return Game.GetPositionBasedOnCamera(Owner.Parent.Transform.Position + _localPosition);
+                return Owner.Parent != null ? Game.GetPositionBasedOnCamera(Owner.Parent.Transform.Position += _localPosition) : Game.GetPositionBasedOnCamera(_localPosition);
             } else 
             {
                 return Owner.Parent != null ? Owner.Parent.Transform.Position + _localPosition : _localPosition;
