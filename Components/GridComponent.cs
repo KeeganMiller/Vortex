@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using Microsoft.VisualBasic;
 using Raylib_cs;
 
 namespace Vortex;
@@ -22,6 +23,9 @@ public class GridComponent : Component
             CreateGrid();
     }
 
+    /// <summary>
+    /// Creates a new grid based on the properties specified
+    /// </summary>
     private void CreateGrid()
     {
         _grid = new GridNode[GridSizeX, GridSizeY];
@@ -66,6 +70,48 @@ public class GridComponent : Component
             }
         }
     }
+
+    /// <summary>
+    /// Gets a grid node based on indexes
+    /// </summary>
+    /// <param name="x">X index</param>
+    /// <param name="y">Y Index</param>
+    /// <returns>Grid node at index</returns>
+    public GridNode GetGridNode(int x, int y)
+    {
+        if(x > 0 && x < _grid.GetLength(0))
+        {
+            if(y > 0 && y < _grid.GetLength(1))
+            {
+                return _grid[x, y];
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Gets a grid node based on the position
+    /// </summary>
+    /// <param name="position">Position To find node at</param>
+    /// <returns>Grid node within position</returns>
+    public GridNode GetGridNode(Vector2 position)
+    {
+        for(var y = 0; y < _grid.GetLength(1); ++y)
+        {
+            for(var x = 0; x < _grid.GetLength(0); x++)
+            {
+                var node = _grid[x, y];
+                if(node != null)
+                {
+                    if(node.IsWithinGridPosition(position))
+                        return node;
+                }
+            }
+        }
+
+        return null;
+    }
 }
 
 public class GridNode
@@ -83,5 +129,18 @@ public class GridNode
         GridPosY = posY;
         GridPosition = pos;
         IsWalkable = isWalkable;
+    }
+
+    public bool IsWithinGridPosition(Vector2 position)
+    {
+        if(position.X >= GridPosition.X && position.Y < (GridPosition.X  + _gridRef.GridNodeSize))
+        {
+            if(position.Y >= GridPosition.Y && position.Y < (GridPosition.Y + _gridRef.GridNodeSize))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
