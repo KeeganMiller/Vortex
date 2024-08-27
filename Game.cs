@@ -61,7 +61,7 @@ public static class Game
     {
         if(!_isInitialized)
             return;
-            
+
         while(!Raylib.WindowShouldClose() && IsRunning)
         {
             SceneManager.Update();
@@ -75,7 +75,7 @@ public static class Game
 
     public static string GetAssetPath()
     {
-        return IsConsole ? DEBUG_ASSET_PATH : GENERAL_ASSET_PATH;
+        return IsConsole ? GENERAL_ASSET_PATH : DEBUG_ASSET_PATH;
     }
 }
 

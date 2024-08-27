@@ -115,7 +115,13 @@ public class ResourceManager
                                 var sprite = new SpriteData(assetData);
                                 sprite.Load();
                                 if(sprite.IsValid)
+                                {
                                     _assets.Add(sprite);
+                                    Debug.Print($"Sprite: {sprite.AssetName} successfully loaded", EPrintMessageType.PRINT_Custom, ConsoleColor.Green);
+                                } else 
+                                {
+                                    Debug.Print($"Sprite: {sprite.AssetName} failed to load", EPrintMessageType.PRINT_Error);
+                                }
                                 break;
                             default:
                                 Debug.Print($"Could not parse asset: {assetData.AssetName} of type: {assetData.AssetType}", EPrintMessageType.PRINT_Warning);
