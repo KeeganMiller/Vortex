@@ -124,6 +124,7 @@ public abstract class StateMachine : Component
             if(prop.Key == key && prop is StateValue<T> propVal)
             {
                 propVal.Value = value;
+                return;
             }
         }
 

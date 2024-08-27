@@ -23,6 +23,9 @@ public class StateTransition
             {
                 if(curProp.Key == reqProp.Key)
                 {
+                    if(curProp.PropertyType == EStatePropertyType.PROP_None)
+                        return false;
+                        
                     hasCheckedProperty = true;
                     switch(curProp.PropertyType)
                     {

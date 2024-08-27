@@ -27,7 +27,8 @@ public class StateProperty
     {
         if(other is StateValue<T> otherVal && this is StateValue<T> thVal)
         {
-            return otherVal.Value.Equals(thVal);
+
+            return otherVal.Value.Equals(thVal.Value);
         }
 
         return false;
