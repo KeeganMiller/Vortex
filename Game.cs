@@ -19,7 +19,7 @@ public static class Game
     private const string GENERAL_ASSET_PATH = "Assets/";
 
     private static bool _isInitialized = false;
-    public static Camera2D CameraRef { get; private set; }
+    public static Camera2D CameraRef;
 
     public static void Initialize(string[] args)
     {
@@ -77,6 +77,8 @@ public static class Game
 
         CameraRef = new Camera2D();
 
+        SceneManager.GlobalResources.Start();
+
         // Handle Resource Creation
     }
 
@@ -99,6 +101,9 @@ public static class Game
             SceneManager.Draw();
             Raylib.EndDrawing();
         }
+
+        SceneManager.GlobalResources.Stop();
+        Raylib.CloseWindow();
     }
 
     public static string GetAssetPath()

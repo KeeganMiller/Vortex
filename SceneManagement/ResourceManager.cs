@@ -47,15 +47,17 @@ public class ResourceManager
 
     public void DrawCameraRelated()
     {
-        foreach(var element in _elements)
-            if(element.HasStarted && element.IsActive && element.IsCameraRelated)
+        var sprites = SortAndFilterSprites();
+        foreach(var element in sprites)
+            if(element.HasStarted && element.IsActive && element.Owner.IsCameraRelated)
                 element.Draw();
     }
 
     public void Draw()
     {
-        foreach(var element in _elements)
-            if(element.HasStarted && element.IsActive)
+        var sprites = SortAndFilterSprites();
+        foreach(var element in sprites)
+            if(element.HasStarted && element.IsActive &&  !element.Owner.IsCameraRelated)
                 element.Draw();
     }
 
@@ -138,5 +140,37 @@ public class ResourceManager
                 }
             }
         }
+    }
+
+    public List<SpriteComponent> SortAndFilterSprites()
+    {
+        var sprites = new List<SpriteComponent>();
+        foreach(var e in _elements)
+        {
+            if(e.GetComponent<SpriteComponent>() != null)
+            {
+                sprites.Add(e.GetComponent<SpriteComponent>());
+            }
+        }
+
+        var sortedSprites = new List<SpriteComponent>();
+
+        while(sprites.Count != 0)
+        {
+            var highestSprite = sprites[0];
+            for(var i = 1; i < sprites.Count; ++i)
+            {
+                if(sprites[i].ZIndex > highestSprite.ZIndex)
+                {
+                    highestSprite = sprites[i];
+                }
+            }
+
+            sortedSprites.Add(highestSprite);
+            sprites.Remove(highestSprite);
+        }
+
+
+        return sortedSprites;
     }
 }

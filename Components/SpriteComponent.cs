@@ -16,6 +16,7 @@ public class SpriteComponent : Component
     public Vector2 Origin;
     public Color Tint = Color.White;
     public bool ScaleWithScreen = false;                        // Use the size of the screen and the default size of the texture
+    public int ZIndex = 0;
 
     protected Rectangle _sourceRect;
     protected Rectangle _destRect;

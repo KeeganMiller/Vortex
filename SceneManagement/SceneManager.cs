@@ -6,6 +6,7 @@ namespace Vortex;
 public static class SceneManager
 {
     private static List<Scene> _activeScenes = new List<Scene>();
+    public static ResourceManager GlobalResources = new ResourceManager(null, "GlobalResources.vt");
 
     public static void AddScene(Scene scene)
     {
@@ -43,17 +44,28 @@ public static class SceneManager
         {
             scene.Update(Raylib.GetFrameTime());
         }
+
+        if(GlobalResources != null)
+        {
+            GlobalResources.Update(Raylib.GetFrameTime());
+        }
     }
 
     public static void Draw()
     {
         foreach (var scene in _activeScenes)
             scene.Draw();
+
+        if(GlobalResources != null)
+            GlobalResources.Draw();
     }
 
     public static void DrawCameraRelated()
     {
         foreach(var scene in _activeScenes)
             scene.DrawCameraRelated();
+
+        if(GlobalResources != null)
+            GlobalResources.DrawCameraRelated();
     }
 }
