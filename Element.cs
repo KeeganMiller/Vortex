@@ -68,7 +68,7 @@ public class Element
 
     public virtual void Draw()
     {
-        DrawComponents();
+        //DrawComponents();
     }
 
     public virtual void Destroy()

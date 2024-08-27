@@ -54,6 +54,11 @@ public static class SceneManager
 
     public static void Draw()
     {
+        foreach(var scene in _activeScenes)
+            scene.DrawElements();
+
+        GlobalResources.DrawElements();
+
         var sprites = new List<SpriteComponent>();
         foreach(var scene in _activeScenes)
         {
@@ -74,6 +79,13 @@ public static class SceneManager
 
     public static void DrawCameraRelated()
     {
+        foreach(var scene in _activeScenes)
+        {   
+            scene.DrawElementsRelative();
+        }
+        
+        GlobalResources.DrawElementsRelative();
+
         var sprites = new List<SpriteComponent>();
         foreach(var scene in _activeScenes)
         {

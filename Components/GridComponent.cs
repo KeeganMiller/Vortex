@@ -49,7 +49,7 @@ public class GridComponent : Component
     public override void Draw()
     {
         base.Draw();
-        if(Debug.DebugEnabled && DrawDebugGrid)
+        if(Debug.DebugEnabled && DrawDebugGrid && _grid != null)
         {
             bool toggleColor = false;
             for(var y = 0; y < _grid.GetLength(1); ++y)
@@ -79,6 +79,9 @@ public class GridComponent : Component
     /// <returns>Grid node at index</returns>
     public GridNode GetGridNode(int x, int y)
     {
+        if(_grid == null)
+            return null;
+
         if(x > 0 && x < _grid.GetLength(0))
         {
             if(y > 0 && y < _grid.GetLength(1))
@@ -97,6 +100,9 @@ public class GridComponent : Component
     /// <returns>Grid node within position</returns>
     public GridNode GetGridNode(Vector2 position)
     {
+        if(_grid == null)
+            return null;
+            
         for(var y = 0; y < _grid.GetLength(1); ++y)
         {
             for(var x = 0; x < _grid.GetLength(0); x++)
@@ -142,5 +148,10 @@ public class GridNode
         }
 
         return false;
+    }
+
+    public override string ToString()
+    {
+        return $"GridNode -> X: {GridPosX} Y: {GridPosY}";
     }
 }

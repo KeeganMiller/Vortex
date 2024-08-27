@@ -24,6 +24,18 @@ public abstract class Scene
             Resources.Start();
     }
 
+    public virtual void DrawElements()
+    {
+        if(Resources != null)
+            Resources.DrawElements();
+    }
+
+    public virtual void DrawElementsRelative()
+    {
+        if(Resources != null)
+            Resources.DrawElementsRelative();
+    }
+
     public virtual void Exit()
     {
         if (Resources != null)

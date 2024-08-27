@@ -79,6 +79,24 @@ public class ResourceManager
         return sprites;
     }
 
+    public void DrawElements()
+    {
+        foreach(var e in _elements)
+        {
+            if(e.IsActive && e.HasStarted && !e.IsCameraRelated)
+                e.Draw();
+        }
+    }
+
+    public void DrawElementsRelative()
+    {
+        foreach(var e in _elements)
+        {
+            if(e.IsActive && e.HasStarted && e.IsCameraRelated)
+                e.Draw();
+        }
+    }
+
     public void Stop()
     {
         foreach(var asset in _assets)
