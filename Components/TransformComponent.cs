@@ -9,7 +9,16 @@ public class TransformComponent : Component
     private Vector2 _localPosition;
     public Vector2 Position
     {
-        get => Owner.Parent != null ? Owner.Parent.Transform.Position + _localPosition : _localPosition;
+        get 
+        {
+            if(Owner.IsCameraRelated)
+            {
+                return Game.GetPositionBasedOnCamera(Owner.Parent.Transform.Position + _localPosition);
+            } else 
+            {
+                return Owner.Parent != null ? Owner.Parent.Transform.Position + _localPosition : _localPosition;
+            }
+        }
         set => _localPosition = value;
     }
 

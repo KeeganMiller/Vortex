@@ -45,11 +45,7 @@ public class SpriteComponent : Component
         if(IsSpriteValid)
         {
             _sourceRect = new Rectangle(FramePosition, FrameSize);
-            var position = _parentTransform.Position;
-            if(Owner.IsCameraRelated)
-                position = Game.GetPositionBasedOnCamera(_parentTransform.Position);
-
-            _destRect = new Rectangle(position, FrameSize * _parentTransform.Scale);
+            _destRect = new Rectangle(_parentTransform.Position, FrameSize * _parentTransform.Scale);
         }
     }
 
