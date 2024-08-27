@@ -111,7 +111,7 @@ public class ResourceManager
                         switch((EAssetType)assetData.AssetType)
                         {
                             case EAssetType.ASSET_Sprite:
-                                assetData.AssetPath = Game.ASSET_PATH + assetData.AssetPath;
+                                assetData.AssetPath = Game.GetAssetPath() + assetData.AssetPath;
                                 var sprite = new SpriteData(assetData);
                                 sprite.Load();
                                 if(sprite.IsValid)

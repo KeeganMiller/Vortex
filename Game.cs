@@ -11,10 +11,21 @@ public static class Game
 
     public static WindowProperties WindowSettings => _windowSettings;
 
-    public const string ASSET_PATH = "../../../Assets/";
+    public static bool IsDebug = true;
 
-    public static void Initialize()
+    private const string DEBUG_ASSET_PATH = "../../../Assets/";
+    private const string GENERAL_ASSET_PATH = "Assets/";
+
+    public static void Initialize(string[] args)
     {
+        if(args.Length > 0)
+        {
+            if(args[0] == "console")
+            {
+                IsDebug = false;
+            }
+        }
+        
         if(_windowSettings == null)
         {
             _windowSettings = new WindowProperties
@@ -42,6 +53,11 @@ public static class Game
             SceneManager.Draw();
             Raylib.EndDrawing();
         }
+    }
+
+    public static string GetAssetPath()
+    {
+        return IsDebug ? DEBUG_ASSET_PATH : GENERAL_ASSET_PATH;
     }
 }
 
