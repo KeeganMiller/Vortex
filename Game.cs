@@ -9,6 +9,8 @@ public static class Game
     private static WindowProperties _windowSettings;
     public static bool IsRunning = true;
 
+    public static WindowProperties WindowSettings => _windowSettings;
+
     public const string ASSET_PATH = "../../../Assets/";
 
     public static void Initialize()
@@ -33,11 +35,11 @@ public static class Game
     {
         while(!Raylib.WindowShouldClose() && IsRunning)
         {
-            // Update here
+            SceneManager.Update();
 
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.White);
-            Raylib.DrawText("Hello, World", 100, 100, 32, Color.Black);
+            SceneManager.Draw();
             Raylib.EndDrawing();
         }
     }

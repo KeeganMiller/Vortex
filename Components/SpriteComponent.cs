@@ -14,7 +14,8 @@ public class SpriteComponent : Component
     public Vector2 FramePosition;
     public Vector2 FrameSize;
     public Vector2 Origin;
-    public Color Tint;
+    public Color Tint = Color.White;
+    public bool ScaleWithScreen = false;                        // Use the size of the screen and the default size of the texture
 
     protected Rectangle _sourceRect;
     protected Rectangle _destRect;
@@ -44,7 +45,16 @@ public class SpriteComponent : Component
         if(IsSpriteValid)
         {
             _sourceRect = new Rectangle(FramePosition, FrameSize);
-            _destRect = new Rectangle(_parentTransform.Position, FrameSize * _parentTransform.Scale);
+            Vector2 spriteScale = _parentTransform.Scale;
+            if(ScaleWithScreen)
+            {
+                var scaleX = (float)Game.WindowSettings.WindowWidth / (float)Sprite.Width;
+                var scaleY = (float)Game.WindowSettings.WindowHeight / (float)Sprite.Height;
+                var scale = Math.Min(scaleX, scaleY);
+                spriteScale = new Vector2(scale, scale);
+            }
+
+            _destRect = new Rectangle(_parentTransform.Position, FrameSize * spriteScale);
         }
     }
 
