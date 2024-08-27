@@ -42,7 +42,23 @@ public class State
 
     protected virtual void OnFinish()
     {
-
+        if(ExitState != null)
+        {
+            if(SubState != null)
+            {
+                SubState.SetState(ExitState, true);
+                if(ClearExitStateOnExit)
+                    ExitState = null;
+            } else 
+            {
+                if(Owner != null)
+                {
+                    Owner.SetState(ExitState, true);
+                    if(ClearExitStateOnExit)
+                        ExitState = null;
+                }
+            }
+        }
     }
 
     public virtual void Exit()
