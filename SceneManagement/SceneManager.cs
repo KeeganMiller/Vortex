@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Raylib_cs;
 
 namespace Vortex;
@@ -6,7 +7,7 @@ namespace Vortex;
 public static class SceneManager
 {
     private static List<Scene> _activeScenes = new List<Scene>();
-    public static ResourceManager GlobalResources = new ResourceManager(null, "GlobalResources.vt");
+    public static ResourceManager GlobalResources = new ResourceManager(null, Game.GetAssetPath() + "GlobalResources.vt");
 
     public static void AddScene(Scene scene)
     {
@@ -53,19 +54,66 @@ public static class SceneManager
 
     public static void Draw()
     {
-        foreach (var scene in _activeScenes)
-            scene.Draw();
+        var sprites = new List<SpriteComponent>();
+        foreach(var scene in _activeScenes)
+        {
+            var sceneSprites = scene.Resources.GetSprites();
+            foreach(var s in sceneSprites)
+                sprites.Add(s);
+        }
 
-        if(GlobalResources != null)
-            GlobalResources.Draw();
+        foreach(var s in GlobalResources.GetSprites())
+        {
+            sprites.Add(s);
+        }
+
+        var sortedSprites = SortSprites(sprites);
+        foreach(var sprite in sortedSprites)
+            sprite.Draw();
     }
 
     public static void DrawCameraRelated()
     {
+        var sprites = new List<SpriteComponent>();
         foreach(var scene in _activeScenes)
-            scene.DrawCameraRelated();
+        {
+            var sceneSprites = scene.Resources.GetCameraRelativeSprites();
+            foreach(var s in sceneSprites)
+                sprites.Add(s);
+        }
 
-        if(GlobalResources != null)
-            GlobalResources.DrawCameraRelated();
+        foreach(var s in GlobalResources.GetCameraRelativeSprites())
+        {
+            sprites.Add(s);
+        }
+
+        var sortedSprites = SortSprites(sprites);
+        foreach(var sprite in sortedSprites)
+        {
+            sprite.Draw();
+        }
+    }
+
+    public static List<SpriteComponent> SortSprites(List<SpriteComponent> sprites)
+    {
+        var sortedSprites = new List<SpriteComponent>();
+
+        while(sprites.Count != 0)
+        {
+            var highestSprite = sprites[0];
+            for(var i = 1; i < sprites.Count; ++i)
+            {
+                if(sprites[i].ZIndex < highestSprite.ZIndex)
+                {
+                    highestSprite = sprites[i];
+                }
+            }
+
+            sortedSprites.Add(highestSprite);
+            sprites.Remove(highestSprite);
+        }
+
+
+        return sortedSprites;
     }
 }

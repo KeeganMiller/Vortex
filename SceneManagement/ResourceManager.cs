@@ -2,6 +2,8 @@
 using Raylib_cs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.ComponentModel;
+using Microsoft.VisualBasic;
 
 namespace Vortex;
 
@@ -45,20 +47,36 @@ public class ResourceManager
         }
     }
 
-    public void DrawCameraRelated()
+    public List<SpriteComponent> GetCameraRelativeSprites()
     {
-        var sprites = SortAndFilterSprites();
-        foreach(var element in sprites)
-            if(element.HasStarted && element.IsActive && element.Owner.IsCameraRelated)
-                element.Draw();
+        var sprites = new List<SpriteComponent>();
+        foreach(var e in _elements)
+        {
+            if(e.IsCameraRelated)
+            {
+                var spriteComp = e.GetComponent<SpriteComponent>();
+                if(spriteComp != null)
+                    sprites.Add(spriteComp);
+            }
+        }
+
+        return sprites;
     }
 
-    public void Draw()
+    public List<SpriteComponent> GetSprites()
     {
-        var sprites = SortAndFilterSprites();
-        foreach(var element in sprites)
-            if(element.HasStarted && element.IsActive &&  !element.Owner.IsCameraRelated)
-                element.Draw();
+        var sprites = new List<SpriteComponent>();
+        foreach(var e in _elements)
+        {
+            if(!e.IsCameraRelated)
+            {
+                var spritecomp = e.GetComponent<SpriteComponent>();
+                if(spritecomp != null)
+                    sprites.Add(spritecomp);
+            }
+        }
+
+        return sprites;
     }
 
     public void Stop()
@@ -139,38 +157,9 @@ public class ResourceManager
                     }
                 }
             }
-        }
-    }
-
-    public List<SpriteComponent> SortAndFilterSprites()
-    {
-        var sprites = new List<SpriteComponent>();
-        foreach(var e in _elements)
+        } else 
         {
-            if(e.GetComponent<SpriteComponent>() != null)
-            {
-                sprites.Add(e.GetComponent<SpriteComponent>());
-            }
+            Debug.Print($"ResourceManager::LoadSceneResources -> Failed to find scene file: {this._sceneDataPath}", EPrintMessageType.PRINT_Error);
         }
-
-        var sortedSprites = new List<SpriteComponent>();
-
-        while(sprites.Count != 0)
-        {
-            var highestSprite = sprites[0];
-            for(var i = 1; i < sprites.Count; ++i)
-            {
-                if(sprites[i].ZIndex > highestSprite.ZIndex)
-                {
-                    highestSprite = sprites[i];
-                }
-            }
-
-            sortedSprites.Add(highestSprite);
-            sprites.Remove(highestSprite);
-        }
-
-
-        return sortedSprites;
     }
 }

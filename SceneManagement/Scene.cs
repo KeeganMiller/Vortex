@@ -35,16 +35,4 @@ public abstract class Scene
         if (Resources != null)
             Resources.Update(dt);
     }
-
-    public virtual void DrawCameraRelated()
-    {
-        if(Resources != null)
-            Resources.DrawCameraRelated();
-    }
-
-    public virtual void Draw()
-    {
-        if (Resources != null)
-            Resources.Draw();
-    }
 }
