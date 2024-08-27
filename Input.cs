@@ -23,6 +23,14 @@ public static class Input
         return inputValue;
     }
 
+    public static Vector2 GetMousePosition(bool cameraRelative = true)
+    {
+        if(cameraRelative)
+            return Game.CameraRef.Target + Raylib.GetMousePosition();
+
+        return Raylib.GetMousePosition();
+    }
+
     public static void Update()
     {
         foreach(var action in InputActions)
