@@ -6,6 +6,7 @@ public class State
 {
     public string StateName = "";
     public StateMachine Owner { get; private set; }                     // Reference to the state machine that owns this
+    public SubStateMachine SubState { get; private set; }
 
 
     public State ExitState;
@@ -17,6 +18,14 @@ public class State
     public State(StateMachine owner, bool hasExit = false, string stateName = "")
     {
         Owner = owner;
+        HasExit = hasExit;
+        StateName = stateName;
+    }
+
+    public State(StateMachine owner, SubStateMachine subState, bool hasExit = false, string stateName = "")
+    {
+        Owner = owner;
+        SubState = subState;
         HasExit = hasExit;
         StateName = stateName;
     }
