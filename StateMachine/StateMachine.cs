@@ -86,6 +86,10 @@ public abstract class StateMachine : Component
         _isTransitioning = false;
     }
 
+    /// <summary>
+    /// Handles updating of active state, and also toggling states active
+    /// </summary>
+    /// <param name="dt">Delta Time</param>
     private void HandleUpdaters(float dt)
     {
         foreach(var updater in Updaters)
