@@ -54,10 +54,6 @@ public static class SceneManager
 
     public static void Draw()
     {
-        foreach(var scene in _activeScenes)
-            scene.DrawElements();
-
-        GlobalResources.DrawElements();
 
         var sprites = new List<SpriteComponent>();
         foreach(var scene in _activeScenes)
@@ -87,17 +83,11 @@ public static class SceneManager
         var globalUiComps = GlobalResources.GetUiComponents();
         if(globalUiComps.Count > 0)
             foreach(var comp in globalUiComps)
-                comp.Draw();
+                comp.Draw
     }
 
     public static void DrawCameraRelated()
     {
-        foreach(var scene in _activeScenes)
-        {   
-            scene.DrawElementsRelative();
-        }
-        
-        GlobalResources.DrawElementsRelative();
 
         var sprites = new List<SpriteComponent>();
         foreach(var scene in _activeScenes)

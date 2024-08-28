@@ -102,7 +102,7 @@ public class GridComponent : Component
     {
         if(_grid == null)
             return null;
-            
+
         for(var y = 0; y < _grid.GetLength(1); ++y)
         {
             for(var x = 0; x < _grid.GetLength(0); x++)
@@ -127,6 +127,7 @@ public class GridNode
     public Vector2 GridPosition { get; }
     public bool IsWalkable = false;
     private GridComponent _gridRef;
+
 
     public GridNode(GridComponent gridRef, int posX, int posY, Vector2 pos, bool isWalkable = true)
     {

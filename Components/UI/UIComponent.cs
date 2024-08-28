@@ -219,9 +219,9 @@ public class UIComponent : Component
     public void DetectMouseEnterAndExit()
     {
         var mousePos = Input.GetMousePosition(false);
-        if(mousePos.X >= _ownerTransform.Position.X && mousePos.X < (_ownerTransform.Position.X + this.Width))
+        if(mousePos.X >= (_ownerTransform.Position.X - GetOrigin().X) && mousePos.X < ((_ownerTransform.Position.X - GetOrigin().X) + this.Width))
         {
-            if(mousePos.Y >= _ownerTransform.Position.Y && mousePos.Y < (_ownerTransform.Position.Y + this.Height))
+            if(mousePos.Y >= (_ownerTransform.Position.Y - GetOrigin().Y) && mousePos.Y < ((_ownerTransform.Position.Y - GetOrigin().Y) + this.Height))
             {
                 if(!IsMouseOver)
                 {

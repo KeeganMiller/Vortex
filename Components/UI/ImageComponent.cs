@@ -51,6 +51,7 @@ public class ImageComponent : UIComponent
             var source = new Rectangle(0.0f, 0.0f, this.Width, this.Height);
             var dest = new Rectangle(Owner.Transform.Position, new Vector2(this.Width * Owner.Transform.Scale.X, this.Height * Owner.Transform.Scale.Y));
             Raylib.DrawTexturePro(ActiveImage, source, dest, GetOrigin(), Owner.Transform.Rotation, Tint);
+            //Raylib.DrawRectangle((int)_ownerTransform.Position.X - (int)GetOrigin().X, (int)_ownerTransform.Position.Y - (int)GetOrigin().Y, (int)this.Width, (int)this.Height, Color.Green);
         }
     }
 
