@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 using Raylib_cs;
 
-namespace Vortex;
+namespace Vortex.UI;
 
 public enum EAnchorLocation
 {
