@@ -57,6 +57,9 @@ public class UIComponent : Component
 
         if(Owner != null)
             Owner.IsCameraRelated = false;
+
+        SetAnchor(Anchor);
+        SetOrigin(Origin);
     }
 
     public override void Update(float dt)

@@ -11,8 +11,6 @@ public class ImageComponent : UIComponent
     public Texture2D HoverImage;
 
     public Texture2D ActiveImage { get; private set; }
-
-    public bool IsImageValid => NormalImage.Id > 0;
     public Color Tint = Color.White;
 
     public bool IsClickable = false;
@@ -30,6 +28,8 @@ public class ImageComponent : UIComponent
             if(NormalImage.Id > 0)
                 SetActiveImage(NormalImage);
         };
+
+        SetActiveImage(NormalImage);
     }
 
     public override void Update(float dt)
@@ -46,7 +46,7 @@ public class ImageComponent : UIComponent
     {
         base.Draw();
 
-        if(IsImageValid)
+        if(ActiveImage.Id > 0)
         {
             var source = new Rectangle(0.0f, 0.0f, this.Width, this.Height);
             var dest = new Rectangle(Owner.Transform.Position, new Vector2(this.Width * Owner.Transform.Scale.X, this.Height * Owner.Transform.Scale.Y));
