@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using Microsoft.VisualBasic;
+using Vortex.UI;
 
 namespace Vortex;
 
@@ -77,6 +78,19 @@ public class ResourceManager
         }
 
         return sprites;
+    }
+
+    public List<UIComponent> GetUiComponents()
+    {
+        var ui = new List<UIComponent>();
+        foreach(var e in _elements)
+        {
+            var uiComp = e.GetComponent<UIComponent>();
+            if(uiComp != null)
+                ui.Add(uiComp);
+        }
+
+        return ui;
     }
 
     public void DrawElements()

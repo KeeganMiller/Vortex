@@ -75,6 +75,19 @@ public static class SceneManager
         var sortedSprites = SortSprites(sprites);
         foreach(var sprite in sortedSprites)
             sprite.Draw();
+
+        foreach(var scene in _activeScenes)
+        {
+            var uiComps = scene.Resources.GetUiComponents();
+            if(uiComps.Count > 0)
+                foreach(var comp in uiComps)
+                    comp.Draw();
+        }
+
+        var globalUiComps = GlobalResources.GetUiComponents();
+        if(globalUiComps.Count > 0)
+            foreach(var comp in globalUiComps)
+                comp.Draw();
     }
 
     public static void DrawCameraRelated()
