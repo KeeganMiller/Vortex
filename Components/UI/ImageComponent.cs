@@ -1,26 +1,46 @@
 using System.Collections.Generic;
 using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 using Raylib_cs;
 
 namespace Vortex.UI;
 
 public class ImageComponent : UIComponent
 {
-    private Texture2D _imageRef;
-    public Texture2D Image
+    public Texture2D NormalImage;
+    public Texture2D HoverImage;
+
+    public Texture2D ActiveImage { get; private set; }
+
+    public bool IsImageValid => NormalImage.Id > 0;
+    public Color Tint = Color.White;
+
+    public bool IsClickable = false;
+
+    public Action OnClick;
+
+    public override void Start()
     {
-        get => _imageRef;
-        set 
-        {
-            _imageRef = value;
-            this.Width = _imageRef.Width;
-            this.Height = _imageRef.Height;
-        }
+        base.Start();
+        OnMouseEnter += () => {
+            if(HoverImage.Id > 0)
+                SetActiveImage(HoverImage);
+        };
+        OnMouseExit += () => {
+            if(NormalImage.Id > 0)
+                SetActiveImage(NormalImage);
+        };
     }
 
-    public bool IsImageValid => _imageRef.Id > 0;
+    public override void Update(float dt)
+    {
+        base.Update(dt);
 
-    public Color Tint = Color.White;
+        if(IsClickable && IsMouseOver && Input.IsMouseButtonClicked(EMouseButton.MOUSE_Left))
+        {
+            OnClick?.Invoke();
+        }
+    }
 
     public override void Draw()
     {
@@ -30,7 +50,14 @@ public class ImageComponent : UIComponent
         {
             var source = new Rectangle(0.0f, 0.0f, this.Width, this.Height);
             var dest = new Rectangle(Owner.Transform.Position, new Vector2(this.Width * Owner.Transform.Scale.X, this.Height * Owner.Transform.Scale.Y));
-            Raylib.DrawTexturePro(_imageRef, source, dest, GetOrigin(), Owner.Transform.Rotation, Tint);
+            Raylib.DrawTexturePro(ActiveImage, source, dest, GetOrigin(), Owner.Transform.Rotation, Tint);
         }
+    }
+
+    private void SetActiveImage(Texture2D image)
+    {
+        ActiveImage = image;
+        this.Width = image.Width;
+        this.Height = image.Height;
     }
 }
