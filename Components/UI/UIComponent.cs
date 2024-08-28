@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Numerics;
+using System.Collections.Generic;
 using System.Reflection.Metadata.Ecma335;
 using Raylib_cs;
 
@@ -43,6 +44,11 @@ public class UIComponent : Component
     public float Width;
     public float Height;
 
+
+    public bool IsMouseOver { get; private set; }
+    public Action OnMouseEnter;
+    public Action OnMouseExit;
+
     public override void Start()
     {
         base.Start();
@@ -51,6 +57,12 @@ public class UIComponent : Component
 
         if(Owner != null)
             Owner.IsCameraRelated = false;
+    }
+
+    public override void Update(float dt)
+    {
+        base.Update(dt);
+        DetectMouseEnterAndExit();
     }
 
     public void SetAnchor(EAnchorLocation anchor)
@@ -199,5 +211,35 @@ public class UIComponent : Component
     public UIComponent GetParentUIComp()
     {
         return Owner.Parent.GetComponent<UIComponent>();
+    }
+
+    public void DetectMouseEnterAndExit()
+    {
+        var mousePos = Input.GetMousePosition(false);
+        if(mousePos.X >= _ownerTransform.Position.X && mousePos.X < (_ownerTransform.Position.X + this.Width))
+        {
+            if(mousePos.Y >= _ownerTransform.Position.Y && mousePos.Y < (_ownerTransform.Position.Y + this.Height))
+            {
+                if(!IsMouseOver)
+                {
+                    IsMouseOver = true;
+                    OnMouseEnter?.Invoke();
+                }
+            } else 
+            {
+                if(IsMouseOver)
+                {
+                    IsMouseOver = false;
+                    OnMouseExit?.Invoke();
+                }
+            }
+        } else 
+        {
+            if(IsMouseOver)
+            {
+                IsMouseOver = false;
+                OnMouseExit?.Invoke();
+            }
+        }
     }
 }
