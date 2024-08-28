@@ -4,6 +4,13 @@ using Raylib_cs;
 
 namespace Vortex;
 
+public enum EMouseButton
+{
+    MOUSE_Left,
+    MOUSE_Right,
+    MOUSE_Middle
+}
+
 public static class Input
 {
     public static List<InputAction> InputActions = new List<InputAction>();
@@ -21,6 +28,41 @@ public static class Input
             inputValue.Y -= 1;
 
         return inputValue;
+    }
+
+    public static bool IsMouseButtonClicked(EMouseButton mouseBtn)
+    {
+        return Raylib.IsMouseButtonPressed(GetMouseButton(mouseBtn));
+    }
+
+    public static bool IsMouseButtonDown(EMouseButton mouseBtn)
+    {
+        return Raylib.IsMouseButtonDown(GetMouseButton(mouseBtn));
+    }
+
+    public static bool IsMouseButtonReleased(EMouseButton mouseBtn)
+    {
+        return Raylib.IsMouseButtonReleased(GetMouseButton(mouseBtn));
+    }
+
+    public static bool IsMouseButtonUp(EMouseButton mouseBtn)
+    {
+        return Raylib.IsMouseButtonUp(GetMouseButton(mouseBtn));
+    }
+
+    private static MouseButton GetMouseButton(EMouseButton mouseBtn)
+    {
+        switch(mouseBtn)
+        {
+            case EMouseButton.MOUSE_Left:
+                return MouseButton.Left;
+            case EMouseButton.MOUSE_Middle:
+                return MouseButton.Middle;
+            case EMouseButton.MOUSE_Right:
+                return MouseButton.Right;
+            default:
+                return MouseButton.Left;
+        }
     }
 
     public static Vector2 GetMousePosition(bool cameraRelative = true)
