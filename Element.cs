@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Raylib_cs;
+using Vortex.UI;
 
 namespace Vortex;
 
@@ -163,7 +164,12 @@ public class Element
     private void DrawComponents()
     {
         foreach (var comp in _components)
+        {
             if (comp.HasStarted && comp.IsActive)
-                comp.Draw();
+            {
+                if(comp is not SpriteComponent && comp is not UIComponent)
+                    comp.Draw();
+            }
+        }
     }
 }

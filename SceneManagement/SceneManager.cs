@@ -148,17 +148,17 @@ public static class SceneManager
 
         while(sprites.Count != 0)
         {
-            var highestSprite = sprites[0];
+            var lowestSprite = sprites[0];
             for(var i = 1; i < sprites.Count; ++i)
             {
-                if(sprites[i].ZIndex < highestSprite.ZIndex)
+                if(sprites[i].ZIndex < lowestSprite.ZIndex)
                 {
-                    highestSprite = sprites[i];
+                    lowestSprite = sprites[i];
                 }
             }
 
-            sortedSprites.Add(highestSprite);
-            sprites.Remove(highestSprite);
+            sortedSprites.Add(lowestSprite);
+            sprites.Remove(lowestSprite);
         }
 
 
