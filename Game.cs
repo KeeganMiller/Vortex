@@ -94,13 +94,16 @@ public static class Game
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.White);
 
+            SceneManager.Draw();
+            SceneManager.DrawElements();
+
             Raylib.BeginMode2D(CameraRef);
 
             SceneManager.DrawCameraRelated();
-            
+            SceneManager.DrawElementsRelative();
             Raylib.EndMode2D();
 
-            SceneManager.Draw();
+            
 
             Raylib.EndDrawing();
         }
