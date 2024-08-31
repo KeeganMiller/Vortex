@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Microsoft.VisualBasic;
 using Raylib_cs;
+using Vortex.UI;
 
 namespace Vortex;
 
@@ -127,6 +129,21 @@ public static class SceneManager
             scene.DrawElements();
 
         GlobalResources.DrawElements();
+    }
+
+    public static void DrawUiElements()
+    {
+        var uiList = new List<UIComponent>();
+        foreach(var scene in _activeScenes)
+        {
+            foreach(var comp in scene.Resources.GetUiComponents())
+            {
+                uiList.Add(comp);
+            }
+        }
+
+        foreach(var comp in GlobalResources.GetUiComponents())
+            uiList.Add(comp);
     }
 
     public static List<SpriteComponent> SortSprites(List<SpriteComponent> sprites)

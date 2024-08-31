@@ -103,7 +103,7 @@ public static class Game
             SceneManager.DrawElementsRelative();
             Raylib.EndMode2D();
 
-            
+            SceneManager.DrawUiElements();
 
             Raylib.EndDrawing();
         }
