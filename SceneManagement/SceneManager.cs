@@ -73,20 +73,9 @@ public static class SceneManager
 
         var sortedSprites = SortSprites(sprites);
         foreach(var sprite in sortedSprites)
-            sprite.Draw();
+            if(sprite.Owner.IsActive && sprite.IsActive && sprite.HasStarted)
+                sprite.Draw();
 
-        foreach(var scene in _activeScenes)
-        {
-            var uiComps = scene.Resources.GetUiComponents();
-            if(uiComps.Count > 0)
-                foreach(var comp in uiComps)
-                    comp.Draw();
-        }
-
-        var globalUiComps = GlobalResources.GetUiComponents();
-        if(globalUiComps.Count > 0)
-            foreach(var comp in globalUiComps)
-                comp.Draw();
     }
 
     public static void DrawCameraRelated()
@@ -108,9 +97,8 @@ public static class SceneManager
 
         var sortedSprites = SortSprites(sprites);
         foreach(var sprite in sortedSprites)
-        {
-            sprite.Draw();
-        }
+            if(sprite.Owner.IsActive && sprite.IsActive && sprite.HasStarted)
+                sprite.Draw();
     }
 
     public static void DrawElementsRelative()
@@ -144,6 +132,14 @@ public static class SceneManager
 
         foreach(var comp in GlobalResources.GetUiComponents())
             uiList.Add(comp);
+
+        var sortedUiElements = SortUi(uiList);
+        
+        foreach(var comp in sortedUiElements)
+        {
+            if(comp.IsActive && comp.Owner.IsActive && comp.HasStarted)
+                comp.Draw();
+        }
     }
 
     public static List<SpriteComponent> SortSprites(List<SpriteComponent> sprites)
@@ -167,5 +163,26 @@ public static class SceneManager
 
 
         return sortedSprites;
+    }
+
+    public static List<UIComponent> SortUi(List<UIComponent> comps)
+    {
+        var sortedUiComps = new List<UIComponent>();
+
+        while(comps.Count != 0)
+        {
+            var highest = comps[0];
+            for(var i = 1; i < comps.Count; ++i)
+            {
+                if(comps[i].ZIndex < highest.ZIndex)
+                    highest = comps[i];
+            }
+
+            sortedUiComps.Add(highest);
+            comps.Remove(highest);
+        }
+
+
+        return sortedUiComps;
     }
 }

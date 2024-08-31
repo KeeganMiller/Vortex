@@ -43,6 +43,7 @@ public class UIComponent : Component
 
     public float Width;
     public float Height;
+    public int ZIndex = 0;
 
 
     public bool IsMouseOver { get; private set; }
