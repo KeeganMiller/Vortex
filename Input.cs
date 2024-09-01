@@ -45,6 +45,11 @@ public static class Input
         return Raylib.IsMouseButtonReleased(GetMouseButton(mouseBtn));
     }
 
+    public static float GetMouseWheelScroll()
+    {
+        return Raylib.GetMouseWheelMove();
+    }
+
     public static bool IsMouseButtonUp(EMouseButton mouseBtn)
     {
         return Raylib.IsMouseButtonUp(GetMouseButton(mouseBtn));
