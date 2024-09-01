@@ -30,19 +30,17 @@ public class GridComponent : Component
     {
         _grid = new GridNode[GridSizeX, GridSizeY];
 
-        var startPos = Owner.Transform.Position;
-        var currentPos = startPos;
+        var startPosition = new Vector2(Owner.Transform.Position.X, Owner.Transform.Position.Y);
 
-        for(var y = 0; y < _grid.GetLength(1); ++y)
+        for(var y = 0; y < GridSizeY; ++y)
         {
-            for(var x = 0; x < _grid.GetLength(0); ++x)
+            for(var x = 0; x < GridSizeX; ++x)
             {
-                _grid[x, y] = new GridNode(this, x, y, currentPos);
-                currentPos.X += GridNodeSize;
-            }
+                var currentPos = new Vector2(startPosition.X + x * GridNodeSize, startPosition.Y + y * GridNodeSize);
+                _grid[x, y] = new GridNode(this, x, y, currentPos, false);
 
-            currentPos.Y += GridNodeSize;
-            currentPos.X = startPos.X;
+                //Debug.Print($"GridNode -> X: {x} Y: {y}, Position: {currentPos.X}, {currentPos.Y}", EPrintMessageType.PRINT_Log);
+            }
         }
     }
 
@@ -51,18 +49,15 @@ public class GridComponent : Component
         base.Draw();
         if(Debug.DebugEnabled && DrawDebugGrid && _grid != null)
         {
-            bool toggleColor = false;
             for(var y = 0; y < _grid.GetLength(1); ++y)
             {
+                bool toggleColor = (y % 2 == 0);
                 for(var x = 0; x < _grid.GetLength(0); ++x)
                 {
                     var node = _grid[x, y];
                     if(node != null)
                     {
                         var position = node.GridPosition;
-                        if(Owner.IsCameraRelated)
-                            position = Game.GetPositionBasedOnCamera(position);
-
                         Raylib.DrawRectangle((int)position.X, (int)position.Y, GridNodeSize, GridNodeSize, toggleColor ? Color.Red : Color.Green);
                         toggleColor = !toggleColor;
                     }
@@ -118,6 +113,11 @@ public class GridComponent : Component
 
         return null;
     }
+
+    public Vector2 ClampWithinBoundsPosition(Vector2 position)
+    {
+        return Raymath.Vector2Clamp(position, _grid[0, 0].GridPosition, _grid[GridSizeX - 1, GridSizeY - 1].GridPosition);
+    }
 }
 
 public class GridNode
@@ -140,7 +140,7 @@ public class GridNode
 
     public bool IsWithinGridPosition(Vector2 position)
     {
-        if(position.X >= GridPosition.X && position.Y < (GridPosition.X  + _gridRef.GridNodeSize))
+        if(position.X >= GridPosition.X && position.X < (GridPosition.X  + _gridRef.GridNodeSize))
         {
             if(position.Y >= GridPosition.Y && position.Y < (GridPosition.Y + _gridRef.GridNodeSize))
             {

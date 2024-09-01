@@ -6,7 +6,8 @@ namespace Vortex;
 
 public class GridRenderComponent : Component
 {
-    public int GridCells;                       // How many cells are rendered
+    public int GridCellsX;                       // How many cells are rendered
+    public int GridCellsY;
     public int GridSpacing;                         // The size of each cell
     private GridComponent _gridComp;
     public bool UseGridComponent;
@@ -18,7 +19,9 @@ public class GridRenderComponent : Component
     {
         base.Draw();
 
-        int cellsX = GridCells, cellsY = GridCells, spacing = GridSpacing;
+        var cellsX = GridCellsX;
+        var cellsY = GridCellsY;
+        var spacing = GridSpacing;
         var startPos = Owner.Transform.Position;
 
         if(UseGridComponent && _gridComp != null)
@@ -29,7 +32,6 @@ public class GridRenderComponent : Component
         }
 
         var currentPos = startPos;
-        
 
         for(var y = 0; y < cellsY; ++y)
         {
@@ -43,7 +45,12 @@ public class GridRenderComponent : Component
                     Raylib.DrawLineEx(currentPos, new Vector2(endPosX, currentPos.Y), LineThickness, Tint);
                     Raylib.DrawLineEx(currentPos, new Vector2(currentPos.X, endPosY), LineThickness, Tint);
                 }
+
+                currentPos.X += spacing;
             }
+
+            currentPos.Y += spacing;
+            currentPos.X = startPos.X;
         }
     }
 

@@ -75,7 +75,11 @@ public static class Game
 
         _isInitialized = true;
 
-        CameraRef = new Camera2D();
+        CameraRef = new Camera2D
+        {
+            Target = new Vector2(0, 0),
+            Zoom = 1.0f
+        };
 
         SceneManager.GlobalResources.Start();
 
@@ -97,11 +101,15 @@ public static class Game
             SceneManager.Draw();
             SceneManager.DrawElements();
 
+
             Raylib.BeginMode2D(CameraRef);
+
 
             SceneManager.DrawCameraRelated();
             SceneManager.DrawElementsRelative();
+
             Raylib.EndMode2D();
+            
 
             SceneManager.DrawUiElements();
 
