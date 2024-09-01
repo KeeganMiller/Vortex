@@ -114,7 +114,7 @@ public class GridComponent : Component
         return null;
     }
 
-    public Vector2 ClampWithinBoundsPosition(Vector2 position)
+    public Vector2 ClampWithinBounds(Vector2 position)
     {
         return Raymath.Vector2Clamp(position, _grid[0, 0].GridPosition, _grid[GridSizeX - 1, GridSizeY - 1].GridPosition);
     }
