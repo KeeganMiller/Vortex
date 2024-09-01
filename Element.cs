@@ -142,23 +142,22 @@ public class Element
 
     private void UpdateComponents(float dt)
     {
-        foreach(var comp in _components)
+        foreach(var comp in _components.ToList())
         {
             if (comp.HasStarted && comp.IsActive)
                 comp.Update(dt);
         }
 
-        if(_hasComponentToStart)
+
+        foreach(var comp in _components.ToList())
         {
-            foreach(var comp in _components)
+            if (!comp.HasStarted && comp.IsActive)
             {
-                if (!comp.HasStarted && comp.IsActive)
-                {
-                    comp.Start();
-                    _hasComponentToStart = false;
-                }
+                comp.Start();
+                _hasComponentToStart = false;
             }
         }
+        
     }
 
     private void DrawComponents()
