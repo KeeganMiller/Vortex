@@ -81,9 +81,9 @@ public class GridComponent : Component
         if(_grid == null)
             return null;
 
-        if(x > 0 && x < _grid.GetLength(0))
+        if(x >= 0 && x < _grid.GetLength(0))
         {
-            if(y > 0 && y < _grid.GetLength(1))
+            if(y >= 0 && y < _grid.GetLength(1))
             {
                 return _grid[x, y];
             }
