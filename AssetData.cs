@@ -8,7 +8,7 @@ public enum EAssetType
 {
     ASSET_Sprite = 0,
     ASSET_Font = 1,
-    ASSET_Shader = 3
+    ASSET_Shader = 2
 }
 
 public abstract class AssetData
@@ -73,6 +73,8 @@ public class SpriteData : AssetData
 public class FontAsset : AssetData
 {
     public Font LoadedFont { get; private set; }
+    public bool IsValid => LoadedFont.Texture.Id > 0;
+
     public FontAsset(AssetDataJson data) : base(data)
     {
     }

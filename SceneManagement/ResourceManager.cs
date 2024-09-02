@@ -182,6 +182,32 @@ public class ResourceManager
                                     Debug.Print($"Sprite: {sprite.AssetName} failed to load", EPrintMessageType.PRINT_Error);
                                 }
                                 break;
+                            case EAssetType.ASSET_Font:
+                                assetData.AssetPath = Game.GetAssetPath() + assetData.AssetPath;
+                                var font = new FontAsset(assetData);
+                                font.Load();
+                                if(font.IsValid)
+                                {
+                                    _assets.Add(font);
+                                    Debug.Print($"Font: {font.AssetName} successfully loaded", EPrintMessageType.PRINT_Custom, ConsoleColor.Green);
+                                } else 
+                                {
+                                    Debug.Print($"Font: {font.AssetName} failed to load", EPrintMessageType.PRINT_Error);
+                                }
+                                break;
+                            case EAssetType.ASSET_Shader:
+                                assetData.AssetPath = Game.GetAssetPath() + assetData.AssetPath;
+                                var shader = new ShaderAsset(assetData);
+                                shader.Load();
+                                if(shader.IsValid)
+                                {
+                                    _assets.Add(shader);
+                                    Debug.Print($"Shader: {shader.AssetName} sucessfully loaded", EPrintMessageType.PRINT_Custom, ConsoleColor.Green);
+                                } else 
+                                {
+                                    Debug.Print($"Shader: {shader.AssetName} failed to load", EPrintMessageType.PRINT_Error);
+                                }
+                                break;
                             default:
                                 Debug.Print($"Could not parse asset: {assetData.AssetName} of type: {assetData.AssetType}", EPrintMessageType.PRINT_Warning);
                                 break;
