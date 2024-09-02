@@ -32,7 +32,7 @@ public class ResourceManager
 
     public void Update(float dt)
     {
-        foreach(var element in _elements)
+        foreach(var element in _elements.ToList())
         {
             if (element.HasStarted && element.IsActive)
                 element.Update(dt);

@@ -15,6 +15,8 @@ public class GridComponent : Component
 
     public bool DrawDebugGrid = false;
 
+    public bool HasGeneratedGrid {get; private set;} = false;
+
     public override void Start()
     {
         base.Start();
@@ -42,6 +44,8 @@ public class GridComponent : Component
                 //Debug.Print($"GridNode -> X: {x} Y: {y}, Position: {currentPos.X}, {currentPos.Y}", EPrintMessageType.PRINT_Log);
             }
         }
+
+        HasGeneratedGrid = true;
     }
 
     public override void Draw()
