@@ -7,11 +7,12 @@ namespace Vortex;
 
 public class Element
 {
-    public string ObjectId { get; } = Guid.NewGuid().ToString();
-    public string Name;
-    public ResourceManager Owner { get; private set; }
+    public string ObjectId { get; } = Guid.NewGuid().ToString();                    // Reference to the unique id
+    public string Name;                         // Reference to the name of the element
+    public ResourceManager Owner { get; private set; }                  // reference to the resource manager that owns this
+    public List<string> Tags = new List<string>();                          // List of all the tags assigned to this object
 
-    public bool IsCameraRelated = false;
+    public bool IsCameraRelated = false;                            // If this is camera relative
 
     // == Element Status == //
     private bool _isActive = true;
@@ -34,16 +35,16 @@ public class Element
     public System.Action Enable;
     public System.Action Disable;
 
-    public bool HasStarted { get; private set; } = false;
+    public bool HasStarted { get; private set; } = false;                       // Flag if the element has started
 
     // == Parenting == //
-    public Element Parent { get; protected set; }
-    protected List<Element> _children = new List<Element>();
+    public Element Parent { get; protected set; }                           // Reference to the parent of this element
+    protected List<Element> _children = new List<Element>();                    // List of all the children for this element
 
     // == Components == //
-    private List<Component> _components = new List<Component>();
+    private List<Component> _components = new List<Component>();                // List of all components on this element
     private bool _hasComponentToStart = false;
-    public TransformComponent Transform { get; }
+    public TransformComponent Transform { get; }                            // Reference to the transform component
 
     public Element(string name = "Element")
     {
@@ -52,16 +53,27 @@ public class Element
         AddComponent<TransformComponent>(Transform);
     }
 
+    /// <summary>
+    /// Called when the element has been added to the resource manager
+    /// </summary>
+    /// <param name="owner">Reference to the resource manager</param>
     public virtual void Initialize(ResourceManager owner)
     {
         Owner = owner;
     }
 
+    /// <summary>
+    /// Called in the first frame this element is active
+    /// </summary>
     public virtual void Start()
     {
         HasStarted = true;
     }
 
+    /// <summary>
+    /// Called each frame
+    /// </summary>
+    /// <param name="dt"></param>
     public virtual void Update(float dt)
     {
         UpdateComponents(dt);
@@ -72,33 +84,56 @@ public class Element
         DrawComponents();
     }
 
+    /// <summary>
+    /// Called to destroy the element
+    /// </summary>
     public virtual void Destroy()
     {
-
+        if(Owner != null)
+            Owner.RemoveElement(this);
     }
 
+    /// <summary>
+    /// Sets the parent for this element
+    /// </summary>
+    /// <param name="parent">Parent to set</param>
     public void SetParent(Element parent)
     {
+        // Remove from the current parent
         if (Parent != null)
             Parent.RemoveChild(this);
 
-        Parent = parent;
+        Parent = parent;                    // Set the parent
+        // Add this element to the parent
         if (Parent != null)
             Parent.AddChild(this);
     }
 
+    /// <summary>
+    /// Adds a child element
+    /// </summary>
+    /// <param name="child">Child Element</param>
     public void AddChild(Element child)
     {
         if(!_children.Contains(child))
             _children.Add(child);
     }
 
+    /// <summary>
+    /// Removes a child element
+    /// </summary>
+    /// <param name="child">Child Element</param>
     public void RemoveChild(Element child)
     {
         if(_children.Contains(child))
             _children.Remove(child);
     }
 
+    /// <summary>
+    /// Gets the child at index
+    /// </summary>
+    /// <param name="index">Index of the child</param>
+    /// <returns>Element that is a child at index</returns>
     public Element GetChild(int index)
     {
         if(index < _children.Count)
@@ -109,6 +144,11 @@ public class Element
         return null;
     }
 
+    /// <summary>
+    /// Gets a child based on the element name
+    /// </summary>
+    /// <param name="name">Name of the element</param>
+    /// <returns>Child element with name</returns>
     public Element GetChild(string name)
     {
         foreach(var e in _children)
@@ -118,25 +158,55 @@ public class Element
         return null;
     }
 
+    /// <summary>
+    /// Gets a child based on the tag
+    /// </summary>
+    /// <param name="tag">Tag to find on child</param>
+    /// <returns>Child with specified tag</returns>
+    public Element GetChildByTag(string tag)
+    {
+        foreach(var e in _children)
+            if(e.HasTag(tag))
+                return e;
+
+        return null;
+    }
+
+    /// <summary>
+    /// Gets all the children of this element
+    /// </summary>
+    /// <returns></returns>
     public List<Element> GetChildren() => _children;
 
     // == Component Methods == //
+    /// <summary>
+    /// Adds a new component to this element
+    /// </summary>
+    /// <typeparam name="T">Component Type</typeparam>
+    /// <param name="component">Component</param>
+    /// <returns>If the component was added</returns>
     public bool AddComponent<T>(T component) where T : Component
     {
+        // Check that the component isn't already attached
         foreach(var comp in _components)
         {
             if (comp is T)
                 return false;
         }
 
-        _components.Add(component);
-        component.Initialize(this);
-        _hasComponentToStart = true;
-        return true;
+        _components.Add(component);                 // Add the component
+        component.Initialize(this);                     // Initialzie the component     
+        return true;                    // return that the component was added
     }
 
+    /// <summary>
+    /// Removes a component from this element
+    /// </summary>
+    /// <typeparam name="T">Component type</typeparam>
+    /// <returns>If the component was removed</returns>
     public bool RemoveComponent<T>() where T : Component
     {
+        // Find the component and destroy it
         foreach(var comp in _components)
         {
             if(comp is T)
@@ -150,6 +220,11 @@ public class Element
         return false;
     }
 
+    /// <summary>
+    /// Gets a component attached to this element
+    /// </summary>
+    /// <typeparam name="T">Component Type</typeparam>
+    /// <returns>Component</returns>
     public T GetComponent<T>() where T : Component
     {
         foreach(var comp in _components)
@@ -161,15 +236,20 @@ public class Element
         return null;
     }
 
+    /// <summary>
+    /// Handles updating the component
+    /// </summary>
+    /// <param name="dt"></param>
     private void UpdateComponents(float dt)
     {
+        // Update the active components that have already started
         foreach(var comp in _components.ToList())
         {
             if (comp.HasStarted && comp.IsActive)
                 comp.Update(dt);
         }
 
-
+        // Start any components that haven't started & are active
         foreach(var comp in _components.ToList())
         {
             if (!comp.HasStarted && comp.IsActive)
@@ -180,7 +260,24 @@ public class Element
         }
         
     }
+    
+    /// <summary>
+    /// Checks if the tag is assigned to this element
+    /// </summary>
+    /// <param name="tag">Tag to find</param>
+    /// <returns>If the tag is assigned</returns>
+    public bool HasTag(string tag)
+    {
+        foreach(var t in Tags)
+            if(t == tag)
+                return true;
 
+        return false;
+    }
+
+    /// <summary>
+    /// Handles drawing the components besides UI components & Sprite components
+    /// </summary>
     private void DrawComponents()
     {
         foreach (var comp in _components)
