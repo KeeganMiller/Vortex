@@ -17,6 +17,7 @@ public class VerticalBox : UIComponent
         UIComponent prevComp = null;                    // Store reference to the last ui component updated
         foreach(var element in Owner.GetChildren())
         {
+            
             var uiComp = element.GetComponent<UIComponent>();                   // Get a ui component from the child element
             // Check the ui component is valid
             if(uiComp != null)
@@ -28,7 +29,7 @@ public class VerticalBox : UIComponent
                     element.Transform.Position = new Vector2
                     {
                         X = _ownerTransform.Position.X,
-                        Y = _ownerTransform.Position.Y * ((prevComp.Height + Spacing) * uiCompCount)
+                        Y = _ownerTransform.Position.Y + ((prevComp.Height + Spacing) * uiCompCount)
                     };
                 } else 
                 {
