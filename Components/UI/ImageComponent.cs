@@ -30,15 +30,19 @@ public class ImageComponent : UIComponent
         };
 
         SetActiveImage(NormalImage);
+
+        OnMouseEnter += () => { Raylib.SetMouseCursor(MouseCursor.PointingHand); };
+        OnMouseExit += () => { Raylib.SetMouseCursor(MouseCursor.Default); };
     }
 
     public override void Update(float dt)
     {
         base.Update(dt);
 
-        if(IsClickable && IsMouseOver && Input.IsMouseButtonClicked(EMouseButton.MOUSE_Left))
+        if(IsClickable && IsMouseOver)
         {
-            OnClick?.Invoke();
+            if(Input.IsMouseButtonClicked(EMouseButton.MOUSE_Left))
+                OnClick?.Invoke();
         }
     }
 
