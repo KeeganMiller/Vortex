@@ -36,7 +36,7 @@ public class UIComponent : Component
 {
     public EAnchorLocation Anchor { get; protected set; }
     public EOriginLocation Origin { get; protected set; }
-    public TransformComponent OwnerTransform {get; protected set;};
+    public TransformComponent OwnerTransform {get; protected set;}
 
     public float Width;
     public float Height;
