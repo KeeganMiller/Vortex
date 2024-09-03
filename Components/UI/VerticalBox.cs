@@ -47,7 +47,7 @@ public class VerticalBox : UIComponent
                     element.Transform.Position = new Vector2
                     {
                         X = OwnerTransform.Position.X,
-                        Y = OwnerTransform.Position.Y + Spacing
+                        Y = OwnerTransform.Position.Y
                     };
                 }
 
@@ -72,4 +72,5 @@ public class VerticalBox : UIComponent
             SetAnchor(Anchor);
         }
     }
+
 }

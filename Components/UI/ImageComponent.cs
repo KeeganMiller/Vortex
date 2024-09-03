@@ -48,8 +48,8 @@ public class ImageComponent : UIComponent
 
         if(ActiveImage.Id > 0)
         {
-            var source = new Rectangle(0.0f, 0.0f, this.Width, this.Height);
-            var dest = new Rectangle(Owner.Transform.Position, new Vector2(this.Width * Owner.Transform.Scale.X, this.Height * Owner.Transform.Scale.Y));
+            var source = new Rectangle(0.0f, 0.0f, ActiveImage.Width, ActiveImage.Height);
+            var dest = new Rectangle(Owner.Transform.Position, new Vector2(Width, Height));
             Raylib.DrawTexturePro(ActiveImage, source, dest, GetOrigin(), Owner.Transform.Rotation, Tint);
             //Raylib.DrawRectangle((int)_ownerTransform.Position.X - (int)GetOrigin().X, (int)_ownerTransform.Position.Y - (int)GetOrigin().Y, (int)this.Width, (int)this.Height, Color.Green);
         }
@@ -58,7 +58,7 @@ public class ImageComponent : UIComponent
     private void SetActiveImage(Texture2D image)
     {
         ActiveImage = image;
-        this.Width = image.Width;
-        this.Height = image.Height;
+        this.Width = image.Width * OwnerTransform.Scale.X;
+        this.Height = image.Height * OwnerTransform.Scale.Y;
     }
 }
