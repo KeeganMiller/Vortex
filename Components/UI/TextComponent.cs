@@ -19,6 +19,7 @@ public class TextComponent : UIComponent
             var componentSize = Raylib.MeasureTextEx(NormalFont, Text, FontSize, 1);
             Width = componentSize.X;
             Height = componentSize.Y;
+            SetOriginAndAnchor(Origin, Anchor);
         }
     }
     private string _text = "";
@@ -31,6 +32,7 @@ public class TextComponent : UIComponent
             var componentSize = Raylib.MeasureTextEx(NormalFont, value, FontSize, 1);
             Width = componentSize.X;
             Height = componentSize.Y;
+            SetOriginAndAnchor(Origin, Anchor);
         }
     }
     public Color FontColor = Color.Black;
@@ -50,11 +52,11 @@ public class TextComponent : UIComponent
         if(FontShader.Id > 0)
         {
             Raylib.BeginShaderMode(FontShader);
-            Raylib.DrawTextEx(NormalFont, Text, _ownerTransform.Position, FontSize, 1, FontColor);
+            Raylib.DrawTextEx(NormalFont, Text, OwnerTransform.Position, FontSize, 1, FontColor);
             Raylib.EndShaderMode();
         } else 
         {
-            Raylib.DrawTextEx(NormalFont, Text, _ownerTransform.Position, FontSize, 1, FontColor);
+            Raylib.DrawTextEx(NormalFont, Text, OwnerTransform.Position, FontSize, 1, FontColor);
         }
     }
 }

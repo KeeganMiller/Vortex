@@ -36,7 +36,7 @@ public class UIComponent : Component
 {
     public EAnchorLocation Anchor { get; protected set; }
     public EOriginLocation Origin { get; protected set; }
-    protected TransformComponent _ownerTransform;
+    public TransformComponent OwnerTransform {get; protected set;};
 
     public float Width;
     public float Height;
@@ -51,7 +51,7 @@ public class UIComponent : Component
     {
         base.Start();
         if(Owner != null)
-            _ownerTransform = Owner.Transform;
+            OwnerTransform = Owner.Transform;
 
         if(Owner != null)
             Owner.IsCameraRelated = false;
@@ -69,104 +69,162 @@ public class UIComponent : Component
     public void SetAnchor(EAnchorLocation anchor)
     {
         Anchor = anchor;
-        if(_ownerTransform == null)
+        if(OwnerTransform == null)
             return;
         
         switch(Anchor)
         {
             case EAnchorLocation.ANCHOR_TopLeft:
-                _ownerTransform.Position = Owner.Parent == null ? Vector2.Zero + GetOrigin() : Owner.Parent.Transform.Position + GetOrigin();
+                OwnerTransform.Position = Owner.Parent == null ? Vector2.Zero - GetOrigin() : Owner.Parent.Transform.Position - GetOrigin();
                 break;
             case EAnchorLocation.ANCHOR_TopCenter:
                 if(Owner.Parent == null)
                 {
-                    _ownerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth / 2, 0) + GetOrigin();
+                    OwnerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth / 2, 0) - GetOrigin();
                 }
                 else
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        _ownerTransform.Position = new Vector2(parentComp.Width / 2, 9) + GetOrigin();
+                    {
+                        OwnerTransform.Position = new Vector2
+                        {
+                            X = parentComp.Width * parentComp.OwnerTransform.Scale.X / 2,
+                            Y = 0
+                        };
+                        OwnerTransform.Position -= GetOrigin();
+                    }
                 }
                 break;
             case EAnchorLocation.ANCHOR_TopRight:
                 if(Owner.Parent == null)
                 {
-                    _ownerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth, 0) + GetOrigin();
+                    OwnerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth, 0) - GetOrigin();
                 }
                 else
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        _ownerTransform.Position = new Vector2(parentComp.Width, 0) + GetOrigin();
+                    {
+                        OwnerTransform.Position = new Vector2
+                        {
+                            X = parentComp.Width * parentComp.OwnerTransform.Scale.X,
+                            Y = 0
+                        };
+                        OwnerTransform.Position -= GetOrigin();
+                    }
+
                 }
                 break;
             case EAnchorLocation.ANCHOR_MiddleLeft:
                 if(Owner.Parent == null)
                 {
-                    _ownerTransform.Position = new Vector2(0, Game.WindowSettings.WindowHeight / 2) + GetOrigin();
+                    OwnerTransform.Position = new Vector2(0, Game.WindowSettings.WindowHeight / 2) - GetOrigin();
                 }
                 else
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        _ownerTransform.Position = new Vector2(0, parentComp.Height / 2) + GetOrigin();
+                    {
+                        OwnerTransform.Position = new Vector2
+                        {
+                            X = 0,
+                            Y = parentComp.Height * parentComp.OwnerTransform.Scale.Y / 2
+                        };
+                        OwnerTransform.Position -= GetOrigin();
+                    }
                 }
                 break;
             case EAnchorLocation.ANCHOR_MiddleCenter:
                 if(Owner.Parent == null)
                 {
-                    _ownerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth / 2, Game.WindowSettings.WindowHeight / 2) + GetOrigin();
+                    OwnerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth / 2, Game.WindowSettings.WindowHeight / 2) - GetOrigin();
+                    Debug.Print(GetOrigin(), EPrintMessageType.PRINT_Log);
                 }
                 else
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        _ownerTransform.Position = new Vector2(parentComp.Width / 2, parentComp.Height / 2) + GetOrigin();
+                    {
+                        OwnerTransform.Position = new Vector2
+                        {
+                            X = (parentComp.Width * parentComp.OwnerTransform.Scale.X) / 2,
+                            Y = (parentComp.Height * parentComp.OwnerTransform.Scale.Y) / 2
+                        };
+                        OwnerTransform.Position -= GetOrigin();
+                    }
                 }
                 break;
             case EAnchorLocation.ANCHOR_MiddleRight:
                 if(Owner.Parent == null)
                 {
-                    _ownerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth, Game.WindowSettings.WindowHeight / 2) + GetOrigin();
+                    OwnerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth, Game.WindowSettings.WindowHeight / 2) - GetOrigin();
                 } else 
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        _ownerTransform.Position = new Vector2(parentComp.Width, parentComp.Height / 2) + GetOrigin();
+                    {
+                        OwnerTransform.Position = new Vector2
+                        {
+                            X = (parentComp.Width * parentComp.OwnerTransform.Scale.X),
+                            Y = (parentComp.Height * parentComp.OwnerTransform.Scale.Y) / 2
+                        };
+                        OwnerTransform.Position -= GetOrigin();
+                    }
                 }
                 break;
             case EAnchorLocation.ANCHOR_BottomLeft:
                 if(Owner.Parent == null)
                 {
-                    _ownerTransform.Position = new Vector2(0, Game.WindowSettings.WindowHeight) + GetOrigin();
+                    OwnerTransform.Position = new Vector2(0, Game.WindowSettings.WindowHeight) - GetOrigin();
                 } else 
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        _ownerTransform.Position = new Vector2(0, parentComp.Height) + GetOrigin();
+                    {
+                        OwnerTransform.Position = new Vector2
+                        {
+                            X = 0,
+                            Y = parentComp.Height * parentComp.OwnerTransform.Scale.Y
+                        };
+                        OwnerTransform.Position -= GetOrigin();
+                    }
                 }
                 break;
             case EAnchorLocation.ANCHOR_BottomCenter:
                 if(Owner.Parent == null)
                 {
-                    _ownerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth / 2, Game.WindowSettings.WindowHeight) + GetOrigin();
+                    OwnerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth / 2, Game.WindowSettings.WindowHeight) - GetOrigin();
                 } else 
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        _ownerTransform.Position = new Vector2(parentComp.Width / 2, parentComp.Height) + GetOrigin();
+                    {
+                        OwnerTransform.Position = new Vector2
+                        {
+                            X = (parentComp.Width * parentComp.OwnerTransform.Scale.X) / 2,
+                            Y = parentComp.Height * parentComp.OwnerTransform.Scale.Y
+                        };
+                        OwnerTransform.Position -= GetOrigin();
+                    }
                 }
                 break;
             case EAnchorLocation.ANCHOR_BottomRight:
                 if(Owner.Parent == null)
                 {
-                    _ownerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth, Game.WindowSettings.WindowHeight) + GetOrigin();
+                    OwnerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth, Game.WindowSettings.WindowHeight) - GetOrigin();
                 } else 
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        _ownerTransform.Position = new Vector2(parentComp.Width, parentComp.Height) + GetOrigin();
+                    {
+                        OwnerTransform.Position = new Vector2(parentComp.Width, parentComp.Height) - GetOrigin();
+                        OwnerTransform.Position = new Vector2
+                        {
+                            X = parentComp.Width * parentComp.OwnerTransform.Scale.X,
+                            Y = parentComp.Height * parentComp.OwnerTransform.Scale.Y
+                        };
+                    }
                 }
                 break;
         }
@@ -217,9 +275,9 @@ public class UIComponent : Component
     public void DetectMouseEnterAndExit()
     {
         var mousePos = Input.GetMousePosition(false);
-        if(mousePos.X >= (_ownerTransform.Position.X - GetOrigin().X) && mousePos.X < ((_ownerTransform.Position.X - GetOrigin().X) + this.Width))
+        if(mousePos.X >= (OwnerTransform.Position.X - GetOrigin().X) && mousePos.X < ((OwnerTransform.Position.X - GetOrigin().X) + this.Width))
         {
-            if(mousePos.Y >= (_ownerTransform.Position.Y - GetOrigin().Y) && mousePos.Y < ((_ownerTransform.Position.Y - GetOrigin().Y) + this.Height))
+            if(mousePos.Y >= (OwnerTransform.Position.Y - GetOrigin().Y) && mousePos.Y < ((OwnerTransform.Position.Y - GetOrigin().Y) + this.Height))
             {
                 if(!IsMouseOver)
                 {
