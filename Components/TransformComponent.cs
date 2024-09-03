@@ -7,18 +7,10 @@ namespace Vortex;
 public class TransformComponent : Component
 {
     private Vector2 _localPosition;
+    public Vector2 LocalPosition => _localPosition;
     public Vector2 Position
     {
-        get 
-        {
-            if(Owner.IsCameraRelated)
-            {
-                return Owner.Parent != null ? Owner.Parent.Transform.Position += _localPosition : _localPosition;
-            } else 
-            {
-                return Owner.Parent != null ? Owner.Parent.Transform.Position + _localPosition : _localPosition;
-            }
-        }
+        get => Owner.Parent != null ? Owner.Parent.Transform.Position + _localPosition : _localPosition;
         set => _localPosition = value;
     }
 

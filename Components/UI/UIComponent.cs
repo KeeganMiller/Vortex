@@ -41,7 +41,7 @@ public class UIComponent : Component
     public float Width;
     public float Height;
     public int ZIndex = 0;
-    private Vector2 _offset = Vector2.Zero;
+    protected Vector2 _offset = Vector2.Zero;
     public Vector2 Offset
     {
         get => _offset;
@@ -91,11 +91,12 @@ public class UIComponent : Component
         Anchor = anchor;
         if(OwnerTransform == null)
             return;
+
         
         switch(Anchor)
         {
             case EAnchorLocation.ANCHOR_TopLeft:
-                OwnerTransform.Position = Owner.Parent == null ? Vector2.Zero - GetOrigin() + _offset : Owner.Parent.Transform.Position - GetOrigin() + _offset;
+                OwnerTransform.Position = GetOrigin() + _offset;
                 break;
             case EAnchorLocation.ANCHOR_TopCenter:
                 if(Owner.Parent == null)
