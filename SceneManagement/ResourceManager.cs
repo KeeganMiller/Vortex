@@ -48,6 +48,15 @@ public class ResourceManager
         }
     }
 
+    public Element GetElement(string elementName)
+    {
+        foreach(var element in _elements)
+            if(element.Name == elementName)
+                return element;
+
+        return null;
+    }
+
     public List<SpriteComponent> GetCameraRelativeSprites()
     {
         var sprites = new List<SpriteComponent>();
