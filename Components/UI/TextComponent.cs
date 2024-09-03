@@ -16,7 +16,7 @@ public class TextComponent : UIComponent
         set 
         {
             _fontSize = value;
-            var componentSize = Raylib.MeasureTextEx(NormalFont, value, FontSize, 1);
+            var componentSize = Raylib.MeasureTextEx(NormalFont, Text, FontSize, 1);
             Width = componentSize.X;
             Height = componentSize.Y;
         }

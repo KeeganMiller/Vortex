@@ -38,7 +38,7 @@ public class Element
 
     // == Parenting == //
     public Element Parent { get; protected set; }
-    protected List<Element> _children;
+    protected List<Element> _children = new List<Element>();
 
     // == Components == //
     private List<Component> _components = new List<Component>();
