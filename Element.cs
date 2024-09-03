@@ -99,6 +99,27 @@ public class Element
             _children.Remove(child);
     }
 
+    public Element GetChild(int index)
+    {
+        if(index < _children.Count)
+        {
+            return _children[index];
+        }
+
+        return null;
+    }
+
+    public Element GetChild(string name)
+    {
+        foreach(var e in _children)
+            if(e.Name == name)
+                return e;
+
+        return null;
+    }
+
+    public List<Element> GetChildren() => _children;
+
     // == Component Methods == //
     public bool AddComponent<T>(T component) where T : Component
     {
