@@ -4,7 +4,7 @@ using Vortex;
 
 namespace Vortex.UI;
 
-public class FontComponent : UIComponent
+public class TextComponent : UIComponent
 {
     public Font NormalFont;
     public Shader FontShader;
