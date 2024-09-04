@@ -36,7 +36,7 @@ public abstract class Scene
         SceneLoad();
     }
 
-    public async virtual void SceneLoad()
+    public async virtual Task SceneLoad()
     {
         BeginSceneLoading();
     }
