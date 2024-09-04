@@ -197,4 +197,14 @@ public static class SceneManager
 
         return sortedUiComps;
     }
+
+    public static List<ResourceManager> GetAllResourceManagers()
+    {
+        var resources = new List<ResourceManager>();
+        foreach(var scene in _activeScenes)
+            if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
+                resources.Add(scene.Resources);
+
+        return resources;
+    }
 }
