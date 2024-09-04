@@ -69,7 +69,7 @@ public class ResourceManager
     {
         var sprites = new List<SpriteComponent>();                  // Pre-define list
         // Loop through each element
-        foreach(var e in _elements)
+        foreach(var e in _elements.ToList())
         {
             // Check if the element is Camera relative
             if(e.IsCameraRelated)
@@ -94,7 +94,7 @@ public class ResourceManager
     {
         var sprites = new List<SpriteComponent>();                  // Pre-define the list of sprites
         //  Loop through each element
-        foreach(var e in _elements)
+        foreach(var e in _elements.ToList())
         {
             // Check that the element isn't camera relative
             if(!e.IsCameraRelated)
@@ -139,7 +139,7 @@ public class ResourceManager
     /// </summary>
     public void DrawElements()
     {
-        foreach(var e in _elements)
+        foreach(var e in _elements.ToList())
         {
             if(e.IsActive && e.HasStarted && !e.IsCameraRelated)
                 e.Draw();
@@ -151,7 +151,7 @@ public class ResourceManager
     /// </summary>
     public void DrawElementsRelative()
     {
-        foreach(var e in _elements)
+        foreach(var e in _elements.ToList())
         {
             if(e.IsActive && e.HasStarted && e.IsCameraRelated)
                 e.Draw();
