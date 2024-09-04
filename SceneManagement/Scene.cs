@@ -19,7 +19,7 @@ public abstract class Scene
     protected string _sceneDataPath { get; private set; }
     public ResourceManager Resources { get; }
     
-    public ESceneLoadState CurrentSceneLoadState { get; private set; }
+    public ESceneLoadState CurrentSceneLoadState { get; private set; } = ESceneLoadState.SCENE_STATE_Idle;
 
     public Scene(string name, string scenePath)
     {
