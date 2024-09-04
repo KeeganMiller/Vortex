@@ -45,7 +45,8 @@ public static class SceneManager
     {
         foreach(var scene in _activeScenes)
         {
-            scene.Update(Raylib.GetFrameTime());
+            if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
+                scene.Update(Raylib.GetFrameTime());
         }
 
         if(GlobalResources != null)
@@ -61,9 +62,12 @@ public static class SceneManager
         var sprites = new List<SpriteComponent>();
         foreach(var scene in _activeScenes)
         {
-            var sceneSprites = scene.Resources.GetSprites();
-            foreach(var s in sceneSprites)
-                sprites.Add(s);
+            if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
+            {
+                var sceneSprites = scene.Resources.GetSprites();
+                foreach(var s in sceneSprites)
+                    sprites.Add(s);
+            }
         }
 
         foreach(var s in GlobalResources.GetSprites())
@@ -85,9 +89,12 @@ public static class SceneManager
         var sprites = new List<SpriteComponent>();
         foreach(var scene in _activeScenes)
         {
-            var sceneSprites = scene.Resources.GetCameraRelativeSprites();
-            foreach(var s in sceneSprites)
-                sprites.Add(s);
+            if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
+            {
+                var sceneSprites = scene.Resources.GetCameraRelativeSprites();
+                foreach(var s in sceneSprites)
+                    sprites.Add(s);
+                }
         }
 
         foreach(var s in GlobalResources.GetCameraRelativeSprites())
@@ -105,7 +112,8 @@ public static class SceneManager
     {
         foreach(var scene in _activeScenes)
         {   
-            scene.DrawElementsRelative();
+            if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
+                scene.DrawElementsRelative();
         }
         
         GlobalResources.DrawElementsRelative();
@@ -114,7 +122,8 @@ public static class SceneManager
     public static void DrawElements()
     {
         foreach(var scene in _activeScenes)
-            scene.DrawElements();
+            if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
+                scene.DrawElements();
 
         GlobalResources.DrawElements();
     }
@@ -124,9 +133,12 @@ public static class SceneManager
         var uiList = new List<UIComponent>();
         foreach(var scene in _activeScenes)
         {
-            foreach(var comp in scene.Resources.GetUiComponents())
+            if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
             {
-                uiList.Add(comp);
+                foreach(var comp in scene.Resources.GetUiComponents())
+                {
+                    uiList.Add(comp);
+                }
             }
         }
 

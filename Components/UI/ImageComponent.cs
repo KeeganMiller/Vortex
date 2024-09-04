@@ -31,8 +31,12 @@ public class ImageComponent : UIComponent
 
         SetActiveImage(NormalImage);
 
-        OnMouseEnter += () => { Raylib.SetMouseCursor(MouseCursor.PointingHand); };
-        OnMouseExit += () => { Raylib.SetMouseCursor(MouseCursor.Default); };
+        // Enable the cursor properties
+        if(IsClickable)
+        {
+            OnMouseEnter += () => { Raylib.SetMouseCursor(MouseCursor.PointingHand); };
+            OnMouseExit += () => { Raylib.SetMouseCursor(MouseCursor.Default); };
+        }
     }
 
     public override void Update(float dt)

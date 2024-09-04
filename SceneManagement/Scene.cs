@@ -4,12 +4,22 @@ using Raylib_cs;
 
 namespace Vortex;
 
+public enum ESceneLoadState
+{
+    SCENE_STATE_Idle,
+    SCENE_STATE_Error,
+    SCENE_STATE_Loading,
+    SCENE_STATE_Loaded,
+}
+
 public abstract class Scene
 {
     public string SceneId { get; } = Guid.NewGuid().ToString();
     public string SceneName;
     protected string _sceneDataPath { get; private set; }
     public ResourceManager Resources { get; }
+    
+    public ESceneLoadState CurrentSceneLoadState { get; private set; }
 
     public Scene(string name, string scenePath)
     {
@@ -22,7 +32,17 @@ public abstract class Scene
     {
         if (Resources != null)
             Resources.Start();
+
+        SceneLoad();
     }
+
+    public async virtual void SceneLoad()
+    {
+        BeginSceneLoading();
+    }
+
+    public void BeginSceneLoading() => CurrentSceneLoadState = ESceneLoadState.SCENE_STATE_Loading;
+    public void EndSceneLoading() => CurrentSceneLoadState = ESceneLoadState.SCENE_STATE_Loaded;
 
     public virtual void DrawElements()
     {
