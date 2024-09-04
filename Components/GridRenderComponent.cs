@@ -24,7 +24,7 @@ public class GridRenderComponent : Component
         var spacing = GridSpacing;
         var startPos = Owner.Transform.Position;
 
-        if(UseGridComponent && _gridComp != null)
+        if(_gridComp != null)
         {
             cellsX = _gridComp.GridSizeX;
             cellsY = _gridComp.GridSizeY;
