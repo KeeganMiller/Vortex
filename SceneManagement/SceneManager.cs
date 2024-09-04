@@ -31,7 +31,7 @@ public static class SceneManager
 
     public static void RemoveScene(string sceneName)
     {
-        foreach(var scene in _activeScenes)
+        foreach(var scene in _activeScenes.ToList())
         {
             if(scene.SceneName ==  sceneName)
             {
@@ -43,7 +43,7 @@ public static class SceneManager
 
     public static void Update()
     {
-        foreach(var scene in _activeScenes)
+        foreach(var scene in _activeScenes.ToList())
         {
             if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
                 scene.Update(Raylib.GetFrameTime());
@@ -60,7 +60,7 @@ public static class SceneManager
         
 
         var sprites = new List<SpriteComponent>();
-        foreach(var scene in _activeScenes)
+        foreach(var scene in _activeScenes.ToList())
         {
             if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
             {
@@ -87,7 +87,7 @@ public static class SceneManager
         
 
         var sprites = new List<SpriteComponent>();
-        foreach(var scene in _activeScenes)
+        foreach(var scene in _activeScenes.ToList())
         {
             if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
             {
@@ -110,7 +110,7 @@ public static class SceneManager
 
     public static void DrawElementsRelative()
     {
-        foreach(var scene in _activeScenes)
+        foreach(var scene in _activeScenes.ToList())
         {   
             if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
                 scene.DrawElementsRelative();
@@ -121,7 +121,7 @@ public static class SceneManager
 
     public static void DrawElements()
     {
-        foreach(var scene in _activeScenes)
+        foreach(var scene in _activeScenes.ToList())
             if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
                 scene.DrawElements();
 
@@ -131,7 +131,7 @@ public static class SceneManager
     public static void DrawUiElements()
     {
         var uiList = new List<UIComponent>();
-        foreach(var scene in _activeScenes)
+        foreach(var scene in _activeScenes.ToList())
         {
             if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
             {
