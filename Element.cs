@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using Raylib_cs;
 using Vortex.UI;
 
@@ -288,5 +287,151 @@ public class Element
                     comp.Draw();
             }
         }
+    }
+
+    public static List<Element> GetAllElementsWithName(string name, bool onlyActive = false)
+    {
+        var resources = SceneManager.GetAllResourceManagers();
+        var foundElements = new List<Element>();
+        foreach(var r in resources)
+        {
+            foreach(var e in r.GetAllElements().ToList())
+            {
+                if(onlyActive)
+                {
+                    if(e.IsActive && e.Name == name)
+                        foundElements.Add(e);
+                } else 
+                {
+                    if(e.Name == name)
+                        foundElements.Add(e);
+                }
+            }
+        }
+
+        return foundElements;
+    }
+
+    public static Element GetFirstElementWithName(string name, bool onlyActive = false)
+    {
+        var resources = SceneManager.GetAllResourceManagers();
+        foreach(var r in resources)
+        {
+            foreach(var e in r.GetAllElements())
+            {
+                if(onlyActive)
+                {
+                    if(e.IsActive && e.Name == name)
+                        return e;
+                } else 
+                {
+                    if(e.Name == name)
+                        return e;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static List<Element> GetAllElementsWithTag(string tag, bool onlyActive = false)
+    {
+        var resources = SceneManager.GetAllResourceManagers();
+        var foundElemenets = new List<Element>();
+        foreach(var r in resources)
+        {
+            foreach(var e in r.GetAllElements())
+            {
+                if(onlyActive)
+                {
+                    if(e.IsActive && e.HasTag(tag))
+                        foundElemenets.Add(e);
+                } else 
+                {
+                    if(e.HasTag(tag))
+                        foundElemenets.Add(e);
+                }
+            }
+        }
+
+        return foundElemenets;
+    }
+
+    public static Element GetFirstElementWithTag(string tag, bool onlyActive = false)
+    {
+        var resources = SceneManager.GetAllResourceManagers();
+        foreach(var r in resources)
+        {
+            foreach(var e in r.GetAllElements())
+            {
+                if(onlyActive)
+                {
+                    if(e.IsActive && e.HasTag(tag))
+                        return e;
+                } else 
+                {
+                    if(e.HasTag(tag))
+                        return e;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static List<Element> GetAllElementsWithComponent<T>(bool onlyActive = false) where T : Component
+    {
+        var resources = SceneManager.GetAllResourceManagers();
+        var foundElements = new List<Element>();
+
+        foreach(var r in resources)
+        {
+            foreach(var e in r.GetAllElements())
+            {
+                if(onlyActive)
+                {
+                    if(e.IsActive)
+                    {
+                        var comp = e.GetComponent<T>();
+                        if(comp != null)
+                            foundElements.Add(e);
+                    }
+                } else 
+                {
+                    var comp = e.GetComponent<T>();
+                    if(comp != null)
+                        foundElements.Add(e);
+                }
+            }
+        }
+
+        return foundElements;
+    }
+
+    public static Element GetFirstElementWithComponent<T>(bool onlyActive = false) where T : Component
+    {
+        var resources = SceneManager.GetAllResourceManagers();
+        foreach(var r in resources)
+        {
+            foreach(var e in r.GetAllElements())
+            {
+                if(onlyActive)
+                {
+                    if(e.IsActive)
+                    {
+                        var comp = e.GetComponent<T>();
+                        if(comp != null)
+                            return e;
+                    }
+                } else 
+                {
+                    var comp = e.GetComponent<T>();
+                    if(comp != null)
+                        return e;
+                }
+            }
+        }
+
+        return null;
     }
 }

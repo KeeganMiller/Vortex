@@ -288,4 +288,6 @@ public class ResourceManager
             Debug.Print($"ResourceManager::LoadSceneResources -> Failed to find scene file: {this._sceneDataPath}", EPrintMessageType.PRINT_Error);
         }
     }
+
+    public List<Element> GetAllElements() => _elements;
 }
