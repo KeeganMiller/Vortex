@@ -12,6 +12,7 @@ public class ImageComponent : UIComponent
 
     public Texture2D ActiveImage { get; private set; }
     public Color Tint = Color.White;
+    public Vector2 ImageRotationOrigin = Vector2.Zero;
 
     public bool IsClickable = false;
 
@@ -58,7 +59,7 @@ public class ImageComponent : UIComponent
         {
             var source = new Rectangle(0.0f, 0.0f, ActiveImage.Width, ActiveImage.Height);
             var dest = new Rectangle(Owner.Transform.Position, new Vector2(Width, Height));
-            Raylib.DrawTexturePro(ActiveImage, source, dest, Vector2.Zero, Owner.Transform.Rotation, Tint);
+            Raylib.DrawTexturePro(ActiveImage, source, dest, ImageRotationOrigin, Owner.Transform.Rotation, Tint);
         }
     }
 
