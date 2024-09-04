@@ -17,12 +17,18 @@ public class GridComponent : Component
 
     public bool HasGeneratedGrid {get; private set;} = false;
 
+    public override void Initialize(Element owner)
+    {
+        base.Initialize(owner);
+        
+        if(GridSizeX > 0 && GridSizeY > 0 && GridNodeSize > 0)
+            CreateGrid();
+    }
+
     public override void Start()
     {
         base.Start();
 
-        if(GridSizeX > 0 && GridSizeY > 0 && GridNodeSize > 0)
-            CreateGrid();
     }
 
     /// <summary>
