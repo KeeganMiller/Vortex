@@ -20,12 +20,15 @@ public abstract class Scene
     public ResourceManager Resources { get; }
     
     public ESceneLoadState CurrentSceneLoadState { get; private set; } = ESceneLoadState.SCENE_STATE_Idle;
+    private bool _loadSceneAsync;
 
-    public Scene(string name, string scenePath)
+    public Scene(string name, string scenePath, bool loadAsync = false)
     {
         SceneName = name;
         _sceneDataPath = scenePath;
         Resources = new ResourceManager(this, Game.GetAssetPath() + scenePath);
+
+        _loadSceneAsync = loadAsync;
     }
 
     public virtual void Enter()
@@ -33,7 +36,10 @@ public abstract class Scene
         if (Resources != null)
             Resources.Start();
 
-        SceneLoad();
+        if(_loadSceneAsync)
+            SceneLoad();
+        else
+            CurrentSceneLoadState = ESceneLoadState.SCENE_STATE_Loaded;
     }
 
     public async virtual Task SceneLoad()
