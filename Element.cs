@@ -43,13 +43,17 @@ public class Element
     // == Components == //
     private List<Component> _components = new List<Component>();                // List of all components on this element
     private bool _hasComponentToStart = false;
-    public TransformComponent Transform { get; }                            // Reference to the transform component
+    public TransformComponent Transform { get; private set; }                            // Reference to the transform component
 
     public Element(string name = "Element")
     {
         this.Name = name;
-        Transform = new TransformComponent();
-        AddComponent<TransformComponent>(Transform);
+    }
+
+    public void SetTransform(TransformComponent comp)
+    {
+        Transform = comp;
+        AddComponent(comp);
     }
 
     /// <summary>

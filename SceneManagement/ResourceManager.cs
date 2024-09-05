@@ -27,7 +27,7 @@ public class ResourceManager
 
     public void Start()
     {
-        LoadSceneResources();
+        SceneFileParser.ParseFile(_sceneDataPath, this);
     }
 
     public void Update(float dt)
@@ -219,6 +219,7 @@ public class ResourceManager
         return null;
     }
 
+/*
     /// <summary>
     /// Handles loading all of the assets for this scene
     /// Generally called within the start method
@@ -286,6 +287,29 @@ public class ResourceManager
         } else 
         {
             Debug.Print($"ResourceManager::LoadSceneResources -> Failed to find scene file: {this._sceneDataPath}", EPrintMessageType.PRINT_Error);
+        }
+    }
+*/
+
+    public void AddLoadedAsset(AssetData asset)
+    {
+        _assets.Add(asset);
+    }
+
+    public void RemoveLoadedAsset(AssetData asset)
+    {
+        _assets.Remove(asset);
+    }
+
+    public void RemoveLoadedAsset(string name)
+    {
+        foreach(var asset in _assets)
+        {
+            if(asset.AssetName == name)
+            {
+                _assets.Remove(asset);
+                return;
+            }
         }
     }
 
