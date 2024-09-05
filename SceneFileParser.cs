@@ -14,6 +14,7 @@ public enum EDataType
     SCENE_PROP_Asset,
     SCENE_PROP_AssetValue,
     SCENE_PROP_Element,
+    SCENE_PROP_ElementValue,
     SCENE_PROP_Component,
     SCENE_PROP_ComponentValue,
     SCENE_RPOP_Error,
@@ -45,13 +46,21 @@ public static class SceneFileParser
                 var instance = ParseData(relatedLines, dataType);                   // Create the instance of the class
 
                 if(instance is AssetData instanceAsset)
+                {
+                    Debug.Print($"SceneFileParser::ParseFile -> Asset Loaded: {instanceAsset.AssetName} #{instanceAsset.AssetId}", EPrintMessageType.PRINT_Custom, ConsoleColor.DarkGreen);
                     SceneManager.GlobalResources.AddLoadedAsset(instanceAsset);
+                    i += relatedLines.Count - 1;
+                    continue;
+                }
                 
                 // If the instance is an element than set the current element
                 if(instance is Element element)
                 {
+                    Debug.Print($"$SceneFileParser::ParseFile -> Element Created: {element.Name}", EPrintMessageType.PRINT_Custom, ConsoleColor.DarkGreen);
                     currentElement = element;
-                    requested.AddElement(currentElement);
+                    requested.AddElement(currentElement); 
+                    i += relatedLines.Count - 1;
+                    continue;
                 }
 
                 // Add any components that are required
@@ -59,10 +68,17 @@ public static class SceneFileParser
                 {
                     if(compInstance is TransformComponent compTrans)
                     {
+                        Debug.Print("SceneFileParser::ParseFile -> Transform component setup", EPrintMessageType.PRINT_Custom, ConsoleColor.DarkGreen);
                         currentElement.SetTransform(compTrans);
+                        i += relatedLines.Count - 1;
+                        continue;
                     } else 
                     {
+                        var compName = compInstance.GetType().Name;
+                        Debug.Print($"SceneFileParser::ParseFile -> Component: {compName} was created for Element: {currentElement.Name}", EPrintMessageType.PRINT_Custom, ConsoleColor.DarkGreen);
                         currentElement.AddComponent(compInstance);
+                        i += relatedLines.Count - 1;
+                        continue;
                     }
                 }
 
@@ -74,10 +90,17 @@ public static class SceneFileParser
     public static List<string> GetRelatedLines(string[] lines, int currentIndex, EDataType type)
     {
         List<string> relatedLines = new List<string>();
-        for(var i = currentIndex; i < lines.Length; ++i)
+        relatedLines.Add(lines[currentIndex]);
+        for(var i = currentIndex + 1; i < lines.Length; ++i)
         {
-            if(lines[i][0] != GetCurrentDataChar(type) || lines[i][0] != GetNextDataChar(type))
+            var ident = lines[i][0].ToString();
+            var curChar = GetCurrentDataChar(type).ToString();
+            var nextChar = GetNextDataChar(type).ToString();
+            if(ident != nextChar)
                 break;
+            
+            relatedLines.Add(lines[i]);
+
         }
 
         return relatedLines;
@@ -101,9 +124,7 @@ public static class SceneFileParser
                 continue;
             } else 
             {
-                line.Replace(nextDataLine.ToString(), "");              // Remove the identifier
-                var splitData = line.Split(":");                        // Split the name and value apart
-
+                var splitData = line.Replace(nextDataLine.ToString(), "").Split(":");              // Remove the identifier
 
                 // Get the type of value this is
                 Type type = splitData[1][0] switch
@@ -120,24 +141,25 @@ public static class SceneFileParser
                 // Create the property
                 properties.Add(new SceneFileDataContainer
                 {
-                    Name = line.Replace($"{GetDataType(line)}#", ""),
+                    Name = splitData[0],
                     type = type,
                     Value = value
                 });
             }
         }
 
+        string identifierFiltered = "";
         if(!string.IsNullOrEmpty(identifier))
-            identifier.Replace($"{GetCurrentDataChar(dataType)}#", "");
+            identifierFiltered = identifier.Replace($"{GetCurrentDataChar(dataType)}#", "");
 
         switch(dataType)
         {
             case EDataType.SCENE_PROP_Asset:
-                return CreateInstance(dataType, null, properties);
+                return CreateInstance(dataType, identifierFiltered, properties);
             case EDataType.SCENE_PROP_Element:
-                return CreateInstance(dataType, null, properties, identifier);
+                return CreateInstance(dataType, identifierFiltered, properties, identifierFiltered);
             case EDataType.SCENE_PROP_Component:
-                return CreateInstance(dataType, identifier, properties);
+                return CreateInstance(dataType, identifierFiltered, properties);
             default:
                 Debug.Print("SceneFileParser::ParseData -> Error parses file data", EPrintMessageType.PRINT_Error);
                 break;
@@ -161,6 +183,8 @@ public static class SceneFileParser
                 return EDataType.SCENE_PROP_Component;
             case '-':
                 return EDataType.SCENE_PROP_ComponentValue;
+            case '!':
+                return EDataType.SCENE_PROP_ElementValue;
 
         }
 
@@ -174,7 +198,7 @@ public static class SceneFileParser
             case EDataType.SCENE_PROP_Asset:
                 return '&';
             case EDataType.SCENE_PROP_Element:
-                return '@';
+                return '!';
             case EDataType.SCENE_PROP_Component:
                 return '-';
         }
@@ -208,21 +232,23 @@ public static class SceneFileParser
         switch(identifier)
         {
             case EDataType.SCENE_PROP_Asset:
-                var type = GetAssetType((string)properties[3].Value);
+                var type = GetAssetType((string)properties[2].Value);
                 switch(type)
                 {
                     case EAssetType.ASSET_Sprite:
-                        return new SpriteData((string)properties[0].Value, (int)properties[1].Value, (string)properties[2].Value, type);
+                        return new SpriteData(className, (int)properties[0].Value, (string)properties[1].Value, type);
                     case EAssetType.ASSET_Font:
-                        return new FontAsset((string)properties[0].Value, (int)properties[1].Value, (string)properties[2].Value, type);
+                        return new FontAsset(className, (int)properties[0].Value, (string)properties[1].Value, type);
                     case EAssetType.ASSET_Shader:
-                        return new ShaderAsset((string)properties[0].Value, (int)properties[1].Value, (string)properties[2].Value, type);
+                        return new ShaderAsset(className, (int)properties[0].Value, (string)properties[1].Value, type);
                 }
                 break;
             case EDataType.SCENE_PROP_Element:
                 return new Element(objectName);
             case EDataType.SCENE_PROP_Component:
-                Type classType = Type.GetType(className);
+                var filteredClassName = className.Replace("@", "");
+                filteredClassName = "Vortex." + filteredClassName;
+                Type classType = Type.GetType(filteredClassName);
                 if(classType == null)
                 {
                     Debug.Print("SceneFileParser::CreateInstance -> Unable to create component instance", EPrintMessageType.PRINT_Error);
@@ -257,32 +283,38 @@ public static class SceneFileParser
 
     private static object ReplaceStrValueWithType(string value)
     {
-        value.Replace(")", "");
+        var setValue = value.Replace(")", "");
         switch(value[0])
         {
             case 'I':
-                value.Replace("I(", "");
-                return GetIntValue(value);
+                var iValue = setValue.Replace("I(", "");
+                return GetIntValue(iValue);
             case 'S':
-                value.Replace("S(", "");
-                return value;
+                var sValue = setValue.Replace("S(", "");
+                return sValue;;
             case 'V':
-                value.Replace("V(", "");
-                return GetVectorValue(value);
+                var vValue = setValue.Replace("V(", "");
+                return GetVectorValue(vValue);
             case 'F':
-                value.Replace("F(", "");
-                return GetFloatValue(value);
+                var fValue = setValue.Replace("F(", "");
+                return GetFloatValue(fValue);
             case 'B':
-                value.Replace("B(", "");
-                return GetBoolValue(value);
+                var bValue = setValue.Replace("B(", "");
+                return GetBoolValue(bValue);
         }
 
-        return value;
+        return setValue;
     }
 
     private static int GetIntValue(string data)
     {
-        return int.Parse(data);
+        int value = 0;
+        if(!int.TryParse(data, out value))
+        {
+            Debug.Print($"SceneFileParser::GetIntValue -> Failed to parse string: {data}", EPrintMessageType.PRINT_Error);
+        }
+
+        return value;
     }
 
     private static Vector2 GetVectorValue(string data)
@@ -314,7 +346,17 @@ public static class SceneFileParser
             propInfo.SetValue(instance, Convert.ChangeType(value, propInfo.PropertyType));
         } else 
         {
-            Debug.Print($"SceneFileParser::SetPropertyValue -> Property: {propName} not found or writable", EPrintMessageType.PRINT_Error);
+            if(propInfo == null)
+            {
+                Debug.Print($"SceneFileParse::SetPropertyValue -> Failed to locate property: {propName}", EPrintMessageType.PRINT_Error);
+                return;
+            } 
+
+            if(propInfo != null && !propInfo.CanWrite)
+            {
+                Debug.Print($"SceneFileParse::SetPropertyValue -> Cannot modifier property: {propName}", EPrintMessageType.PRINT_Error);
+                return;
+            }
         }
     }
 }

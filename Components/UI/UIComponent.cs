@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Raylib_cs;
 
-namespace Vortex.UI;
+namespace Vortex;
 
 public enum EAnchorLocation
 {

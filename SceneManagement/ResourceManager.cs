@@ -4,8 +4,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using Microsoft.VisualBasic;
-using Vortex.UI;
-
 namespace Vortex;
 
 public class ResourceManager
@@ -213,6 +211,17 @@ public class ResourceManager
         foreach(var asset in _assets)
         {
             if (asset.AssetName == assetName && asset is T assetAs)
+                return assetAs;
+        }
+
+        return null;
+    }
+
+    public T GetAssetById<T>(int id) where T : AssetData
+    {
+        foreach(var asset in _assets)
+        {
+            if(asset.AssetId == id && asset is T assetAs)
                 return assetAs;
         }
 

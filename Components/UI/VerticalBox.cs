@@ -3,7 +3,7 @@ using System.Numerics;
 using Raylib_cs;
 using Vortex;
 
-namespace Vortex.UI;
+namespace Vortex;
 
 public class VerticalBox : UIComponent
 {

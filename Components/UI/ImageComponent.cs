@@ -3,12 +3,43 @@ using System.Numerics;
 using System.Security.Cryptography.X509Certificates;
 using Raylib_cs;
 
-namespace Vortex.UI;
+namespace Vortex;
 
 public class ImageComponent : UIComponent
 {
     public Texture2D NormalImage;
     public Texture2D HoverImage;
+
+    private int _normalImageId = -1;
+    private int _hoverImageId = -1;
+
+    public int NormalImageId 
+    {
+        get => _normalImageId;
+        set 
+        {
+            var texture = SceneManager.GlobalResources.GetAssetById<SpriteData>(value);
+            if(texture != null && texture.IsValid)
+            {
+                _normalImageId = value;
+                NormalImage = texture.Texture;
+            }
+        }
+    }
+
+    public int HoverImageId
+    {
+        get => _normalImageId;
+        set 
+        {
+            var texture = SceneManager.GlobalResources.GetAssetById<SpriteData>(value);
+            if(texture != null && texture.IsValid)
+            {
+                HoverImage = texture.Texture;
+                _hoverImageId = value;
+            }
+        }
+    }
 
     public Texture2D ActiveImage { get; private set; }
     public Color Tint = Color.White;
@@ -17,6 +48,24 @@ public class ImageComponent : UIComponent
     public bool IsClickable = false;
 
     public Action OnClick;
+
+    public override void Initialize(Element owner)
+    {
+        base.Initialize(owner);
+        if(NormalImageId > -1)
+        {
+            var asset = Owner.Owner.GetAssetById<SpriteData>(NormalImageId);
+            if(asset != null && asset.IsValid)
+                NormalImage = asset.Texture;
+        }
+
+        if(HoverImageId > -1)
+        {
+            var asset = Owner.Owner.GetAssetById<SpriteData>(HoverImageId);
+            if(asset != null && asset.IsValid)
+                HoverImage = asset.Texture;
+        }
+    }
 
     public override void Start()
     {

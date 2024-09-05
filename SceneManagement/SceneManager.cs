@@ -2,14 +2,13 @@
 using System.Runtime.InteropServices;
 using Microsoft.VisualBasic;
 using Raylib_cs;
-using Vortex.UI;
 
 namespace Vortex;
 
 public static class SceneManager
 {
     private static List<Scene> _activeScenes = new List<Scene>();
-    public static ResourceManager GlobalResources = new ResourceManager(null, Game.GetAssetPath() + "GlobalResources.vt");
+    public static ResourceManager GlobalResources = new ResourceManager(null, null);
 
     public static void AddScene(Scene scene)
     {

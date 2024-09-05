@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Raylib_cs;
 using Vortex;
 
-namespace Vortex.UI;
+namespace Vortex;
 
 public class TextComponent : UIComponent
 {

@@ -30,7 +30,7 @@ public abstract class AssetData
         AssetName = name;
         AssetPath = path;
         AssetType = assetType;
-        AssetId = id
+        AssetId = id;
     }
 
     public abstract void Load();
