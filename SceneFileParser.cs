@@ -49,6 +49,7 @@ public static class SceneFileParser
                 {
                     Debug.Print($"SceneFileParser::ParseFile -> Asset Loaded: {instanceAsset.AssetName} #{instanceAsset.AssetId}", EPrintMessageType.PRINT_Custom, ConsoleColor.DarkGreen);
                     SceneManager.GlobalResources.AddLoadedAsset(instanceAsset);
+                    instanceAsset.Load();
                     i += relatedLines.Count - 1;
                     continue;
                 }
@@ -76,7 +77,8 @@ public static class SceneFileParser
                     {
                         var compName = compInstance.GetType().Name;
                         Debug.Print($"SceneFileParser::ParseFile -> Component: {compName} was created for Element: {currentElement.Name}", EPrintMessageType.PRINT_Custom, ConsoleColor.DarkGreen);
-                        currentElement.AddComponent(compInstance);
+                        var addComponentInMethod = typeof(Element).GetMethod("AddComponent").MakeGenericMethod(compInstance.GetType());
+                        addComponentInMethod.Invoke(currentElement, new object[] { compInstance });
                         i += relatedLines.Count - 1;
                         continue;
                     }
@@ -236,11 +238,11 @@ public static class SceneFileParser
                 switch(type)
                 {
                     case EAssetType.ASSET_Sprite:
-                        return new SpriteData(className, (int)properties[0].Value, (string)properties[1].Value, type);
+                        return new SpriteData(className, (int)properties[0].Value, $"{Game.GetAssetPath()}{(string)properties[1].Value}", type);
                     case EAssetType.ASSET_Font:
-                        return new FontAsset(className, (int)properties[0].Value, (string)properties[1].Value, type);
+                        return new FontAsset(className, (int)properties[0].Value, $"{Game.GetAssetPath()}{(string)properties[1].Value}", type);
                     case EAssetType.ASSET_Shader:
-                        return new ShaderAsset(className, (int)properties[0].Value, (string)properties[1].Value, type);
+                        return new ShaderAsset(className, (int)properties[0].Value, $"{Game.GetAssetPath()}{(string)properties[1].Value}", type);
                 }
                 break;
             case EDataType.SCENE_PROP_Element:
@@ -251,9 +253,15 @@ public static class SceneFileParser
                 Type classType = Type.GetType(filteredClassName);
                 if(classType == null)
                 {
-                    Debug.Print("SceneFileParser::CreateInstance -> Unable to create component instance", EPrintMessageType.PRINT_Error);
-                    return null;
+                    filteredClassName = className.Replace("@", "");
+                    classType = Type.GetType(Game.DefaultNamespace + "." + filteredClassName);
+                    if(classType == null)
+                    {
+                        Debug.Print($"SceneFileParser::CreateInstance -> Unable to create component: {filteredClassName}", EPrintMessageType.PRINT_Error);
+                        return null;
+                    }
                 }
+
                 var componentInstance = Activator.CreateInstance(classType);
                 if(componentInstance != null)
                     foreach(var prop in properties)
