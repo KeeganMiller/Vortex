@@ -17,6 +17,7 @@ public static class Game
 
     private const string DEBUG_ASSET_PATH = "../../../Assets/";
     private const string GENERAL_ASSET_PATH = "Assets/";
+    public static string DefaultNamespace = "Uprising";
 
     private static bool _isInitialized = false;
     public static Camera2D CameraRef;
