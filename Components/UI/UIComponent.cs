@@ -309,4 +309,7 @@ public class UIComponent : Component
 
         Raylib.DrawRectangleRec(rect, new Color(51, 153, 225, 20));
     }
+
+    public EAnchorLocation GetAnchorLocation() => _anchor;
+    public EOriginLocation GetOriginLocation() => _origin;
 }
