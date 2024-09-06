@@ -40,7 +40,7 @@ public class VerticalBox : UIComponent
                         X = 0,
                         Y = (prevComp.Height + Spacing) * uiCompCount
                     };
-                    uiComp.SetOriginAndAnchor(uiComp.Origin, uiComp.Anchor);
+                    uiComp.SetOriginAndAnchor(uiComp.GetOriginLocation(), uiComp.GetAnchorLocation());
 
                 } else 
                 {
@@ -50,7 +50,7 @@ public class VerticalBox : UIComponent
                         X = 0,
                         Y = 0
                     };
-                    uiComp.SetOriginAndAnchor(uiComp.Origin, uiComp.Anchor);
+                    uiComp.SetOriginAndAnchor(uiComp.GetOriginLocation(), uiComp.GetAnchorLocation());
                 }
 
                 prevComp = uiComp;
@@ -62,16 +62,16 @@ public class VerticalBox : UIComponent
         {
             Width = width;
             _prevWidth = width;
-            SetOrigin(Origin);
-            SetAnchor(Anchor);
+            SetOrigin(_origin);
+            SetAnchor(_anchor);
         }
 
         if(height != _prevHeight)
         {
             Height = height;
             _prevHeight = height;
-            SetOrigin(Origin);
-            SetAnchor(Anchor);
+            SetOrigin(_origin);
+            SetAnchor(_anchor);
         }
     }
 

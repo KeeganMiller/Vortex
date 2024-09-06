@@ -19,7 +19,7 @@ public class TextComponent : UIComponent
             var componentSize = Raylib.MeasureTextEx(NormalFont, Text, FontSize, 1);
             Width = componentSize.X;
             Height = componentSize.Y;
-            SetOriginAndAnchor(Origin, Anchor);
+            SetOriginAndAnchor(_origin, _anchor);
         }
     }
     private string _text = "";
@@ -32,7 +32,7 @@ public class TextComponent : UIComponent
             var componentSize = Raylib.MeasureTextEx(NormalFont, value, FontSize, 1);
             Width = componentSize.X;
             Height = componentSize.Y;
-            SetOriginAndAnchor(Origin, Anchor);
+            SetOriginAndAnchor(_origin, _anchor);
         }
     }
     public Color FontColor = Color.Black;
