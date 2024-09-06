@@ -129,24 +129,22 @@ public static class VortexSceneReader
                 var splitData = line.Replace(nextDataLine.ToString(), "").Split(":");              // Remove the identifier
 
                 // Get the type of value this is
-                Type type = splitData[1][0] switch
-                {
-                    'I' => typeof(int),
-                    'V' => typeof(Vector2),
-                    'S' => typeof(string),
-                    'F' => typeof(float),
-                    'B' => typeof(bool)
-                };
+                Type type =  GetPropertyType(splitData[1][0]);
 
-                var value = ReplaceStrValueWithType(splitData[1]);                 // Remove the value type to get the raw value
-
-                // Create the property
-                properties.Add(new SceneFileDataContainer
+                if(type != null)
                 {
-                    Name = splitData[0],
-                    type = type,
-                    Value = value
-                });
+                    var value = ReplaceStrValueWithType(splitData[1]);                 // Remove the value type to get the raw value
+
+                    // Create the property
+                    properties.Add(new SceneFileDataContainer
+                    {
+                        Name = splitData[0],
+                        type = type,
+                        Value = value
+                    });
+                }
+
+                
             }
         }
 
@@ -168,6 +166,28 @@ public static class VortexSceneReader
         }
 
         return null;
+    }
+
+    private static Type GetPropertyType(char data)
+    {
+        switch(data)
+        {
+            case 'I': 
+                return typeof(int);
+            case 'V':
+                return typeof(Vector2);
+            case 'S':
+                return typeof(string);
+            case 'F':
+                return typeof(float);
+            case 'B':
+                return typeof(bool);
+            case 'C':
+                return typeof(Color);
+            default:
+                Debug.Print($"VortexSceneReader::GetPropertyType -> Failed to get type of property at identifier: {data.ToString()}", EPrintMessageType.PRINT_Error);
+                return null;
+        }
     }
 
 
@@ -323,6 +343,9 @@ public static class VortexSceneReader
             case 'B':
                 var bValue = setValue.Replace("B(", "");
                 return GetBoolValue(bValue);
+            case 'C':
+                var cValue = setValue.Replace("C(", "");
+                return GetColor(cValue);
         }
 
         return setValue;
@@ -353,6 +376,17 @@ public static class VortexSceneReader
     private static bool GetBoolValue(string data)
     {
         return data == "true" ? true : false;
+    }
+
+    private static Color GetColor(string data)
+    {
+        var split = data.Split(',');
+        if(split != null && split.Length > 0)
+        {
+            return new Color(GetIntValue(split[0]), GetIntValue(split[1]), GetIntValue(split[2]), GetIntValue(split[3]));
+        }
+
+        return new Color();
     }
 
     private static void SetPropertyValue(object instance, string propName, object value)
