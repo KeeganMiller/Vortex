@@ -25,7 +25,7 @@ public class ResourceManager
 
     public void Start()
     {
-        SceneFileParser.ParseFile(_sceneDataPath, this);
+        VortexSceneReader.ParseFile(_sceneDataPath, this);
     }
 
     public void Update(float dt)

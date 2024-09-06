@@ -20,7 +20,7 @@ public enum EDataType
     SCENE_RPOP_Error,
 }
 
-public static class SceneFileParser
+public static class VortexSceneReader
 {
     /// <summary>
     /// Handles reading in the scene file and is base for
