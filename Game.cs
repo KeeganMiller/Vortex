@@ -21,6 +21,7 @@ public static class Game
 
     private static bool _isInitialized = false;
     public static Camera2D CameraRef;
+    public static Color BackgroundColor;
 
     public static void Initialize(string[] args)
     {
@@ -97,7 +98,7 @@ public static class Game
             SceneManager.Update();
 
             Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.White);
+            Raylib.ClearBackground(BackgroundColor);
 
             SceneManager.Draw();
             SceneManager.DrawElements();
