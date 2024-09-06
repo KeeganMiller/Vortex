@@ -32,6 +32,14 @@ public enum EOriginLocation
     ORIGIN_BottomRight = 9
 }
 
+public enum EStretchType
+{
+    STRETCH_None = 0,
+    STRETCH_Width = 1,
+    STRETCH_Height = 2,
+    STRETCH_Full = 3,
+}
+
 public class UIComponent : Component
 {
     protected EAnchorLocation _anchor;
@@ -45,6 +53,13 @@ public class UIComponent : Component
     {
         get => (int)_origin;
         set => _origin = (EOriginLocation)value;
+    }
+
+    protected EStretchType _stretch;
+    public int Stretch
+    {
+        get => (int)_stretch;
+        set => _stretch = (EStretchType)value;
     }
 
     public TransformComponent OwnerTransform {get; protected set;}
@@ -125,6 +140,7 @@ public class UIComponent : Component
 
     public void SetAnchor(EAnchorLocation anchor)
     {
+        SetStretch(_stretch);
         _anchor = anchor;
         if(OwnerTransform == null)
             return;
@@ -239,12 +255,14 @@ public class UIComponent : Component
 
     public void SetOriginAndAnchor(EOriginLocation origin, EAnchorLocation anchor)
     {
+        SetStretch(_stretch);
         _origin = origin;
         SetAnchor(anchor);
     }
 
     public virtual Vector2 GetOrigin()
     {
+        SetStretch(_stretch);
         switch(_origin)
         {
             case EOriginLocation.ORIGIN_TopCenter:
@@ -266,6 +284,36 @@ public class UIComponent : Component
             default:
                 return Vector2.Zero;
         }
+    }
+
+    public void SetStretch(EStretchType type)
+    {
+        _stretch = type;
+
+        if(_stretch == EStretchType.STRETCH_Width)
+        {
+            OwnerTransform.Scale = new Vector2
+            {
+                X = Game.WindowSettings.WindowWidth / this.Width,
+                Y = OwnerTransform.Scale.Y,
+            };
+            return;
+        } else if(_stretch == EStretchType.STRETCH_Height)
+        {
+            OwnerTransform.Scale = new Vector2
+            {
+                X = OwnerTransform.Scale.X,
+                Y = Game.WindowSettings.WindowHeight / this.Height
+            };
+        } else if(_stretch == EStretchType.STRETCH_Full)
+        {
+            OwnerTransform.Scale = new Vector2
+            {
+                X = Game.WindowSettings.WindowWidth / this.Width,
+                Y = Game.WindowSettings.WindowHeight / this.Height
+            };
+        }
+
     }
 
     public UIComponent GetParentUIComp()
@@ -319,4 +367,5 @@ public class UIComponent : Component
 
     public EAnchorLocation GetAnchorLocation() => _anchor;
     public EOriginLocation GetOriginLocation() => _origin;
+    public EStretchType GetStretchType() => _stretch;
 }
