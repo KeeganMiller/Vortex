@@ -39,6 +39,9 @@ public static class VortexSceneReader
 
             for(var i = 0; i < lines.Length; ++i)
             {
+                if(string.IsNullOrEmpty(lines[i]) || string.IsNullOrWhiteSpace(lines[i]) || lines[i] == "")
+                    continue;
+
                 List<string> relatedLines = new List<string>();                 // Pre-define related lines list
                 var dataType = GetDataType(lines[i]);                   // determine what data type we are creating
                 List<SceneFileDataContainer> properties = new List<SceneFileDataContainer>();                   // Define a list of properties
@@ -95,6 +98,9 @@ public static class VortexSceneReader
         relatedLines.Add(lines[currentIndex]);
         for(var i = currentIndex + 1; i < lines.Length; ++i)
         {
+            if(string.IsNullOrEmpty(lines[i]) || string.IsNullOrWhiteSpace(lines[i]) || lines[i] == "")
+                continue;
+            
             var ident = lines[i][0].ToString();
             var curChar = GetCurrentDataChar(type).ToString();
             var nextChar = GetNextDataChar(type).ToString();
