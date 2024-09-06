@@ -79,6 +79,8 @@ public class ImageComponent : UIComponent
                 SetActiveImage(NormalImage);
         };
 
+
+        OwnerTransform.ScaleUpdateEvent += UpdateImageSize;
         SetActiveImage(NormalImage);
 
         // Enable the cursor properties
@@ -118,7 +120,7 @@ public class ImageComponent : UIComponent
         {
             var source = new Rectangle(0.0f, 0.0f, ActiveImage.Width, ActiveImage.Height);              // Create the source rect
             var dest = new Rectangle(Owner.Transform.Position, new Vector2(Width, Height));                 // Create the destination rect
-            // Draw the texture
+            // Draw Texture
             Raylib.DrawTexturePro(ActiveImage, source, dest, ImageRotationOrigin, Owner.Transform.Rotation, Tint);
         }
     }
