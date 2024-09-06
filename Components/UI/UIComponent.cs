@@ -38,8 +38,19 @@ public class UIComponent : Component
     public EOriginLocation Origin { get; protected set; }
     public TransformComponent OwnerTransform {get; protected set;}
 
-    public float Width;
-    public float Height;
+    private float _width;
+    private float _height;
+
+    public float Width 
+    {
+        get => _width;
+        set => _width = value;
+    }
+    public float Height
+    {
+        get => _height;
+        set => _height = value;
+    }
     public int ZIndex = 0;
     protected Vector2 _offset = Vector2.Zero;
     public Vector2 Offset
@@ -53,7 +64,15 @@ public class UIComponent : Component
         }
     }
 
-    public bool DrawDebugRect = false;                      // Flag if to draw a debug to show bounds
+    private bool _drawDebugRect = false;
+    public bool DrawDebugRect 
+    {
+        get => _drawDebugRect;
+        set 
+        {
+            _drawDebugRect = value;
+        }
+    }
 
 
     public bool IsMouseOver { get; private set; }
