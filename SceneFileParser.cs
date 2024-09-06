@@ -254,7 +254,21 @@ public static class SceneFileParser
                 if(classType == null)
                 {
                     filteredClassName = className.Replace("@", "");
-                    classType = Type.GetType(Game.DefaultNamespace + "." + filteredClassName);
+                    var gameAssembly = AppDomain.CurrentDomain.GetAssemblies()
+                        .FirstOrDefault(assembly => assembly.GetName().Name == Game.DefaultNamespace);
+
+                    if(gameAssembly == null)
+                    {
+                        try 
+                        {
+                            gameAssembly = Assembly.Load(Game.DefaultNamespace);
+                        } catch(Exception ex)
+                        {
+                            Debug.Print($"SceneFileParser::CreateInstance -> Failed to load {Game.DefaultNamespace} assembly for component {filteredClassName}", EPrintMessageType.PRINT_Error);
+                            return null;
+                        }
+                    }
+                    classType = gameAssembly.GetType(Game.DefaultNamespace + "." + filteredClassName);
                     if(classType == null)
                     {
                         Debug.Print($"SceneFileParser::CreateInstance -> Unable to create component: {filteredClassName}", EPrintMessageType.PRINT_Error);

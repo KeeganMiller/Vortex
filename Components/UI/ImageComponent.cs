@@ -100,14 +100,25 @@ public class ImageComponent : UIComponent
         }
     }
 
+    /// <summary>
+    /// Handles setting the size of the image
+    /// </summary>
+    private void UpdateImageSize()
+    {
+        this.Width = ActiveImage.Width * OwnerTransform.Scale.X;
+        this.Height = ActiveImage.Height * OwnerTransform.Scale.Y;
+    }
+
     public override void Draw()
     {
         base.Draw();
 
+        // Make sure the image is valid
         if(ActiveImage.Id > 0)
         {
-            var source = new Rectangle(0.0f, 0.0f, ActiveImage.Width, ActiveImage.Height);
-            var dest = new Rectangle(Owner.Transform.Position, new Vector2(Width, Height));
+            var source = new Rectangle(0.0f, 0.0f, ActiveImage.Width, ActiveImage.Height);              // Create the source rect
+            var dest = new Rectangle(Owner.Transform.Position, new Vector2(Width, Height));                 // Create the destination rect
+            // Draw the texture
             Raylib.DrawTexturePro(ActiveImage, source, dest, ImageRotationOrigin, Owner.Transform.Rotation, Tint);
         }
     }
@@ -115,7 +126,5 @@ public class ImageComponent : UIComponent
     private void SetActiveImage(Texture2D image)
     {
         ActiveImage = image;
-        this.Width = image.Width * OwnerTransform.Scale.X;
-        this.Height = image.Height * OwnerTransform.Scale.Y;
     }
 }
