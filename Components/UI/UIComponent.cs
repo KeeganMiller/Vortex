@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Numerics;
+using Microsoft.VisualBasic;
 using Raylib_cs;
 
 namespace Vortex;
@@ -324,9 +325,14 @@ public class UIComponent : Component
     public void DetectMouseEnterAndExit()
     {
         var mousePos = Input.GetMousePosition(false);
-        if(mousePos.X >= (OwnerTransform.Position.X - GetOrigin().X) && mousePos.X < ((OwnerTransform.Position.X - GetOrigin().X) + this.Width))
+        var compLeft = OwnerTransform.Position.X;
+        var compRight = compLeft + this.Width;
+        var compTop = OwnerTransform.Position.Y;
+        var compBottom = compTop + this.Height;
+
+        if(mousePos.X >= compLeft && mousePos.X < compRight)
         {
-            if(mousePos.Y >= (OwnerTransform.Position.Y - GetOrigin().Y) && mousePos.Y < ((OwnerTransform.Position.Y - GetOrigin().Y) + this.Height))
+            if(mousePos.Y >= compTop && mousePos.Y < compBottom)
             {
                 if(!IsMouseOver)
                 {
