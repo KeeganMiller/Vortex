@@ -97,6 +97,11 @@ public static class Game
         {
             SceneManager.Update();
 
+            if(Raylib.IsWindowResized())
+            {
+                WindowSettings.ResizeWindow(Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
+            }
+
             Raylib.BeginDrawing();
             Raylib.ClearBackground(BackgroundColor);
 
@@ -135,9 +140,29 @@ public static class Game
 
 public class WindowProperties
 {
-    [JsonProperty] public int WindowWidth;
-    [JsonProperty] public int WindowHeight;
+    private int _windowWidth;
+    private int _windowHeight;
+    [JsonProperty] public int WindowWidth
+    {
+        get => _windowWidth;
+        set => _windowWidth = value;
+    }
+
+    [JsonProperty] public int WindowHeight
+    {
+        get => _windowHeight;
+        set => _windowHeight = value;
+    }
     [JsonProperty] public string WindowTitle;
+
+    public System.Action<int, int> WindowResizeEvent;
+
+    public void ResizeWindow(int width, int height)
+    {
+        _windowWidth = width;
+        _windowHeight = height;
+        WindowResizeEvent?.Invoke(width, height);
+    }
 }
 
 public class RunSettingsJson

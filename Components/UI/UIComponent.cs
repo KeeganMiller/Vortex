@@ -101,6 +101,13 @@ public class UIComponent : Component
 
         SetAnchor(_anchor);
         SetOrigin(_origin);
+
+        // Subscribe to the event when the window is resized
+        Game.WindowSettings.WindowResizeEvent += (int width, int height) => 
+        {
+            SetAnchor(_anchor);
+            SetOrigin(_origin);
+        };
     }
 
     public override void Update(float dt)
