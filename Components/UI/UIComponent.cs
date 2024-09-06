@@ -6,36 +6,47 @@ namespace Vortex;
 
 public enum EAnchorLocation
 {
-    ANCHOR_None,
-    ANCHOR_TopLeft,
-    ANCHOR_TopCenter,
-    ANCHOR_TopRight,
-    ANCHOR_MiddleLeft,
-    ANCHOR_MiddleCenter,
-    ANCHOR_MiddleRight,
-    ANCHOR_BottomLeft,
-    ANCHOR_BottomCenter,
-    ANCHOR_BottomRight
+    ANCHOR_None = 0,
+    ANCHOR_TopLeft = 1,
+    ANCHOR_TopCenter = 2,
+    ANCHOR_TopRight = 3,
+    ANCHOR_MiddleLeft = 4,
+    ANCHOR_MiddleCenter = 5,
+    ANCHOR_MiddleRight = 6,
+    ANCHOR_BottomLeft = 7,
+    ANCHOR_BottomCenter = 8,
+    ANCHOR_BottomRight = 9
 }
 
 public enum EOriginLocation
 {
-    ORIGIN_None,
-    ORIGIN_TopLeft,
-    ORIGIN_TopCenter,
-    ORIGIN_TopRight,
-    ORIGIN_MiddleLeft,
-    ORIGIN_MiddleCenter,
-    ORIGIN_MiddleRight,
-    ORIGIN_BottomLeft,
-    ORIGIN_BottomCenter,
-    ORIGIN_BottomRight
+    ORIGIN_None = 0,
+    ORIGIN_TopLeft = 1,
+    ORIGIN_TopCenter = 2,
+    ORIGIN_TopRight = 3,
+    ORIGIN_MiddleLeft = 4,
+    ORIGIN_MiddleCenter = 5,
+    ORIGIN_MiddleRight = 6,
+    ORIGIN_BottomLeft = 7,
+    ORIGIN_BottomCenter = 8,
+    ORIGIN_BottomRight = 9
 }
 
 public class UIComponent : Component
 {
-    public EAnchorLocation Anchor { get; protected set; }
-    public EOriginLocation Origin { get; protected set; }
+    protected EAnchorLocation _anchor;
+    public int Anchor 
+    {
+        get => (int)_anchor;
+        set => _anchor = (EAnchorLocation)value;
+    }
+    protected EOriginLocation _origin;
+    public int Origin
+    {
+        get => (int)_origin;
+        set => _origin = (EOriginLocation)value;
+    }
+
     public TransformComponent OwnerTransform {get; protected set;}
 
     private float _width;
@@ -59,8 +70,8 @@ public class UIComponent : Component
         set 
         {
             _offset = value;
-            SetAnchor(Anchor);
-            SetOrigin(Origin);
+            SetAnchor(_anchor);
+            SetOrigin(_origin);
         }
     }
 
@@ -88,8 +99,8 @@ public class UIComponent : Component
         if(Owner != null)
             Owner.IsCameraRelated = false;
 
-        SetAnchor(Anchor);
-        SetOrigin(Origin);
+        SetAnchor(_anchor);
+        SetOrigin(_origin);
     }
 
     public override void Update(float dt)
@@ -107,12 +118,12 @@ public class UIComponent : Component
 
     public void SetAnchor(EAnchorLocation anchor)
     {
-        Anchor = anchor;
+        _anchor = anchor;
         if(OwnerTransform == null)
             return;
 
         
-        switch(Anchor)
+        switch(_anchor)
         {
             case EAnchorLocation.ANCHOR_TopLeft:
                 OwnerTransform.Position = GetOrigin() + _offset;
@@ -215,19 +226,19 @@ public class UIComponent : Component
 
     public void SetOrigin(EOriginLocation origin)
     {
-        Origin = origin;
-        SetAnchor(Anchor);
+        _origin = origin;
+        SetAnchor(_anchor);
     }
 
     public void SetOriginAndAnchor(EOriginLocation origin, EAnchorLocation anchor)
     {
-        Origin = origin;
+        _origin = origin;
         SetAnchor(anchor);
     }
 
     public virtual Vector2 GetOrigin()
     {
-        switch(Origin)
+        switch(_origin)
         {
             case EOriginLocation.ORIGIN_TopCenter:
                 return new Vector2(Width / 2, 0);
