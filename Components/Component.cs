@@ -5,7 +5,7 @@ namespace Vortex;
 
 public class Component
 {
-    public string ComponentId { get; } = Guid.NewGuid().ToString();
+    public string ComponentId { get; set; }
     public string Name;
     public Element Owner { get; private set; }
 
