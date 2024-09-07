@@ -415,7 +415,7 @@ public static class VortexSceneReader
             return;
 
         var type = instance.GetType();
-        PropertyInfo propInfo = type.GetProperty(propName);
+        PropertyInfo propInfo = type.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
         if(propInfo != null && propInfo.CanWrite)
         {
