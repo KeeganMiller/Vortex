@@ -6,7 +6,7 @@ namespace Vortex;
 
 public class RawButton : ImageComponent
 {
-    public Color RawColor { get; set; } = Color.White;
+    public Color RawColor { get; set; } = Color.RayWhite;
     private float _cornerRoundness = 0f;
     public float CornerRoundness
     {
@@ -18,9 +18,12 @@ public class RawButton : ImageComponent
         }
     }
 
+    private TextComponent? _buttonTextComp;                      // Store reference to the buttons text component
+
     public override void Start()
     {
         IsClickable = true;
+        UpdateSize();
     }
 
     public override void Draw()
@@ -36,5 +39,15 @@ public class RawButton : ImageComponent
                 Raylib.DrawRectangleRec(new Rectangle(OwnerTransform.Position, Width * OwnerTransform.Scale.X, Height * OwnerTransform.Scale.Y), RawColor);
             }
         }
+    }
+
+    public void UpdateSize()
+    {
+        if(_buttonTextComp != null)
+        {
+            this.Width = _buttonTextComp.Width;
+            this.Height = _buttonTextComp.Height;
+        }
+        SetOriginAndAnchor(_origin, _anchor);
     }
 }
