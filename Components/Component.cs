@@ -61,4 +61,53 @@ public class Component
     {
 
     }
+
+    public static Component? FindComponentById(string componentId)
+    {
+        var resources = SceneManager.GetAllResourceManagers();
+        foreach(var resource in resources)
+        {
+            foreach(var element in resource.GetAllElements())
+            {
+                var comp = element.GetComponent(componentId);
+                if(comp != null)
+                    return comp;
+            }
+        }
+
+        return null;
+    }
+
+    public static T? FindComponentOfType<T>() where T : Component
+    {
+        var resources = SceneManager.GetAllResourceManagers();
+        foreach(var resource in resources)
+        {
+            foreach(var element in resource.GetAllElements())
+            {
+                var comp = element.GetComponent<T>();
+                if(comp != null)
+                    return comp;
+            }
+        }
+
+        return null;
+    }
+
+    public static List<T> FindAllComponentsOfType<T>() where T : Component
+    {
+        var comps = new List<T>();
+        var resources = SceneManager.GetAllResourceManagers();
+        foreach(var resource in resources)
+        {
+            foreach(var element in resource.GetAllElements())
+            {
+                var comp = element.GetComponent<T>();
+                if(comp != null)
+                    comps.Add(comp);
+            }
+        }
+
+        return comps;
+    }
 }
