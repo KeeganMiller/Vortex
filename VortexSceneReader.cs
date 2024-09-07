@@ -190,6 +190,8 @@ public static class VortexSceneReader
                 return typeof(bool);
             case 'C':
                 return typeof(Color);
+            case 'L':
+                return typeof(List<>);
             default:
                 Debug.Print($"VortexSceneReader::GetPropertyType -> Failed to get type of property at identifier: {data.ToString()}", EPrintMessageType.PRINT_Error);
                 return null;
@@ -349,6 +351,11 @@ public static class VortexSceneReader
             case 'C':
                 var cValue = setValue.Replace("C(", "");
                 return GetColor(cValue);
+            case 'E':
+                var eValue = setValue.Replace("E(", "");
+                return eValue;
+
+                
         }
 
         return setValue;

@@ -5,7 +5,7 @@ namespace Vortex;
 
 public class Element
 {
-    public string ObjectId { get; } = Guid.NewGuid().ToString();                    // Reference to the unique id
+    public string ObjectId { get; set; }
     public string Name;                         // Reference to the name of the element
     public ResourceManager Owner { get; private set; }                  // reference to the resource manager that owns this
     public List<string> Tags = new List<string>();                          // List of all the tags assigned to this object
@@ -37,6 +37,7 @@ public class Element
 
     // == Parenting == //
     public Element Parent { get; protected set; }                           // Reference to the parent of this element
+    public string ElementParentId { get; set; }
     protected List<Element> _children = new List<Element>();                    // List of all the children for this element
 
     // == Components == //
@@ -69,6 +70,12 @@ public class Element
     /// </summary>
     public virtual void Start()
     {
+        if(!string.IsNullOrEmpty(ElementParentId))
+        {
+            var parent = Owner.GetElementById(ElementParentId);
+            if(parent != null)
+                SetParent(parent);
+        }
         HasStarted = true;
     }
 

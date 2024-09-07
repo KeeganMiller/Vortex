@@ -60,6 +60,22 @@ public class ResourceManager
     }
 
     /// <summary>
+    /// Finds the element in this manager with the id passed in
+    /// </summary>
+    /// <param name="id">Id of the element to find</param>
+    /// <returns>Reference to that element</returns>
+    public Element? GetElementById(string id)
+    {
+        foreach(var element in _elements)
+        {
+            if(element.ObjectId == id)
+                return element;
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// Gets all of the sprites that are related to the camera
     /// </summary>
     /// <returns>List of camera relative sprites</returns>
