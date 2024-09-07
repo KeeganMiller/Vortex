@@ -10,10 +10,10 @@ public class ImageComponent : UIComponent
     public Texture2D NormalImage;
     public Texture2D HoverImage;
 
-    private int _normalImageId = -1;
-    private int _hoverImageId = -1;
+    private string _normalImageId = "";
+    private string _hoverImageId = "";
 
-    public int NormalImageId 
+    public string NormalImageId 
     {
         get => _normalImageId;
         set 
@@ -27,9 +27,9 @@ public class ImageComponent : UIComponent
         }
     }
 
-    public int HoverImageId
+    public string HoverImageId
     {
-        get => _normalImageId;
+        get => _hoverImageId;
         set 
         {
             var texture = SceneManager.GlobalResources.GetAssetById<SpriteData>(value);
@@ -52,14 +52,14 @@ public class ImageComponent : UIComponent
     public override void Initialize(Element owner)
     {
         base.Initialize(owner);
-        if(NormalImageId > -1)
+        if(!string.IsNullOrEmpty(_normalImageId))
         {
-            var asset = Owner.Owner.GetAssetById<SpriteData>(NormalImageId);
+            var asset = Owner.Owner.GetAssetById<SpriteData>(_normalImageId);
             if(asset != null && asset.IsValid)
                 NormalImage = asset.Texture;
         }
 
-        if(HoverImageId > -1)
+        if(!string.IsNullOrEmpty(_hoverImageId))
         {
             var asset = Owner.Owner.GetAssetById<SpriteData>(HoverImageId);
             if(asset != null && asset.IsValid)
