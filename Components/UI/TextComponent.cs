@@ -73,19 +73,17 @@ public class TextComponent : UIComponent
 
     public override void Draw()
     {
+
         if(FontShader.Id > 0)
-        {
-            if(FontShader.Id > 0)
-                Raylib.BeginShaderMode(FontShader);
+            Raylib.BeginShaderMode(FontShader);
 
+        if(NormalFont.Texture.Id > 0)
             Raylib.DrawTextEx(NormalFont, Text, OwnerTransform.Position, FontSize, 1, FontColor);
+        else
+            Raylib.DrawTextEx(new Font(), Text, OwnerTransform.Position, FontSize, 1, FontColor);
 
-            if(FontShader.Id > 0)
-                Raylib.EndShaderMode();
-        } else 
-        {
-            Raylib.DrawTextEx(NormalFont, Text, OwnerTransform.Position, FontSize, 1, FontColor);
-        }
+        if(FontShader.Id > 0)
+            Raylib.EndShaderMode();
     }
 
     /// <summary>
