@@ -33,7 +33,7 @@ public abstract class AssetData
         AssetId = id;
     }
 
-    public abstract void Load();
+    public abstract bool Load();
     public abstract void Unload();
 }
 
@@ -56,7 +56,7 @@ public class SpriteData : AssetData
     public SpriteData(string name, string id, string path, EAssetType assetType) : base(name, id, path, assetType)
     {}
 
-    public override void Load()
+    public override bool Load()
     {
         if(File.Exists(AssetPath))
         {
@@ -64,14 +64,17 @@ public class SpriteData : AssetData
             if(tex.Id > 0)
             {
                 Texture = tex;
+                return true;
             } else
             {
                 Debug.Print($"Failed to load asset: {this.AssetName} at path: {this.AssetPath}", EPrintMessageType.PRINT_Error);
+                return false;
             }
         }
         else
         {
             Debug.Print($"Failed to find file at location: {this.AssetPath}", EPrintMessageType.PRINT_Error);
+            return false;
         }
     }
 
@@ -94,7 +97,7 @@ public class FontAsset : AssetData
     public FontAsset(string name, string id, string path, EAssetType assetType) : base(name, id, path, assetType)
     {}
 
-    public override void Load()
+    public override bool Load()
     {
         unsafe 
         { 
@@ -112,6 +115,8 @@ public class FontAsset : AssetData
             Raylib.UnloadImage(atlas);
             Raylib.SetTextureFilter(fontDefault.Texture, TextureFilter.Bilinear);
             LoadedFont = fontDefault;
+            return true;
+            
         }
     }
 
@@ -133,9 +138,13 @@ public class ShaderAsset : AssetData
     public ShaderAsset(string name, string id, string path, EAssetType assetType) : base(name, id, path, assetType)
     {}
 
-    public override void Load()
+    public override bool Load()
     {
         LoadedShader = Raylib.LoadShader(null, AssetPath);
+        if(LoadedShader.Id > 0)
+            return true;
+
+        return false;
     }
 
     public override void Unload()
