@@ -54,7 +54,7 @@ public class TextComponent : UIComponent
         if(!string.IsNullOrEmpty(FontId))
         {
             var fontAsset = SceneManager.GlobalResources.GetAssetById<FontAsset>(FontId);
-            if(fontAsset != null && fontAsset.IsValid)
+            if(fontAsset != null)
                 NormalFont = fontAsset.LoadedFont;
         }
     }
