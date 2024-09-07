@@ -45,10 +45,6 @@ public class ImageComponent : UIComponent
     public Color Tint = Color.White;
     public Vector2 ImageRotationOrigin = Vector2.Zero;
 
-    public bool IsClickable = false;
-
-    public Action OnClick;
-
     public override void Initialize(Element owner)
     {
         base.Initialize(owner);
@@ -84,17 +80,24 @@ public class ImageComponent : UIComponent
         if(NormalImage.Id > 0)
             SetActiveImage(NormalImage);
 
-        // Enable the cursor properties
-        if(IsClickable)
+        OnMouseEnter += () => 
         {
-            OnMouseEnter += () => { Raylib.SetMouseCursor(MouseCursor.PointingHand); };
-            OnMouseExit += () => { Raylib.SetMouseCursor(MouseCursor.Default); };
-        }
+            if(IsClickable)
+                Raylib.SetMouseCursor(MouseCursor.PointingHand);
+        };
+
+        OnMouseExit += () => 
+        {
+            if(IsClickable)
+                Raylib.SetMouseCursor(MouseCursor.Default);
+        };
+
     }
 
     public override void Update(float dt)
     {
         base.Update(dt);
+
 
         if(IsClickable && IsMouseOver)
         {
