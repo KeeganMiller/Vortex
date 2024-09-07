@@ -50,9 +50,15 @@ public static class VortexSceneReader
 
                 if(instance is AssetData instanceAsset)
                 {
-                    Debug.Print($"SceneFileParser::ParseFile -> Asset Loaded: {instanceAsset.AssetName} #{instanceAsset.AssetId}", EPrintMessageType.PRINT_Custom, ConsoleColor.DarkGreen);
-                    SceneManager.GlobalResources.AddLoadedAsset(instanceAsset);
-                    instanceAsset.Load();
+                    if(instanceAsset.Load())
+                    {
+                        SceneManager.GlobalResources.AddLoadedAsset(instanceAsset);
+                        Debug.Print($"SceneFileParser::ParseFile -> Asset Loaded: {instanceAsset.AssetName} #{instanceAsset.AssetId}", EPrintMessageType.PRINT_Custom, ConsoleColor.DarkGreen);
+                    } else 
+                    {
+                        Debug.Print($"SceneFileParse::ParseFile -> Failed to load asset: {instanceAsset.AssetName}", EPrintMessageType.PRINT_Error);
+                    }
+
                     i += relatedLines.Count - 1;
                     continue;
                 }
@@ -132,9 +138,10 @@ public static class VortexSceneReader
                 continue;
             } else 
             {
-                var splitData = line.Replace(nextDataLine.ToString(), "").Split(":");              // Remove the identifier
+                var lineStrWithoutIdentifier = line.Substring(1);
 
                 // Get the type of value this is
+                var splitData = lineStrWithoutIdentifier.Split(":");
                 Type type =  GetPropertyType(splitData[1][0]);
 
                 if(type != null)
@@ -144,7 +151,7 @@ public static class VortexSceneReader
                     // Create the property
                     properties.Add(new SceneFileDataContainer
                     {
-                        Name = splitData[0],
+                        Name = splitData[0].ToString(),
                         type = type,
                         Value = value
                     });
@@ -263,19 +270,22 @@ public static class VortexSceneReader
                 switch(type)
                 {
                     case EAssetType.ASSET_Sprite:
-                        return new SpriteData(className, (int)properties[0].Value, $"{Game.GetAssetPath()}{(string)properties[1].Value}", type);
+                        return new SpriteData(className, (string)properties[0].Value, $"{Game.GetAssetPath()}{(string)properties[1].Value}", type);
                     case EAssetType.ASSET_Font:
-                        return new FontAsset(className, (int)properties[0].Value, $"{Game.GetAssetPath()}{(string)properties[1].Value}", type);
+                        return new FontAsset(className, (string)properties[0].Value, $"{Game.GetAssetPath()}{(string)properties[1].Value}", type);
                     case EAssetType.ASSET_Shader:
-                        return new ShaderAsset(className, (int)properties[0].Value, $"{Game.GetAssetPath()}{(string)properties[1].Value}", type);
+                        return new ShaderAsset(className, (string)properties[0].Value, $"{Game.GetAssetPath()}{(string)properties[1].Value}", type);
                 }
                 break;
             case EDataType.SCENE_PROP_Element:
-                return new Element(objectName);
+                var element = new Element(objectName);
+                foreach(var prop in properties)
+                    SetPropertyValue(element, prop.Name, prop.Value);
+                return element; 
             case EDataType.SCENE_PROP_Component:
                 var filteredClassName = className.Replace("@", "");
                 filteredClassName = "Vortex." + filteredClassName;
-                Type classType = Type.GetType(filteredClassName);
+                var classType = Type.GetType(filteredClassName);
                 if(classType == null)
                 {
                     filteredClassName = className.Replace("@", "");
