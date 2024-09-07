@@ -79,9 +79,10 @@ public class ImageComponent : UIComponent
                 SetActiveImage(NormalImage);
         };
 
-
         OwnerTransform.ScaleUpdateEvent += UpdateImageSize;
-        SetActiveImage(NormalImage);
+
+        if(NormalImage.Id > 0)
+            SetActiveImage(NormalImage);
 
         // Enable the cursor properties
         if(IsClickable)
@@ -107,8 +108,11 @@ public class ImageComponent : UIComponent
     /// </summary>
     private void UpdateImageSize()
     {
-        this.Width = ActiveImage.Width * OwnerTransform.Scale.X;
-        this.Height = ActiveImage.Height * OwnerTransform.Scale.Y;
+        if(ActiveImage.Id > 0)
+        {
+            this.Width = ActiveImage.Width * OwnerTransform.Scale.X;
+            this.Height = ActiveImage.Height * OwnerTransform.Scale.Y;
+        }
     }
 
     public override void Draw()
