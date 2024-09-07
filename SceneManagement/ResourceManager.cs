@@ -233,7 +233,7 @@ public class ResourceManager
         return null;
     }
 
-    public T GetAssetById<T>(int id) where T : AssetData
+    public T GetAssetById<T>(string id) where T : AssetData
     {
         foreach(var asset in _assets)
         {

@@ -16,7 +16,7 @@ public abstract class AssetData
     public string AssetName;
     public string AssetPath;
     public EAssetType AssetType;
-    public int AssetId;
+    public string AssetId;
 
     public AssetData(AssetDataJson data)
     {
@@ -25,7 +25,7 @@ public abstract class AssetData
         this.AssetType = (EAssetType)data.AssetType;
     }
 
-    public AssetData(string name, int id, string path, EAssetType assetType)
+    public AssetData(string name, string id, string path, EAssetType assetType)
     {
         AssetName = name;
         AssetPath = path;
@@ -53,7 +53,7 @@ public class SpriteData : AssetData
     {
     }
 
-    public SpriteData(string name, int id, string path, EAssetType assetType) : base(name, id, path, assetType)
+    public SpriteData(string name, string id, string path, EAssetType assetType) : base(name, id, path, assetType)
     {}
 
     public override void Load()
@@ -91,7 +91,7 @@ public class FontAsset : AssetData
     {
     }
 
-    public FontAsset(string name, int id, string path, EAssetType assetType) : base(name, id, path, assetType)
+    public FontAsset(string name, string id, string path, EAssetType assetType) : base(name, id, path, assetType)
     {}
 
     public override void Load()
@@ -130,7 +130,7 @@ public class ShaderAsset : AssetData
     {
     }
 
-    public ShaderAsset(string name, int id, string path, EAssetType assetType) : base(name, id, path, assetType)
+    public ShaderAsset(string name, string id, string path, EAssetType assetType) : base(name, id, path, assetType)
     {}
 
     public override void Load()
