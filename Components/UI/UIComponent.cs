@@ -93,7 +93,10 @@ public class UIComponent : Component
     }
 
 
-    public bool IsMouseOver { get; private set; }
+    public bool IsMouseOver { get; private set; } = false;
+    public bool IsClickable = false;                    // Flag if the component is clickable
+
+    public Action OnClick;
     public Action OnMouseEnter;
     public Action OnMouseExit;
 
@@ -357,6 +360,10 @@ public class UIComponent : Component
 
     public void DetectMouseEnterAndExit()
     {
+        if(Input.IsMouseButtonDown(EMouseButton.MOUSE_Left))
+            if(Owner.Name == "File")
+                Debug.Print("Gello, World", EPrintMessageType.PRINT_Log);
+
         var mousePos = Input.GetMousePosition(false);
         var compLeft = OwnerTransform.Position.X;
         var compRight = compLeft + this.Width;
