@@ -8,6 +8,8 @@ public class TextComponent : UIComponent
 {
     public Font NormalFont;
     public Shader FontShader;
+    public string FontId { get; set; } = "";
+    public string ShaderId { get; set; } = "";
 
     private int _fontSize = 16;
     public int FontSize
@@ -37,6 +39,26 @@ public class TextComponent : UIComponent
     }
     public Color FontColor = Color.Black;
 
+    public override void Initialize(Element owner)
+    {
+        base.Initialize(owner);
+        // Get and assign the shader
+        if(!string.IsNullOrEmpty(ShaderId))
+        {
+            var shaderAsset = SceneManager.GlobalResources.GetAssetById<ShaderAsset>(ShaderId);
+            if(shaderAsset != null && shaderAsset.IsValid)
+                FontShader = shaderAsset.LoadedShader;
+        }
+
+        // Get and assign the font
+        if(!string.IsNullOrEmpty(FontId))
+        {
+            var fontAsset = SceneManager.GlobalResources.GetAssetById<FontAsset>(FontId);
+            if(fontAsset != null && fontAsset.IsValid)
+                NormalFont = fontAsset.LoadedFont;
+        }
+    }
+
     public override void Start()
     {
         base.Start();
@@ -51,9 +73,13 @@ public class TextComponent : UIComponent
     {
         if(FontShader.Id > 0)
         {
-            Raylib.BeginShaderMode(FontShader);
+            if(FontShader.Id > 0)
+                Raylib.BeginShaderMode(FontShader);
+
             Raylib.DrawTextEx(NormalFont, Text, OwnerTransform.Position, FontSize, 1, FontColor);
-            Raylib.EndShaderMode();
+
+            if(FontShader.Id > 0)
+                Raylib.EndShaderMode();
         } else 
         {
             Raylib.DrawTextEx(NormalFont, Text, OwnerTransform.Position, FontSize, 1, FontColor);
