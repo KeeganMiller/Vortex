@@ -6,7 +6,7 @@ namespace Vortex;
 
 public class HorizontalBox : UIComponent
 {
-    public float Spacing = 1f;                          // How much space is placed between the elements
+    public float Spacing { get; set; } = 1f;                          // How much space is placed between the elements
 
     protected float _prevWidth;
     protected float _prevHeight;
@@ -25,7 +25,7 @@ public class HorizontalBox : UIComponent
             // Check the ui component is valid
             if(uiComp != null)
             {
-                if(uiComp.Width > width)
+                if(uiComp.Height > height)
                     height = uiComp.Height;
 
                 width += uiComp.Width + Spacing;
