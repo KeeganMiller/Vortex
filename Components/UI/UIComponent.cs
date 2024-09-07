@@ -65,19 +65,8 @@ public class UIComponent : Component
 
     public TransformComponent OwnerTransform {get; protected set;}
 
-    private float _width;
-    private float _height;
-
-    public float Width 
-    {
-        get => _width;
-        set => _width = value;
-    }
-    public float Height
-    {
-        get => _height;
-        set => _height = value;
-    }
+    public float Width {get; set;}
+    public float Height { get; set; }
     public int ZIndex = 0;
     protected Vector2 _offset = Vector2.Zero;
     public Vector2 Offset

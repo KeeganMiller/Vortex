@@ -199,20 +199,17 @@ public static class VortexSceneReader
 
     private static EDataType GetDataType(string line)
     {
+        if(line[0] == '-')
+            return EDataType.SCENE_PROP_ComponentValue;
+
         switch(line[0])
         {
             case 'E':
                 return EDataType.SCENE_PROP_Element;
             case 'A':
                 return EDataType.SCENE_PROP_Asset;
-            case '&':
-                return EDataType.SCENE_PROP_AssetValue;
             case '@':
                 return EDataType.SCENE_PROP_Component;
-            case '-':
-                return EDataType.SCENE_PROP_ComponentValue;
-            case '!':
-                return EDataType.SCENE_PROP_ElementValue;
 
         }
 
@@ -224,9 +221,9 @@ public static class VortexSceneReader
         switch(dataType)
         {
             case EDataType.SCENE_PROP_Asset:
-                return '&';
+                return '-';
             case EDataType.SCENE_PROP_Element:
-                return '!';
+                return '-';
             case EDataType.SCENE_PROP_Component:
                 return '-';
         }

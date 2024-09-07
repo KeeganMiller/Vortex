@@ -128,5 +128,6 @@ public class ImageComponent : UIComponent
     private void SetActiveImage(Texture2D image)
     {
         ActiveImage = image;
+        UpdateImageSize();
     }
 }
