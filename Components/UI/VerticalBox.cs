@@ -7,10 +7,38 @@ namespace Vortex;
 
 public class VerticalBox : UIComponent
 {
-    public float Spacing = 1f;                          // How much space is placed between the elements
+    public UIComponent? OwningUI { get; private set; }
+    public string? OwningUiCompId { get; set; }
 
     protected float _prevWidth;
     protected float _prevHeight;
+
+    public EContentAlignmentHorizontal HorizontalAlignment;
+    public EContentAlignmentVertical VerticalAlignment;
+
+    public int HorizontalAlignmentValue
+    {
+        get => (int)HorizontalAlignment;
+        set => HorizontalAlignment = (EContentAlignmentHorizontal)value;
+    }
+
+    public int VerticalAlignmentValue
+    {
+        get => (int)VerticalAlignment;
+        set => VerticalAlignment = (EContentAlignmentVertical)value;
+    }
+
+    public float VerticalAlignmentOffset { get; set; }
+    public float HorizontalAlignmentOffset { get; set; }
+
+    public override void Initialize(Element owner)
+    {
+        base.Initialize(owner);
+        if(!string.IsNullOrEmpty(OwningUiCompId))
+        {
+            OwningUI = (UIComponent)Owner.GetComponent(OwningUiCompId);
+        }
+    }
 
     public override void Update(float dt)
     {
@@ -29,7 +57,6 @@ public class VerticalBox : UIComponent
                 if(uiComp.Width > width)
                     width = uiComp.Width;
 
-                height += uiComp.Height + Spacing;
 
                 if(prevComp != null)
                 {
@@ -38,8 +65,13 @@ public class VerticalBox : UIComponent
                     uiComp.Offset = new Vector2
                     {
                         X = 0,
-                        Y = (prevComp.Height + Spacing) * uiCompCount
+                        Y = height
                     };
+                    // Apply the positinal offset
+                    if(OwningUI != null)
+                        uiComp.Offset += GetAlignmentOffset(OwningUI);
+                    
+                    uiComp.Offset += new Vector2(PaddingLeft, PaddingTop);
                     uiComp.SetOriginAndAnchor(uiComp.GetOriginLocation(), uiComp.GetAnchorLocation());
 
                 } else 
@@ -50,9 +82,14 @@ public class VerticalBox : UIComponent
                         X = 0,
                         Y = 0
                     };
+
+                    if(OwningUI != null)
+                        uiComp.Offset += GetAlignmentOffset(OwningUI);
+
+                    uiComp.Offset += new Vector2(PaddingLeft, PaddingTop);
                     uiComp.SetOriginAndAnchor(uiComp.GetOriginLocation(), uiComp.GetAnchorLocation());
                 }
-
+                height += uiComp.Height + PaddingTop;
                 prevComp = uiComp;
                 uiCompCount += 1;
             }
@@ -60,19 +97,61 @@ public class VerticalBox : UIComponent
 
         if(width != _prevWidth)
         {
-            Width = width;
-            _prevWidth = width;
+            this.Width = width;
             SetOrigin(_origin);
             SetAnchor(_anchor);
         }
 
         if(height != _prevHeight)
         {
-            Height = height;
-            _prevHeight = height;
+            this.Height = height;
             SetOrigin(_origin);
             SetAnchor(_anchor);
         }
+
+        _prevHeight = height;
+        _prevWidth = width;
+    }
+
+    /// <summary>
+    /// Determines the offset to apply to the offset when positioning
+    /// </summary>
+    /// <param name="alignmentReference"></param>
+    /// <returns></returns>
+    public Vector2 GetAlignmentOffset(UIComponent alignmentReference)
+    {
+        if(alignmentReference == null)
+            return Vector2.Zero;
+    
+        var offset = Vector2.Zero;
+        
+        switch(VerticalAlignment)
+        {
+            case EContentAlignmentVertical.VALIGN_Top:
+                offset = new Vector2(offset.X, OwnerTransform.Position.Y + VerticalAlignmentOffset);
+                break;
+            case EContentAlignmentVertical.VALIGN_Middle:
+                offset = new Vector2(offset.X, OwnerTransform.Position.Y + alignmentReference.Height / 2 + VerticalAlignmentOffset);
+                break;
+            case EContentAlignmentVertical.VALIGN_Bottom:
+                offset = new Vector2(offset.X, OwnerTransform.Position.Y + alignmentReference.Height + VerticalAlignmentOffset);
+                break;
+        }
+
+        switch(HorizontalAlignment)
+        {
+            case EContentAlignmentHorizontal.HALIGN_Left:
+                offset = new Vector2(OwnerTransform.Position.X + HorizontalAlignmentOffset, offset.Y);
+                break;
+            case EContentAlignmentHorizontal.HALIGN_Middle:
+                offset = new Vector2(OwnerTransform.Position.X + alignmentReference.Width / 2 + HorizontalAlignmentOffset, offset.Y);
+                break;
+            case EContentAlignmentHorizontal.HALIGN_Right:
+                offset = new Vector2(OwnerTransform.Position.X + alignmentReference.Width + HorizontalAlignmentOffset, offset.Y);
+                break;
+        }
+
+        return offset;
     }
 
 }
