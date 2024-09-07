@@ -284,26 +284,68 @@ public class UIComponent : Component
 
         if(_stretch == EStretchType.STRETCH_Width)
         {
-            OwnerTransform.Scale = new Vector2
+            if(Owner.Parent == null)
             {
-                X = Game.WindowSettings.WindowWidth / this.Width,
-                Y = OwnerTransform.Scale.Y,
-            };
+                OwnerTransform.Scale = new Vector2
+                {
+                    X = Game.WindowSettings.WindowWidth / this.Width,
+                    Y = OwnerTransform.Scale.Y,
+                };
+            } else 
+            {
+                var uiComp = Owner.Parent.GetComponent<UIComponent>();                  // Get reference to the UI component
+                if(uiComp != null)
+                {
+                    OwnerTransform.Scale = new Vector2
+                    {
+                        X = uiComp.Width / this.Width,
+                        Y = uiComp.Height
+                    };
+                }
+            }
             return;
         } else if(_stretch == EStretchType.STRETCH_Height)
         {
-            OwnerTransform.Scale = new Vector2
+            if(Owner.Parent == null)
             {
-                X = OwnerTransform.Scale.X,
-                Y = Game.WindowSettings.WindowHeight / this.Height
-            };
+                OwnerTransform.Scale = new Vector2
+                {
+                    X = OwnerTransform.Scale.X,
+                    Y = Game.WindowSettings.WindowHeight / this.Height
+                };
+            } else 
+            {
+                var uiComp = Owner.Parent.GetComponent<UIComponent>();
+                if(uiComp != null)
+                {
+                    OwnerTransform.Scale = new Vector2
+                    {
+                        X = uiComp.Width,
+                        Y = uiComp.Height / this.Height
+                    };
+                }
+            }
         } else if(_stretch == EStretchType.STRETCH_Full)
         {
-            OwnerTransform.Scale = new Vector2
+            if(Owner.Parent == null)
             {
-                X = Game.WindowSettings.WindowWidth / this.Width,
-                Y = Game.WindowSettings.WindowHeight / this.Height
-            };
+                OwnerTransform.Scale = new Vector2
+                {
+                    X = Game.WindowSettings.WindowWidth / this.Width,
+                    Y = Game.WindowSettings.WindowHeight / this.Height
+                };
+            } else 
+            {
+                var uiComp = Owner.Parent.GetComponent<UIComponent>();
+                if(uiComp != null)
+                {
+                    OwnerTransform.Scale = new Vector2
+                    {
+                        X = uiComp.Width / this.Width,
+                        Y = uiComp.Height
+                    };
+                }
+            }
         }
 
     }
