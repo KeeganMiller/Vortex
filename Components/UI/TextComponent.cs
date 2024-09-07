@@ -57,6 +57,8 @@ public class TextComponent : UIComponent
             if(fontAsset != null)
                 NormalFont = fontAsset.LoadedFont;
         }
+
+        CalculateTextSize();
     }
 
     public override void Start()
@@ -84,5 +86,16 @@ public class TextComponent : UIComponent
         {
             Raylib.DrawTextEx(NormalFont, Text, OwnerTransform.Position, FontSize, 1, FontColor);
         }
+    }
+
+    /// <summary>
+    /// Manually recalculates the size of the size (width, height)
+    /// </summary>
+    public void CalculateTextSize()
+    {
+        var componentSize = Raylib.MeasureTextEx(NormalFont, _text, FontSize, 1);
+        Width = componentSize.X;
+        Height = componentSize.Y;
+        SetOriginAndAnchor(_origin, _anchor);
     }
 }

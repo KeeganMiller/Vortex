@@ -67,6 +67,8 @@ public class UIComponent : Component
 
     public float Width {get; set;}
     public float Height { get; set; }
+    public float PaddingLeft { get; set; } = 0f;
+    public float PaddingTop { get; set; } = 0f;
     public int ZIndex = 0;
     protected Vector2 _offset = Vector2.Zero;
     public Vector2 Offset

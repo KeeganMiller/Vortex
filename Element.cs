@@ -246,6 +246,20 @@ public class Element
     }
 
     /// <summary>
+    /// Finds and returns the component with specified ID
+    /// </summary>
+    /// <param name="componentId"></param>
+    /// <returns></returns>
+    public Component? GetComponent(string componentId)
+    {
+        foreach(var comp in _components)
+            if(comp.ComponentId == componentId)
+                return comp;
+
+        return null;
+    }
+
+    /// <summary>
     /// Handles updating the component
     /// </summary>
     /// <param name="dt"></param>

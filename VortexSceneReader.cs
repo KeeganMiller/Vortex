@@ -280,8 +280,8 @@ public static class VortexSceneReader
             case EDataType.SCENE_PROP_Element:
                 var element = new Element(objectName);
                 foreach(var prop in properties)
-                    SetPropertyValue(element, prop.Name, prop.Value);
-                return element; 
+                    SetPropertyValue(element, prop.Name, prop.Value); 
+                return element;
             case EDataType.SCENE_PROP_Component:
                 var filteredClassName = className.Replace("@", "");
                 filteredClassName = "Vortex." + filteredClassName;
