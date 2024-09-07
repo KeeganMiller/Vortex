@@ -6,7 +6,7 @@ namespace Vortex;
 
 public class RawButton : ImageComponent
 {
-    public Color RawColor { get; set; } = Color.RayWhite;
+    public Color RawColor { get; set; } = Color.Black;
     private float _cornerRoundness = 0f;
     public float CornerRoundness
     {
@@ -18,11 +18,31 @@ public class RawButton : ImageComponent
         }
     }
 
+    private bool _useTextAsSize = false;
+    public bool UseTextAsSize
+    {
+        get => _useTextAsSize;
+        set 
+        {
+            if(_buttonTextComp != null)
+            {
+                _useTextAsSize = value;
+                if(_useTextAsSize)
+                {
+                    _buttonTextComp.CalculateTextSize();
+                    UpdateSize();
+                }
+            }
+        }
+    }
+
     private TextComponent? _buttonTextComp;                      // Store reference to the buttons text component
+    private string? ButtonTextCompId { get; set; }
 
     public override void Start()
     {
         IsClickable = true;
+        GetButtonTextComponent();
         UpdateSize();
     }
 
@@ -43,11 +63,26 @@ public class RawButton : ImageComponent
 
     public void UpdateSize()
     {
-        if(_buttonTextComp != null)
+        if(UseTextAsSize)
         {
-            this.Width = _buttonTextComp.Width;
-            this.Height = _buttonTextComp.Height;
+            if(_buttonTextComp != null)
+            {
+                this.Width = _buttonTextComp.Width;
+                this.Height = _buttonTextComp.Height;
+            }
+            SetOriginAndAnchor(_origin, _anchor);
         }
-        SetOriginAndAnchor(_origin, _anchor);
+    }
+
+    private void GetButtonTextComponent()
+    {
+        if(!string.IsNullOrEmpty(ButtonTextCompId))
+        {
+            _buttonTextComp = (TextComponent)Component.FindComponentById(ButtonTextCompId);
+            return;
+        }
+
+        if(_buttonTextComp == null)
+            _buttonTextComp = Owner.GetComponentInChild<TextComponent>();
     }
 }
