@@ -260,6 +260,25 @@ public class Element
     }
 
     /// <summary>
+    /// Finds and returns the specified component from within a child
+    /// </summary>
+    /// <typeparam name="T">Component Type</typeparam>
+    /// <returns>Reference to the component</returns>
+    public T? GetComponentInChild<T>() where T : Component
+    {
+        foreach(var child in _children)
+        {
+            foreach(var comp in _components)
+            {
+                if(comp is T compT)
+                    return compT;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// Handles updating the component
     /// </summary>
     /// <param name="dt"></param>
