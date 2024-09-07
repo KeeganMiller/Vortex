@@ -246,6 +246,23 @@ public class Element
     }
 
     /// <summary>
+    /// Finds and returns the specified component from within a child
+    /// </summary>
+    /// <typeparam name="T">Component Type</typeparam>
+    /// <returns>Reference to the component</returns>
+    public T? GetComponentInChild<T>() where T : Component
+    {
+        foreach(var child in _children)
+        {
+            var comp = child.GetComponent<T>();
+            if(comp != null)
+                return comp;
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// Finds and returns the component with specified ID
     /// </summary>
     /// <param name="componentId"></param>
@@ -260,23 +277,23 @@ public class Element
     }
 
     /// <summary>
-    /// Finds and returns the specified component from within a child
+    /// Finds and returns the component in a child of this element with the specified component id
     /// </summary>
     /// <typeparam name="T">Component Type</typeparam>
-    /// <returns>Reference to the component</returns>
-    public T? GetComponentInChild<T>() where T : Component
+    /// <param name="componentId">Component ID</param>
+    /// <returns>Component of type</returns>
+    public T? GetComponentInChild<T>(string componentId) where T : Component
     {
         foreach(var child in _children)
         {
-            foreach(var comp in _components)
-            {
-                if(comp is T compT)
-                    return compT;
-            }
+            var component = child.GetComponent(componentId);
+            if(component != null && component is T compT)
+                return compT;
         }
 
         return null;
     }
+    
 
     /// <summary>
     /// Handles updating the component
