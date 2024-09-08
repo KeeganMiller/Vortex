@@ -19,6 +19,8 @@ public class ResourceManager
     public bool AllResourcesLoaded { get; set; } = false;
     private bool _hasSetParents { get; set; } = false;
 
+    public System.Action OnFinishLoadResources;
+
     public ResourceManager(Scene owner, string sceneDataPath)
     {
         Owner = owner;
@@ -51,14 +53,9 @@ public class ResourceManager
 
     public void FinishLoadingResources()
     {
-        foreach(var element in _elements)
-        {
-            if(element != null)
-                element.FindParent();
-        }
-
         _hasSetParents = true;
         AllResourcesLoaded = true;
+        OnFinishLoadResources?.Invoke();
     }
 
     /// <summary>

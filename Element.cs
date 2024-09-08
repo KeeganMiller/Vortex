@@ -80,6 +80,17 @@ public class Element
         Owner = owner;
         if(Name == "SaveBtnText")
             Debug.Print("SaveBtn Initizled", EPrintMessageType.PRINT_Log);
+
+        if(owner != null)
+            owner.OnFinishLoadResources += LoadRequiredProperties;
+    }
+
+    /// <summary>
+    /// Use to handle any assets that need to be loaded from file
+    /// </summary>
+    public virtual void LoadRequiredProperties()
+    {
+        FindParent();
     }
 
     /// <summary>
@@ -368,7 +379,7 @@ public class Element
     {
         if(Parent != null)
             return;
-            
+
         if(!string.IsNullOrEmpty(ElementParentId))
         {
             var parent = Owner.GetElementById(ElementParentId);
