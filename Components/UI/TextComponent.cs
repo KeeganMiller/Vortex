@@ -73,7 +73,7 @@ public class TextComponent : UIComponent
 
     public override void Draw()
     {
-
+        base.Draw();
         if(FontShader.Id > 0)
             Raylib.BeginShaderMode(FontShader);
 

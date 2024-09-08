@@ -96,6 +96,8 @@ public static class VortexSceneReader
                 i += relatedLines.Count - 1;
             }
         }
+
+        requested.FinishLoadingResources();
     }
 
     public static List<string> GetRelatedLines(string[] lines, int currentIndex, EDataType type)

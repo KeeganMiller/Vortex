@@ -129,7 +129,7 @@ public class UIComponent : Component
     public override void Draw()
     {
         base.Draw();
-        if(Debug.DebugEnabled && this.DrawDebugRect)
+        if(Debug.DebugEnabled && _drawDebugRect)
             _DrawDebugRect_();
     }
 
@@ -360,9 +360,6 @@ public class UIComponent : Component
 
     public void DetectMouseEnterAndExit()
     {
-        if(Input.IsMouseButtonDown(EMouseButton.MOUSE_Left))
-            if(Owner.Name == "File")
-                Debug.Print("Gello, World", EPrintMessageType.PRINT_Log);
 
         var mousePos = Input.GetMousePosition(false);
         var compLeft = OwnerTransform.Position.X;
@@ -400,6 +397,7 @@ public class UIComponent : Component
 
     private void _DrawDebugRect_()
     {
+
         var rect = new Rectangle
         {
             X = OwnerTransform.Position.X,
@@ -408,7 +406,7 @@ public class UIComponent : Component
             Height = this.Height
         };
 
-        Raylib.DrawRectangleRec(rect, new Color(51, 153, 225, 20));
+        Raylib.DrawRectangleRec(rect, new Color(51, 153, 225, 100));
     }
 
     public EAnchorLocation GetAnchorLocation() => _anchor;

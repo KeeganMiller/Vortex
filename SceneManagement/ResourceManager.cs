@@ -16,6 +16,8 @@ public class ResourceManager
     private List<AssetData> _assets = new List<AssetData>();                        // List of all the loaded assets for this manager
 
     private string _sceneDataPath { get; }                          // Where the scene file data is stored
+    public bool AllResourcesLoaded { get; set; } = false;
+    private bool _hasSetParents { get; set; } = false;
 
     public ResourceManager(Scene owner, string sceneDataPath)
     {
@@ -41,8 +43,22 @@ public class ResourceManager
         foreach(var element in _elements)
         {
             if (!element.HasStarted && element.IsActive)
+            {
                 element.Start();
+            }
         }
+    }
+
+    public void FinishLoadingResources()
+    {
+        foreach(var element in _elements)
+        {
+            if(element != null)
+                element.FindParent();
+        }
+
+        _hasSetParents = true;
+        AllResourcesLoaded = true;
     }
 
     /// <summary>

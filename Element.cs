@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.VisualBasic;
 using Raylib_cs;
 
 namespace Vortex;
@@ -23,9 +24,23 @@ public class Element
             {
                 _isActive = value;
                 if (_isActive)
+                {
                     Enable?.Invoke();
+                    foreach(var child in _children)
+                        child.IsActive = true;
+
+                    foreach(var comp in _components)
+                        comp.IsActive = true;
+                }
                 else
+                {
                     Disable?.Invoke();
+                    foreach(var child in _children)
+                        child.IsActive = false;
+
+                    foreach(var comp in _components)
+                        comp.IsActive = false;
+                }
             }
         }
     }
@@ -63,6 +78,8 @@ public class Element
     public virtual void Initialize(ResourceManager owner)
     {
         Owner = owner;
+        if(Name == "SaveBtnText")
+            Debug.Print("SaveBtn Initizled", EPrintMessageType.PRINT_Log);
     }
 
     /// <summary>
@@ -70,12 +87,10 @@ public class Element
     /// </summary>
     public virtual void Start()
     {
-        if(!string.IsNullOrEmpty(ElementParentId))
-        {
-            var parent = Owner.GetElementById(ElementParentId);
-            if(parent != null)
-                SetParent(parent);
-        }
+        if(Name == "SaveBtnText")
+            Debug.Print("SaveBtn Started", EPrintMessageType.PRINT_Log);
+
+        
         HasStarted = true;
     }
 
@@ -346,6 +361,21 @@ public class Element
                 if(comp is not SpriteComponent && comp is not UIComponent)
                     comp.Draw();
             }
+        }
+    }
+
+    public void FindParent()
+    {
+        if(Parent != null)
+            return;
+            
+        if(!string.IsNullOrEmpty(ElementParentId))
+        {
+            var parent = Owner.GetElementById(ElementParentId);
+            if(parent != null)
+                SetParent(parent);
+            else
+                Debug.Print($"{Name}::Start -> Failed to get reference to the parent", EPrintMessageType.PRINT_Log);
         }
     }
 
