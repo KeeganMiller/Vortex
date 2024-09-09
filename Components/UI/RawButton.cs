@@ -6,7 +6,12 @@ namespace Vortex;
 
 public class RawButton : UIComponent
 {
-    public Color RawColor { get; set; } = Color.Black;
+    public Color NormalColor { get; set; } = Color.White;
+    public Color HoverColor { get; set; } = Color.LightGray;
+    public Color DisabledColor { get; set; } = Color.Gray;
+
+    private Color _currentColor;                        // Reference to the current color
+
     private float _cornerRoundness = 0f;
     public float CornerRoundness
     {
@@ -45,6 +50,26 @@ public class RawButton : UIComponent
         IsClickable = true;
         GetButtonTextComponent();
         UpdateSize();
+
+        _currentColor = NormalColor;
+        OnMouseEnter = () => 
+        {
+            if(IsClickable)
+                _currentColor = HoverColor;
+        };
+
+        OnMouseExit = () => 
+        {
+            if(IsClickable)
+                _currentColor = NormalColor;
+        }
+    }
+
+    public override void Update(float dt)
+    {
+        base.Update(dt);
+        if(!IsClickable)
+            _currentColor = DisabledColor;
     }
 
     public override void Draw()
