@@ -92,8 +92,8 @@ public class VerticalBox : UIComponent
                     uiComp.SetOriginAndAnchor(uiComp.GetOriginLocation(), uiComp.GetAnchorLocation());
                 }
 
-                if(UseChildrenHeight)
-                    height += uiComp.Height + PaddingTop;
+
+                height += uiComp.Height + PaddingTop;
 
                 prevComp = uiComp;
                 uiCompCount += 1;
