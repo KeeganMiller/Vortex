@@ -4,7 +4,7 @@ using Raylib_cs;
 
 namespace Vortex;
 
-public class RawButton : ImageComponent
+public class RawButton : UIComponent
 {
     public Color RawColor { get; set; } = Color.Black;
     private float _cornerRoundness = 0f;
@@ -41,6 +41,7 @@ public class RawButton : ImageComponent
 
     public override void Start()
     {
+        base.Start();
         IsClickable = true;
         GetButtonTextComponent();
         UpdateSize();
@@ -49,16 +50,15 @@ public class RawButton : ImageComponent
     public override void Draw()
     {
         base.Draw();
-        if(ActiveImage.Id <= 0)
+
+        if(CornerRoundness > 0)
         {
-            if(CornerRoundness > 0)
-            {
-                Raylib.DrawRectangleRounded(new Rectangle(OwnerTransform.Position, Width * OwnerTransform.Scale.X, Height * OwnerTransform.Scale.Y), _cornerRoundness, 0, RawColor);
-            } else
-            {
-                Raylib.DrawRectangleRec(new Rectangle(OwnerTransform.Position, Width * OwnerTransform.Scale.X, Height * OwnerTransform.Scale.Y), RawColor);
-            }
+            Raylib.DrawRectangleRounded(new Rectangle(OwnerTransform.Position, Width * OwnerTransform.Scale.X, Height * OwnerTransform.Scale.Y), _cornerRoundness, 0, RawColor);
+        } else
+        {
+            Raylib.DrawRectangleRec(new Rectangle(OwnerTransform.Position, Width * OwnerTransform.Scale.X, Height * OwnerTransform.Scale.Y), RawColor);
         }
+        
     }
 
     public void UpdateSize()
