@@ -109,9 +109,8 @@ public class HorizontalBox : UIComponent
                     uiComp.SetOriginAndAnchor(uiComp.GetOriginLocation(), uiComp.GetAnchorLocation());
                 }
 
-                if(UseChildrenWidth)
-                    width += uiComp.Width + PaddingLeft;
-                    
+                width += uiComp.Width + PaddingLeft;
+
                 prevComp = uiComp;
                 uiCompCount += 1;
             }
