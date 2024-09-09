@@ -7,9 +7,12 @@ namespace Vortex;
 public class TextComponent : UIComponent
 {
     public Font NormalFont;
+    public Font HoverFont;
+    private Font _activeFont;
     public Shader FontShader;
-    public string FontId { get; set; } = "";
-    public string ShaderId { get; set; } = "";
+    private string NormalFontId { get; set; } = "";
+    private string HoverFontId { get; set; } = "";
+    private string ShaderId { get; set; } = "";
 
     private int _fontSize = 16;
     public int FontSize
@@ -24,6 +27,7 @@ public class TextComponent : UIComponent
             SetOriginAndAnchor(_origin, _anchor);
         }
     }
+
     private string _text = "";
     public string Text 
     {
@@ -51,11 +55,25 @@ public class TextComponent : UIComponent
         }
 
         // Get and assign the font
-        if(!string.IsNullOrEmpty(FontId))
+        if(!string.IsNullOrEmpty(NormalFontId))
         {
-            var fontAsset = SceneManager.GlobalResources.GetAssetById<FontAsset>(FontId);
+            var fontAsset = SceneManager.GlobalResources.GetAssetById<FontAsset>(NormalFontId);
             if(fontAsset != null)
+            {
                 NormalFont = fontAsset.LoadedFont;
+                _activeFont = NormalFont;
+            }
+        }
+
+        if(!string.IsNullOrEmpty(HoverFontId))
+        {
+            var fontAsset = SceneManager.GlobalResources.GetAssetById<FontAsset>(HoverFontId);
+            if(fontAsset != null)
+            {
+                HoverFont = fontAsset.LoadedFont;
+                OnMouseEnter += () => _activeFont = HoverFont;
+                OnMouseExit += () => _activeFont = NormalFont;
+            }
         }
 
         CalculateTextSize();
@@ -78,7 +96,7 @@ public class TextComponent : UIComponent
             Raylib.BeginShaderMode(FontShader);
 
         if(NormalFont.Texture.Id > 0)
-            Raylib.DrawTextEx(NormalFont, Text, OwnerTransform.Position, FontSize, 1, FontColor);
+            Raylib.DrawTextEx(_activeFont, Text, OwnerTransform.Position, FontSize, 1, FontColor);
         else
             Raylib.DrawTextEx(new Font(), Text, OwnerTransform.Position, FontSize, 1, FontColor);
 
