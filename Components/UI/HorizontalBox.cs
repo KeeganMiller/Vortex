@@ -45,6 +45,8 @@ public class HorizontalBox : UIComponent
 
     public float VerticalAlignmentOffset { get; set; }
     public float HorizontalAlignmentOffset { get; set; }
+    public bool UseChildrenWidth { get; set; } = false;
+    public bool UseChildrenHeight { get; set; } = false;
 
     public override void Initialize(Element owner)
     {
@@ -69,7 +71,7 @@ public class HorizontalBox : UIComponent
             // Check the ui component is valid
             if(uiComp != null)
             {
-                if(uiComp.Height > height)
+                if(UseChildrenHeight && uiComp.Height > height)
                     height = uiComp.Height;
 
                 if(prevComp != null)
@@ -107,7 +109,9 @@ public class HorizontalBox : UIComponent
                     uiComp.SetOriginAndAnchor(uiComp.GetOriginLocation(), uiComp.GetAnchorLocation());
                 }
 
-                width += uiComp.Width + PaddingLeft;
+                if(UseChildrenWidth)
+                    width += uiComp.Width + PaddingLeft;
+                    
                 prevComp = uiComp;
                 uiCompCount += 1;
             }

@@ -386,7 +386,7 @@ public class Element
             if(parent != null)
                 SetParent(parent);
             else
-                Debug.Print($"{Name}::Start -> Failed to get reference to the parent", EPrintMessageType.PRINT_Log);
+                Debug.Print($"{Name}::Start (Element) -> Failed to get reference to the parent", EPrintMessageType.PRINT_Log);
         }
     }
 

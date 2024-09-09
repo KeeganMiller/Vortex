@@ -108,9 +108,10 @@ public class UIComponent : Component
 
         if(Owner != null)
             Owner.IsCameraRelated = false;
-
-        SetAnchor(_anchor);
+        
         SetOrigin(_origin);
+        SetAnchor(_anchor);
+        
 
         // Subscribe to the event when the window is resized
         Game.WindowSettings.WindowResizeEvent += (int width, int height) => 
@@ -139,7 +140,7 @@ public class UIComponent : Component
         _anchor = anchor;
         if(OwnerTransform == null)
             return;
-
+    
         
         switch(_anchor)
         {

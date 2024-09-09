@@ -30,6 +30,8 @@ public class VerticalBox : UIComponent
 
     public float VerticalAlignmentOffset { get; set; }
     public float HorizontalAlignmentOffset { get; set; }
+    public bool UseChildrenWidth { get; set; } = false;
+    public bool UseChildrenHeight { get; set; } = false;
 
     public override void Initialize(Element owner)
     {
@@ -54,7 +56,7 @@ public class VerticalBox : UIComponent
             // Check the ui component is valid
             if(uiComp != null)
             {
-                if(uiComp.Width > width)
+                if(UseChildrenWidth && uiComp.Width > width)
                     width = uiComp.Width;
 
 
@@ -89,7 +91,10 @@ public class VerticalBox : UIComponent
                     uiComp.Offset += new Vector2(PaddingLeft, PaddingTop);
                     uiComp.SetOriginAndAnchor(uiComp.GetOriginLocation(), uiComp.GetAnchorLocation());
                 }
-                height += uiComp.Height + PaddingTop;
+
+                if(UseChildrenHeight)
+                    height += uiComp.Height + PaddingTop;
+
                 prevComp = uiComp;
                 uiCompCount += 1;
             }

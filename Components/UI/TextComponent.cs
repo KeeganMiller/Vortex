@@ -37,7 +37,7 @@ public class TextComponent : UIComponent
             SetOriginAndAnchor(_origin, _anchor);
         }
     }
-    public Color FontColor = Color.Black;
+    public Color FontColor { get; set; } = Color.Black;
 
     public override void Initialize(Element owner)
     {
