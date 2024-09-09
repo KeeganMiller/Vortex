@@ -6,7 +6,7 @@ namespace Vortex;
 
 public class RawButton : UIComponent
 {
-    public Color NormalColor { get; set; } = Color.White;
+    public Color NormalColor { get; set; } = Color.RayWhite;
     public Color HoverColor { get; set; } = Color.LightGray;
     public Color DisabledColor { get; set; } = Color.Gray;
 
@@ -62,7 +62,7 @@ public class RawButton : UIComponent
         {
             if(IsClickable)
                 _currentColor = NormalColor;
-        }
+        };
     }
 
     public override void Update(float dt)
@@ -78,10 +78,10 @@ public class RawButton : UIComponent
 
         if(CornerRoundness > 0)
         {
-            Raylib.DrawRectangleRounded(new Rectangle(OwnerTransform.Position, Width * OwnerTransform.Scale.X, Height * OwnerTransform.Scale.Y), _cornerRoundness, 0, RawColor);
+            Raylib.DrawRectangleRounded(new Rectangle(OwnerTransform.Position, Width * OwnerTransform.Scale.X, Height * OwnerTransform.Scale.Y), _cornerRoundness, 0, _currentColor);
         } else
         {
-            Raylib.DrawRectangleRec(new Rectangle(OwnerTransform.Position, Width * OwnerTransform.Scale.X, Height * OwnerTransform.Scale.Y), RawColor);
+            Raylib.DrawRectangleRec(new Rectangle(OwnerTransform.Position, Width * OwnerTransform.Scale.X, Height * OwnerTransform.Scale.Y), _currentColor);
         }
         
     }
