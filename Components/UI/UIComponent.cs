@@ -125,6 +125,15 @@ public class UIComponent : Component
     {
         base.Update(dt);
         DetectMouseEnterAndExit();
+
+        if(IsClickable)
+        {
+            if(IsMouseOver && Input.IsMouseButtonClicked(EMouseButton.MOUSE_Left))
+            {
+                OnClick?.Invoke();
+            }
+        }
+            
     }
 
     public override void Draw()
@@ -138,106 +147,106 @@ public class UIComponent : Component
     {
         SetStretch(_stretch);
         _anchor = anchor;
-        if(OwnerTransform == null)
+        if(Owner == null || Owner.Transform == null)
             return;
     
         
         switch(_anchor)
         {
             case EAnchorLocation.ANCHOR_TopLeft:
-                OwnerTransform.Position = GetOrigin() + _offset;
+                Owner.Transform.Position = GetOrigin() + _offset;
                 break;
             case EAnchorLocation.ANCHOR_TopCenter:
                 if(Owner.Parent == null)
                 {
-                    OwnerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth / 2, 0) - GetOrigin() + _offset;
+                    Owner.Transform.Position = new Vector2(Game.WindowSettings.WindowWidth / 2, 0) - GetOrigin() + _offset;
                 }
                 else
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        OwnerTransform.Position = new Vector2(parentComp.Width / 2, 0) - GetOrigin() + _offset;
+                        Owner.Transform.Position = new Vector2(parentComp.Width / 2, 0) - GetOrigin() + _offset;
                 }
                 break;
             case EAnchorLocation.ANCHOR_TopRight:
                 if(Owner.Parent == null)
                 {
-                    OwnerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth, 0) - GetOrigin() + _offset;
+                    Owner.Transform.Position = new Vector2(Game.WindowSettings.WindowWidth, 0) - GetOrigin() + _offset;
                 }
                 else
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        OwnerTransform.Position = new Vector2(parentComp.Width, 0) - GetOrigin() + _offset;
+                        Owner.Transform.Position = new Vector2(parentComp.Width, 0) - GetOrigin() + _offset;
 
                 }
                 break;
             case EAnchorLocation.ANCHOR_MiddleLeft:
                 if(Owner.Parent == null)
                 {
-                    OwnerTransform.Position = new Vector2(0, Game.WindowSettings.WindowHeight / 2) - GetOrigin() + _offset;
+                    Owner.Transform.Position = new Vector2(0, Game.WindowSettings.WindowHeight / 2) - GetOrigin() + _offset;
                 }
                 else
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        OwnerTransform.Position = new Vector2(0, parentComp.Height / 2) - GetOrigin() + _offset;
+                        Owner.Transform.Position = new Vector2(0, parentComp.Height / 2) - GetOrigin() + _offset;
                 }
                 break;
             case EAnchorLocation.ANCHOR_MiddleCenter:
                 if(Owner.Parent == null)
                 {
-                    OwnerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth / 2, Game.WindowSettings.WindowHeight / 2) - GetOrigin() + _offset;
+                    Owner.Transform.Position = new Vector2(Game.WindowSettings.WindowWidth / 2, Game.WindowSettings.WindowHeight / 2) - GetOrigin() + _offset;
                 }
                 else
                 {        
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        OwnerTransform.Position = new Vector2(parentComp.Width / 2, parentComp.Height / 2) - GetOrigin() + _offset;
+                        Owner.Transform.Position = new Vector2(parentComp.Width / 2, parentComp.Height / 2) - GetOrigin() + _offset;
                 }
                 break;
             case EAnchorLocation.ANCHOR_MiddleRight:
                 if(Owner.Parent == null)
                 {
-                    OwnerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth, Game.WindowSettings.WindowHeight / 2) - GetOrigin() + _offset;
+                    Owner.Transform.Position = new Vector2(Game.WindowSettings.WindowWidth, Game.WindowSettings.WindowHeight / 2) - GetOrigin() + _offset;
                 } else 
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        OwnerTransform.Position = new Vector2(parentComp.Width, parentComp.Height / 2) - GetOrigin() + _offset;
+                        Owner.Transform.Position = new Vector2(parentComp.Width, parentComp.Height / 2) - GetOrigin() + _offset;
                 }
                 break;
             case EAnchorLocation.ANCHOR_BottomLeft:
                 if(Owner.Parent == null)
                 {
-                    OwnerTransform.Position = new Vector2(0, Game.WindowSettings.WindowHeight) - GetOrigin() + _offset;
+                    Owner.Transform.Position = new Vector2(0, Game.WindowSettings.WindowHeight) - GetOrigin() + _offset;
                 } else 
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        OwnerTransform.Position = new Vector2(0, parentComp.Height) - GetOrigin() + _offset;
+                        Owner.Transform.Position = new Vector2(0, parentComp.Height) - GetOrigin() + _offset;
                 }
                 break;
             case EAnchorLocation.ANCHOR_BottomCenter:
                 if(Owner.Parent == null)
                 {
-                    OwnerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth / 2, Game.WindowSettings.WindowHeight) - GetOrigin() + _offset;
+                    Owner.Transform.Position = new Vector2(Game.WindowSettings.WindowWidth / 2, Game.WindowSettings.WindowHeight) - GetOrigin() + _offset;
                 } else 
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        OwnerTransform.Position = new Vector2(parentComp.Width / 2, parentComp.Height) - GetOrigin() + _offset;
+                        Owner.Transform.Position = new Vector2(parentComp.Width / 2, parentComp.Height) - GetOrigin() + _offset;
                 }
                 break;
             case EAnchorLocation.ANCHOR_BottomRight:
                 if(Owner.Parent == null)
                 {
-                    OwnerTransform.Position = new Vector2(Game.WindowSettings.WindowWidth, Game.WindowSettings.WindowHeight) - GetOrigin() + _offset;
+                    Owner.Transform.Position = new Vector2(Game.WindowSettings.WindowWidth, Game.WindowSettings.WindowHeight) - GetOrigin() + _offset;
                 } else 
                 {
                     var parentComp = GetParentUIComp();
                     if(parentComp != null)
-                        OwnerTransform.Position = new Vector2(parentComp.Width, parentComp.Height) - GetOrigin() + _offset;
+                        Owner.Transform.Position = new Vector2(parentComp.Width, parentComp.Height) - GetOrigin() + _offset;
                 }
                 break;
         }
@@ -290,20 +299,20 @@ public class UIComponent : Component
         {
             if(Owner.Parent == null)
             {
-                OwnerTransform.Scale = new Vector2
+                Owner.Transform.Scale = new Vector2
                 {
                     X = Game.WindowSettings.WindowWidth / this.Width,
-                    Y = OwnerTransform.Scale.Y,
+                    Y = Owner.Transform.Scale.Y,
                 };
             } else 
             {
                 var uiComp = Owner.Parent.GetComponent<UIComponent>();                  // Get reference to the UI component
                 if(uiComp != null)
                 {
-                    OwnerTransform.Scale = new Vector2
+                    Owner.Transform.Scale = new Vector2
                     {
                         X = uiComp.Width / this.Width,
-                        Y = uiComp.Height
+                        Y = Owner.Transform.Scale.Y
                     };
                 }
             }
@@ -312,9 +321,9 @@ public class UIComponent : Component
         {
             if(Owner.Parent == null)
             {
-                OwnerTransform.Scale = new Vector2
+                Owner.Transform.Scale = new Vector2
                 {
-                    X = OwnerTransform.Scale.X,
+                    X = Owner.Transform.Scale.X,
                     Y = Game.WindowSettings.WindowHeight / this.Height
                 };
             } else 
@@ -322,9 +331,9 @@ public class UIComponent : Component
                 var uiComp = Owner.Parent.GetComponent<UIComponent>();
                 if(uiComp != null)
                 {
-                    OwnerTransform.Scale = new Vector2
+                    Owner.Transform.Scale = new Vector2
                     {
-                        X = uiComp.Width,
+                        X = Owner.Transform.Scale.X,
                         Y = uiComp.Height / this.Height
                     };
                 }
@@ -333,7 +342,7 @@ public class UIComponent : Component
         {
             if(Owner.Parent == null)
             {
-                OwnerTransform.Scale = new Vector2
+                Owner.Transform.Scale = new Vector2
                 {
                     X = Game.WindowSettings.WindowWidth / this.Width,
                     Y = Game.WindowSettings.WindowHeight / this.Height
@@ -343,10 +352,10 @@ public class UIComponent : Component
                 var uiComp = Owner.Parent.GetComponent<UIComponent>();
                 if(uiComp != null)
                 {
-                    OwnerTransform.Scale = new Vector2
+                    Owner.Transform.Scale = new Vector2
                     {
                         X = uiComp.Width / this.Width,
-                        Y = uiComp.Height
+                        Y = uiComp.Height / this.Height
                     };
                 }
             }
@@ -363,9 +372,9 @@ public class UIComponent : Component
     {
 
         var mousePos = Input.GetMousePosition(false);
-        var compLeft = OwnerTransform.Position.X;
+        var compLeft = Owner.Transform.Position.X;
         var compRight = compLeft + this.Width;
-        var compTop = OwnerTransform.Position.Y;
+        var compTop = Owner.Transform.Position.Y;
         var compBottom = compTop + this.Height;
 
         if(mousePos.X >= compLeft && mousePos.X < compRight)
@@ -401,8 +410,8 @@ public class UIComponent : Component
 
         var rect = new Rectangle
         {
-            X = OwnerTransform.Position.X,
-            Y = OwnerTransform.Position.Y,
+            X = Owner.Transform.Position.X,
+            Y = Owner.Transform.Position.Y,
             Width = this.Width,
             Height = this.Height
         };
