@@ -43,9 +43,9 @@ public class TextComponent : UIComponent
     }
     public Color FontColor { get; set; } = Color.Black;
 
-    public override void Initialize(Element owner)
+    public override void Constructor(ResourceManager resources)
     {
-        base.Initialize(owner);
+        base.Constructor(resources);
         // Get and assign the shader
         if(!string.IsNullOrEmpty(ShaderId))
         {
@@ -82,6 +82,7 @@ public class TextComponent : UIComponent
     public override void Start()
     {
         base.Start();
+        _activeFont = NormalFont;
     }
 
     public override void Update(float dt)
@@ -92,13 +93,17 @@ public class TextComponent : UIComponent
     public override void Draw()
     {
         base.Draw();
+        
+        if(Owner.Transform == null)
+            return;
+
         if(FontShader.Id > 0)
             Raylib.BeginShaderMode(FontShader);
 
         if(NormalFont.Texture.Id > 0)
-            Raylib.DrawTextEx(_activeFont, Text, OwnerTransform.Position, FontSize, 1, FontColor);
+            Raylib.DrawTextEx(_activeFont, Text, Owner.Transform.Position, FontSize, 1, FontColor);
         else
-            Raylib.DrawTextEx(new Font(), Text, OwnerTransform.Position, FontSize, 1, FontColor);
+            Raylib.DrawTextEx(new Font(), Text, Owner.Transform.Position, FontSize, 1, FontColor);
 
         if(FontShader.Id > 0)
             Raylib.EndShaderMode();

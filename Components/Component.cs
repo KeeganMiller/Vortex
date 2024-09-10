@@ -12,6 +12,7 @@ public class Component
 
     // == Active Status == //
     public bool HasStarted { get; private set; } = false;
+    public bool HasInitialized { get; private set; } = false;
     private bool _isActive = true;
     public bool IsActive
     {
@@ -40,12 +41,15 @@ public class Component
     public virtual void Initialize(Element owner)
     {
         Owner = owner;
-        Owner.Owner.OnFinishLoadResources += Constructor;
+        if(Owner != null && Owner.Owner != null && !Owner.Owner.AllResourcesLoaded)
+            Owner.Owner.OnFinishLoadResources += Constructor;
+
+        HasInitialized = true;
     }
 
-    public virtual void Constructor()
+    public virtual void Constructor(ResourceManager resourceManager)
     {
-        
+
     }
 
     public virtual void Start()

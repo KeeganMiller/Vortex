@@ -8,7 +8,7 @@ public class Element
 {
     public string ObjectId { get; set; }
     public string Name;                         // Reference to the name of the element
-    public ResourceManager Owner { get; private set; }                  // reference to the resource manager that owns this
+    public ResourceManager Owner { get; set; }                  // reference to the resource manager that owns this
     public List<string> Tags = new List<string>();                          // List of all the tags assigned to this object
 
     public bool IsCameraRelated = false;                            // If this is camera relative
@@ -88,7 +88,7 @@ public class Element
     /// <summary>
     /// Use to handle any assets that need to be loaded from file
     /// </summary>
-    public virtual void Constructor()
+    public virtual void Constructor(ResourceManager resources)
     {
         FindParent();
     }
@@ -230,11 +230,9 @@ public class Element
         }
 
         _components.Add(component);                 // Add the component
-        component.Initialize(this);                     // Initialzie the component 
-        
-        // Call the constructor if created
+        component.Initialize(this);                     // Initialzie the component    
         if(Owner.AllResourcesLoaded)
-            component.Constructor();    
+            component.Constructor(Owner);
         return true;                    // return that the component was added
     }
 

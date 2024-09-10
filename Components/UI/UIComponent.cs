@@ -94,7 +94,7 @@ public class UIComponent : Component
 
 
     public bool IsMouseOver { get; private set; } = false;
-    public bool IsClickable = false;                    // Flag if the component is clickable
+    public bool IsClickable { get; set; } = false;                    // Flag if the component is clickable
 
     public Action OnClick;
     public Action OnMouseEnter;
@@ -370,12 +370,14 @@ public class UIComponent : Component
 
     public void DetectMouseEnterAndExit()
     {
+        if(Owner == null || Owner.Transform == null)
+            return;
 
         var mousePos = Input.GetMousePosition(false);
         var compLeft = Owner.Transform.Position.X;
-        var compRight = compLeft + this.Width;
+        var compRight = compLeft + (this.Width * Owner.Transform.Scale.X);
         var compTop = Owner.Transform.Position.Y;
-        var compBottom = compTop + this.Height;
+        var compBottom = compTop + (this.Height * Owner.Transform.Scale.Y);
 
         if(mousePos.X >= compLeft && mousePos.X < compRight)
         {

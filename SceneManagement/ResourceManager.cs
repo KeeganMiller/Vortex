@@ -19,7 +19,7 @@ public class ResourceManager
     public bool AllResourcesLoaded { get; set; } = false;
     private bool _hasSetParents { get; set; } = false;
 
-    public System.Action OnFinishLoadResources;
+    public System.Action<ResourceManager> OnFinishLoadResources;
 
     public ResourceManager(Scene owner, string sceneDataPath)
     {
@@ -55,7 +55,7 @@ public class ResourceManager
     {
         _hasSetParents = true;
         AllResourcesLoaded = true;
-        OnFinishLoadResources?.Invoke();
+        OnFinishLoadResources?.Invoke(this);
     }
 
     /// <summary>
@@ -206,7 +206,7 @@ public class ResourceManager
             _elements.Add(element);
             element.Initialize(this);
             if(AllResourcesLoaded)
-                element.Constructor();
+                element.Constructor(this);
             _hasElementToStart = true;
             return true;
         }
@@ -254,6 +254,18 @@ public class ResourceManager
         {
             if(asset.AssetId == id && asset is T assetAs)
                 return assetAs;
+        }
+
+        return null;
+    }
+
+    public T GetComponentById<T>(string compId) where T : Component
+    {
+        foreach(var element in _elements)
+        {
+            var comp = element.GetComponent<T>();
+            if(comp != null && comp.ComponentId == compId && comp is T compT)
+                return compT;
         }
 
         return null;
