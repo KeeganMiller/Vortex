@@ -40,6 +40,12 @@ public class Component
     public virtual void Initialize(Element owner)
     {
         Owner = owner;
+        Owner.Owner.OnFinishLoadResources += Constructor;
+    }
+
+    public virtual void Constructor()
+    {
+        
     }
 
     public virtual void Start()

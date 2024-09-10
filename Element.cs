@@ -82,13 +82,13 @@ public class Element
             Debug.Print("SaveBtn Initizled", EPrintMessageType.PRINT_Log);
 
         if(owner != null)
-            owner.OnFinishLoadResources += LoadRequiredProperties;
+            owner.OnFinishLoadResources += Constructor;
     }
 
     /// <summary>
     /// Use to handle any assets that need to be loaded from file
     /// </summary>
-    public virtual void LoadRequiredProperties()
+    public virtual void Constructor()
     {
         FindParent();
     }
