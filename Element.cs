@@ -230,7 +230,11 @@ public class Element
         }
 
         _components.Add(component);                 // Add the component
-        component.Initialize(this);                     // Initialzie the component     
+        component.Initialize(this);                     // Initialzie the component 
+        
+        // Call the constructor if created
+        if(Owner.AllResourcesLoaded)
+            component.Constructor();    
         return true;                    // return that the component was added
     }
 

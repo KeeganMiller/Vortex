@@ -205,6 +205,8 @@ public class ResourceManager
         {
             _elements.Add(element);
             element.Initialize(this);
+            if(AllResourcesLoaded)
+                element.Constructor();
             _hasElementToStart = true;
             return true;
         }
