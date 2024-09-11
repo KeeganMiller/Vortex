@@ -109,20 +109,56 @@ public static class SceneManager
 
     public static void DrawElementsRelative()
     {
+        var elements = new List<Element>();
         foreach(var scene in _activeScenes.ToList())
-        {   
+        {
             if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
-                scene.DrawElementsRelative();
+            {
+                foreach(var e in scene.Resources.GetAllElements())
+                {
+                    if(e.IsCameraRelated)
+                        elements.Add(e);
+                }
+            }
         }
-        
-        GlobalResources.DrawElementsRelative();
+
+        foreach(var e in GlobalResources.GetAllElements())
+            if(e.IsCameraRelated)
+                elements.Add(e);
+
+        var sortedElements = SortElements(elements);
+        foreach(var e in sortedElements)
+            if(e.IsActive && e.HasStarted)
+                e.Draw();
     }
 
     public static void DrawElements()
     {
+        var elements = new List<Element>();
         foreach(var scene in _activeScenes.ToList())
+        {
             if(scene.CurrentSceneLoadState == ESceneLoadState.SCENE_STATE_Loaded)
-                scene.DrawElements();
+            {
+                foreach(var e in scene.Resources.GetAllElements())
+                {
+                    if(!e.IsCameraRelated)
+                        elements.Add(e);
+                }
+            }
+        }
+
+        foreach(var e in GlobalResources.GetAllElements())
+            if(!e.IsCameraRelated)
+                elements.Add(e);
+
+        var sortedElements = SortElements(elements);
+        foreach(var e in sortedElements)
+        {
+            if(e.IsActive && e.HasStarted)
+            {
+                e.Draw();
+            }
+        }
 
         GlobalResources.DrawElements();
     }
@@ -151,6 +187,28 @@ public static class SceneManager
             if(comp.IsActive && comp.Owner.IsActive && comp.HasStarted)
                 comp.Draw();
         }
+    }
+
+    public static List<Element> SortElements(List<Element> elements)
+    {
+        var sortedElements = new List<Element>();
+
+        while(elements.Count != 0)
+        {
+            var lowestElement = elements[0];
+            for(var i = 1; i < elements.Count; ++i)
+            {
+                if(elements[i].ZIndex < lowestElement.ZIndex)
+                {
+                    lowestElement = elements[i];
+                }
+            }
+
+            sortedElements.Add(lowestElement);
+            elements.Remove(lowestElement);
+        }
+
+        return sortedElements;
     }
 
     public static List<SpriteComponent> SortSprites(List<SpriteComponent> sprites)

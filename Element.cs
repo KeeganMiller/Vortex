@@ -60,6 +60,8 @@ public class Element
     private bool _hasComponentToStart = false;
     public TransformComponent Transform { get; private set; }                            // Reference to the transform component
 
+    public int ZIndex = 0;
+
     public Element(string name = "Element")
     {
         this.Name = name;
