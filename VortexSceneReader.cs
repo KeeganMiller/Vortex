@@ -514,7 +514,13 @@ public static class VortexSceneReader
                 propInfo.SetValue(instance, value);
             } else 
             {
-                propInfo.SetValue(instance, Convert.ChangeType(value, propInfo.PropertyType));
+                if(propInfo.PropertyType.IsEnum)
+                {
+                    propInfo.SetValue(instance, Enum.ToObject(propInfo.PropertyType, value));
+                } else 
+                {
+                     propInfo.SetValue(instance, Convert.ChangeType(value, propInfo.PropertyType));
+                }
             }
         } else 
         {

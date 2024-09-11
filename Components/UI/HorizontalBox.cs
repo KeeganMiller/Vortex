@@ -27,20 +27,8 @@ public class HorizontalBox : UIComponent
     protected float _prevWidth;
     protected float _prevHeight;
 
-    public EContentAlignmentHorizontal HorizontalAlignment;
-    public EContentAlignmentVertical VerticalAlignment;
-
-    public int HorizontalAlignmentValue
-    {
-        get => (int)HorizontalAlignment;
-        set => HorizontalAlignment = (EContentAlignmentHorizontal)value;
-    }
-
-    public int VerticalAlignmentValue
-    {
-        get => (int)VerticalAlignment;
-        set => VerticalAlignment = (EContentAlignmentVertical)value;
-    }
+    public EContentAlignmentHorizontal HorizontalAlignment { get; set; }
+    public EContentAlignmentVertical VerticalAlignment { get; set; }
 
     public float VerticalAlignmentOffset { get; set; }
     public float HorizontalAlignmentOffset { get; set; }
@@ -109,15 +97,15 @@ public class HorizontalBox : UIComponent
         if(width != _prevWidth)
         {
             this.Width = width;
-            SetOrigin(_origin);
-            SetAnchor(_anchor);
+            SetOrigin(Origin);
+            SetAnchor(Anchor);
         }
 
         if(height != _prevHeight)
         {
             this.Height = height;
-            SetOrigin(_origin);
-            SetAnchor(_anchor);
+            SetOrigin(Origin);
+            SetAnchor(Anchor);
         }
 
         _prevHeight = height;

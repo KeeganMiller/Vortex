@@ -93,7 +93,7 @@ public class RawButton : UIComponent
                 this.Width = _buttonTextComp.Width;
                 this.Height = _buttonTextComp.Height;
             }
-            SetOriginAndAnchor(_origin, _anchor);
+            SetOriginAndAnchor(Origin, Anchor);
         }
     }
 }

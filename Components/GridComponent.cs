@@ -9,13 +9,14 @@ namespace Vortex;
 public class GridComponent : Component
 {
     private GridNode[,] _grid;
-    public int GridSizeX = 10;
-    public int GridSizeY = 10;
-    public int GridNodeSize = 16;
+    public int GridSizeX { get; set; } = 10;
+    public int GridSizeY { get; set; } = 10;
+    public int GridNodeSize { get; set; } = 16;
 
-    public bool DrawDebugGrid = false;
+    public bool DrawDebugGrid { get; set; } = false;
 
-    public bool HasGeneratedGrid {get; private set;} = false;
+    private bool _hasGeneratedGrid  = false;
+    public bool HasGeneratedGrid => _hasGeneratedGrid;
 
     public override void Initialize(Element owner)
     {
@@ -51,7 +52,7 @@ public class GridComponent : Component
             }
         }
 
-        HasGeneratedGrid = true;
+        _hasGeneratedGrid = true;
     }
 
     public override void Draw()

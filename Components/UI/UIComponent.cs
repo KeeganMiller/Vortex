@@ -43,25 +43,10 @@ public enum EStretchType
 
 public class UIComponent : Component
 {
-    protected EAnchorLocation _anchor;
-    public int Anchor 
-    {
-        get => (int)_anchor;
-        set => _anchor = (EAnchorLocation)value;
-    }
-    protected EOriginLocation _origin;
-    public int Origin
-    {
-        get => (int)_origin;
-        set => _origin = (EOriginLocation)value;
-    }
+    public EAnchorLocation Anchor { get; set; }
+    public EOriginLocation Origin { get; set; }
 
-    protected EStretchType _stretch;
-    public int Stretch
-    {
-        get => (int)_stretch;
-        set => _stretch = (EStretchType)value;
-    }
+    protected EStretchType Stretch { get; set; }
 
     public TransformComponent OwnerTransform {get; protected set;}
 
@@ -77,8 +62,8 @@ public class UIComponent : Component
         set 
         {
             _offset = value;
-            SetAnchor(_anchor);
-            SetOrigin(_origin);
+            SetAnchor(Anchor);
+            SetOrigin(Origin);
         }
     }
 
@@ -109,15 +94,15 @@ public class UIComponent : Component
         if(Owner != null)
             Owner.IsCameraRelated = false;
         
-        SetOrigin(_origin);
-        SetAnchor(_anchor);
+        SetOrigin(Origin);
+        SetAnchor(Anchor);
         
 
         // Subscribe to the event when the window is resized
         Game.WindowSettings.WindowResizeEvent += (int width, int height) => 
         {
-            SetAnchor(_anchor);
-            SetOrigin(_origin);
+            SetAnchor(Anchor);
+            SetOrigin(Origin);
         };
     }
 
@@ -145,13 +130,13 @@ public class UIComponent : Component
 
     public void SetAnchor(EAnchorLocation anchor)
     {
-        SetStretch(_stretch);
-        _anchor = anchor;
+        SetStretch(Stretch);
+        Anchor = anchor;
         if(Owner == null || Owner.Transform == null)
             return;
     
         
-        switch(_anchor)
+        switch(Anchor)
         {
             case EAnchorLocation.ANCHOR_TopLeft:
                 Owner.Transform.Position = GetOrigin() + _offset;
@@ -254,21 +239,21 @@ public class UIComponent : Component
 
     public void SetOrigin(EOriginLocation origin)
     {
-        _origin = origin;
-        SetAnchor(_anchor);
+        Origin = origin;
+        SetAnchor(Anchor);
     }
 
     public void SetOriginAndAnchor(EOriginLocation origin, EAnchorLocation anchor)
     {
-        SetStretch(_stretch);
-        _origin = origin;
+        SetStretch(Stretch);
+        Origin = origin;
         SetAnchor(anchor);
     }
 
     public virtual Vector2 GetOrigin()
     {
-        SetStretch(_stretch);
-        switch(_origin)
+        SetStretch(Stretch);
+        switch(Origin)
         {
             case EOriginLocation.ORIGIN_TopCenter:
                 return new Vector2(Width / 2, 0);
@@ -293,9 +278,9 @@ public class UIComponent : Component
 
     public void SetStretch(EStretchType type)
     {
-        _stretch = type;
+        Stretch = type;
 
-        if(_stretch == EStretchType.STRETCH_Width)
+        if(Stretch == EStretchType.STRETCH_Width)
         {
             if(Owner.Parent == null)
             {
@@ -317,7 +302,7 @@ public class UIComponent : Component
                 }
             }
             return;
-        } else if(_stretch == EStretchType.STRETCH_Height)
+        } else if(Stretch == EStretchType.STRETCH_Height)
         {
             if(Owner.Parent == null)
             {
@@ -338,7 +323,7 @@ public class UIComponent : Component
                     };
                 }
             }
-        } else if(_stretch == EStretchType.STRETCH_Full)
+        } else if(Stretch == EStretchType.STRETCH_Full)
         {
             if(Owner.Parent == null)
             {
@@ -421,7 +406,7 @@ public class UIComponent : Component
         Raylib.DrawRectangleRec(rect, new Color(51, 153, 225, 100));
     }
 
-    public EAnchorLocation GetAnchorLocation() => _anchor;
-    public EOriginLocation GetOriginLocation() => _origin;
-    public EStretchType GetStretchType() => _stretch;
+    public EAnchorLocation GetAnchorLocation() => Anchor;
+    public EOriginLocation GetOriginLocation() => Origin;
+    public EStretchType GetStretchType() => Stretch;
 }
