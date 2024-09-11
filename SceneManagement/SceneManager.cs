@@ -40,6 +40,24 @@ public static class SceneManager
         }
     }
 
+    public static T GetScene<T>() where T : Scene
+    {
+        foreach(var scene in _activeScenes)
+            if(scene is T sceneT)
+                return sceneT;
+
+        return null;
+    }
+
+    public static Scene GetScene(string sceneName)
+    {
+        foreach(var scene in _activeScenes)
+            if(scene.SceneName == sceneName)
+                return scene;
+
+        return null;
+    }
+
     public static void Update()
     {
         foreach(var scene in _activeScenes.ToList())
