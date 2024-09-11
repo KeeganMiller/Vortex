@@ -41,14 +41,12 @@ public class RawButton : UIComponent
         }
     }
 
-    private TextComponent? _buttonTextComp;                      // Store reference to the buttons text component
-    private string? ButtonTextCompId { get; set; }
+    private TextComponent? _buttonTextComp { get; set; }                      // Store reference to the buttons text component
 
     public override void Start()
     {
         base.Start();
         IsClickable = true;
-        GetButtonTextComponent();
         UpdateSize();
 
         _currentColor = NormalColor;
@@ -97,17 +95,5 @@ public class RawButton : UIComponent
             }
             SetOriginAndAnchor(_origin, _anchor);
         }
-    }
-
-    private void GetButtonTextComponent()
-    {
-        if(!string.IsNullOrEmpty(ButtonTextCompId))
-        {
-            _buttonTextComp = (TextComponent)Component.FindComponentById(ButtonTextCompId);
-            return;
-        }
-
-        if(_buttonTextComp == null)
-            _buttonTextComp = Owner.GetComponentInChild<TextComponent>();
     }
 }

@@ -6,9 +6,10 @@ namespace Vortex;
 
 public class SpriteComponent : Component
 {
-    public Texture2D Sprite;
+    public SpriteData Sprite { get; set; }
+    public Texture2D SpriteRef => Sprite.Texture;
     protected TransformComponent _parentTransform;
-    public bool IsSpriteValid => Sprite.Id > 0;
+    public bool IsSpriteValid => Sprite.IsValid;
 
     // == Drawing Properties == //
     public Vector2 FramePosition;
@@ -26,12 +27,6 @@ public class SpriteComponent : Component
 
     }
 
-    public override void Initialize(Element owner)
-    {
-        base.Initialize(owner);
-        _parentTransform = Owner.Transform;
-    }
-
     public override void Update(float dt)
     {
         base.Update(dt);
@@ -39,14 +34,14 @@ public class SpriteComponent : Component
         {
             if (IsSpriteValid)
             {
-                FrameSize = new Vector2(Sprite.Width, Sprite.Height);
+                FrameSize = new Vector2(SpriteRef.Width, SpriteRef.Height);
             }
         }
         
         if(IsSpriteValid)
         {
             _sourceRect = new Rectangle(FramePosition, FrameSize);
-            _destRect = new Rectangle(_parentTransform.Position, FrameSize * _parentTransform.Scale);
+            _destRect = new Rectangle(Owner.Transform.Position, FrameSize * Owner.Transform.Scale);
         }
     }
 
@@ -56,7 +51,7 @@ public class SpriteComponent : Component
 
         if (IsSpriteValid)
         {
-            Raylib.DrawTexturePro(Sprite, _sourceRect, _destRect, Origin, _parentTransform.Rotation, Tint);
+            Raylib.DrawTexturePro(SpriteRef, _sourceRect, _destRect, Origin, _parentTransform.Rotation, Tint);
         }
     }
 }

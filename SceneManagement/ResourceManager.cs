@@ -263,12 +263,72 @@ public class ResourceManager
     {
         foreach(var element in _elements)
         {
-            var comp = element.GetComponent<T>();
-            if(comp != null && comp.ComponentId == compId && comp is T compT)
-                return compT;
+            var comp = element.GetComponent<T>(compId);
+            if(comp != null)
+                return comp;
         }
 
         return null;
+    }
+
+    public void FindObject(string objectId, out EDataType type, out object vtObject)
+    {
+
+        foreach(var e in _elements)
+        {
+            if(e.ObjectId == objectId)
+            {
+                type = EDataType.SCENE_PROP_Element;
+                vtObject = e;
+                return;
+            }
+        }
+
+        var comp = GetComponentById<Component>(objectId);
+        if(comp != null)
+        {
+            vtObject = comp;
+            type = EDataType.SCENE_PROP_Component;
+            return;
+        }
+        
+
+        foreach(var e in SceneManager.GlobalResources.GetAllElements())
+        {
+            if(e.ObjectId == objectId)
+            {
+                type = EDataType.SCENE_PROP_Element;
+                vtObject = e;
+                return;
+            }
+        }
+
+        var globalComp = SceneManager.GlobalResources.GetComponentById<Component>(objectId);
+        if(globalComp != null)
+        {
+            vtObject = globalComp;
+            type = EDataType.SCENE_PROP_Component;
+            return;
+        }
+
+        vtObject = GetAssetById<AssetData>(objectId);
+        if(vtObject == null)
+        {
+            vtObject = SceneManager.GlobalResources.GetAssetById<AssetData>(objectId);
+            if(vtObject != null)
+            {
+                type = EDataType.SCENE_PROP_Asset;
+                return;
+            }
+        } else 
+        {
+            type = EDataType.SCENE_PROP_Asset;
+            return;
+        }
+
+        vtObject = null;
+        type = EDataType.SCENE_RPOP_Error;
+        Debug.Print($"ResourceManager::FindObject -> Failed to find object with id: {objectId}", EPrintMessageType.PRINT_Error);
     }
 
 /*

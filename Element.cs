@@ -7,11 +7,11 @@ namespace Vortex;
 public class Element
 {
     public string ObjectId { get; set; }
-    public string Name;                         // Reference to the name of the element
+    public string Name { get; set; }                         // Reference to the name of the element
     public ResourceManager Owner { get; set; }                  // reference to the resource manager that owns this
     public List<string> Tags = new List<string>();                          // List of all the tags assigned to this object
 
-    public bool IsCameraRelated = false;                            // If this is camera relative
+    public bool IsCameraRelated { get; set; } = false;                            // If this is camera relative
 
     // == Element Status == //
     private bool _isActive = true;
@@ -51,8 +51,24 @@ public class Element
     public bool HasStarted { get; private set; } = false;                       // Flag if the element has started
 
     // == Parenting == //
-    public Element Parent { get; protected set; }                           // Reference to the parent of this element
-    public string ElementParentId { get; set; }
+    private Element _parent;                          // Reference to the parent of this element
+    public Element Parent 
+    {
+        get => _parent;
+        set 
+        {
+            if(_parent != null)
+                _parent.RemoveChild(this);
+
+            _parent = value;
+            if(_parent != null)
+                _parent.AddChild(this);
+
+            var comps = GetComponents<UIComponent>();
+            foreach(var comp in comps)
+                comp.SetOriginAndAnchor((EOriginLocation)comp.Origin, (EAnchorLocation)comp.Anchor);
+        }
+    }
     protected List<Element> _children = new List<Element>();                    // List of all the children for this element
 
     // == Components == //
@@ -92,7 +108,6 @@ public class Element
     /// </summary>
     public virtual void Constructor(ResourceManager resources)
     {
-        FindParent();
     }
 
     /// <summary>
@@ -150,6 +165,9 @@ public class Element
         // Add this element to the parent
         if (Parent != null)
             Parent.AddChild(this);
+
+        var comps = GetComponents<UIComponent>();
+        
     }
 
     /// <summary>
@@ -282,6 +300,41 @@ public class Element
     }
 
     /// <summary>
+    /// Gets component with ID
+    /// </summary>
+    /// <typeparam name="T">Class Type</typeparam>
+    /// <param name="componentId">ID of the component to find</param>
+    /// <returns>Component reference or null</returns>
+    public T GetComponent<T>(string componentId) where T : Component
+    {
+        foreach(var comp in _components)
+        {
+            if(comp is T compT && comp.ComponentId == componentId)
+                return compT;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Get a list of components by the specific type
+    /// </summary>
+    /// <typeparam name="T">Class Type</typeparam>
+    /// <returns>List of components</returns>
+    public List<T> GetComponents<T>() where T : Component
+    {
+        List<T> comps = new List<T>();
+        
+        foreach(var comp in _components)
+        {
+            if(comp is T compT)
+                comps.Add(compT);
+        }
+
+        return comps;
+    }
+
+    /// <summary>
     /// Finds and returns the specified component from within a child
     /// </summary>
     /// <typeparam name="T">Component Type</typeparam>
@@ -382,21 +435,6 @@ public class Element
                 if(comp is not SpriteComponent && comp is not UIComponent)
                     comp.Draw();
             }
-        }
-    }
-
-    public void FindParent()
-    {
-        if(Parent != null)
-            return;
-
-        if(!string.IsNullOrEmpty(ElementParentId))
-        {
-            var parent = Owner.GetElementById(ElementParentId);
-            if(parent != null)
-                SetParent(parent);
-            else
-                Debug.Print($"{Name}::Start (Element) -> Failed to get reference to the parent", EPrintMessageType.PRINT_Log);
         }
     }
 

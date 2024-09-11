@@ -7,78 +7,32 @@ namespace Vortex;
 
 public class ImageComponent : UIComponent
 {
-    public Texture2D NormalImage;
-    public Texture2D HoverImage;
-
-    private string _normalImageId = "";
-    private string _hoverImageId = "";
-
-    public string NormalImageId 
-    {
-        get => _normalImageId;
-        set 
-        {
-            var texture = SceneManager.GlobalResources.GetAssetById<SpriteData>(value);
-            if(texture != null && texture.IsValid)
-            {
-                _normalImageId = value;
-                NormalImage = texture.Texture;
-            }
-        }
-    }
-
-    public string HoverImageId
-    {
-        get => _hoverImageId;
-        set 
-        {
-            var texture = SceneManager.GlobalResources.GetAssetById<SpriteData>(value);
-            if(texture != null && texture.IsValid)
-            {
-                HoverImage = texture.Texture;
-                _hoverImageId = value;
-            }
-        }
-    }
+    public SpriteData NormalImage { get; set; }
+    public SpriteData HoverImage { get; set; }
+    public Texture2D NormalImageRef => NormalImage.Texture;
+    public Texture2D HoverImageRef => HoverImage.Texture;
 
     public Texture2D ActiveImage { get; private set; }
     public Color Tint = Color.White;
     public Vector2 ImageRotationOrigin = Vector2.Zero;
 
-    public override void Initialize(Element owner)
-    {
-        base.Initialize(owner);
-        if(!string.IsNullOrEmpty(_normalImageId))
-        {
-            var asset = Owner.Owner.GetAssetById<SpriteData>(_normalImageId);
-            if(asset != null && asset.IsValid)
-                NormalImage = asset.Texture;
-        }
-
-        if(!string.IsNullOrEmpty(_hoverImageId))
-        {
-            var asset = Owner.Owner.GetAssetById<SpriteData>(HoverImageId);
-            if(asset != null && asset.IsValid)
-                HoverImage = asset.Texture;
-        }
-    }
-
+    public bool IsValid => ActiveImage.Id > 0;
     public override void Start()
     {
         base.Start();
         OnMouseEnter += () => {
-            if(HoverImage.Id > 0)
-                SetActiveImage(HoverImage);
+            if(HoverImage.IsValid)
+                SetActiveImage(HoverImage.Texture);
         };
         OnMouseExit += () => {
-            if(NormalImage.Id > 0)
-                SetActiveImage(NormalImage);
+            if(NormalImage.IsValid)
+                SetActiveImage(NormalImage.Texture);
         };
 
         OwnerTransform.ScaleUpdateEvent += UpdateImageSize;
 
-        if(NormalImage.Id > 0)
-            SetActiveImage(NormalImage);
+        if(NormalImage.IsValid)
+            SetActiveImage(NormalImage.Texture);
 
         OnMouseEnter += () => 
         {

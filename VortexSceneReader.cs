@@ -22,6 +22,11 @@ public enum EDataType
 
 public static class VortexSceneReader
 {
+    private static List<ElementDataContainer> _elementReferences = new List<ElementDataContainer>();
+    private static List<ComponentDataContainer> _componentReferences = new List<ComponentDataContainer>();
+
+    private static ElementDataContainer? _currentElement;
+    private static ComponentDataContainer? _currentComponent;
     /// <summary>
     /// Handles reading in the scene file and is base for
     /// Creating elements/components based on the input
@@ -69,6 +74,11 @@ public static class VortexSceneReader
                     Debug.Print($"$SceneFileParser::ParseFile -> Element Created: {element.Name}", EPrintMessageType.PRINT_Custom, ConsoleColor.DarkGreen);
                     currentElement = element;
                     requested.AddElement(currentElement); 
+                    if(_currentElement != null)
+                    {
+                        _elementReferences.Add(_currentElement);
+                        _currentElement = null;
+                    }
                     i += relatedLines.Count - 1;
                     continue;
                 }
@@ -88,6 +98,12 @@ public static class VortexSceneReader
                         Debug.Print($"SceneFileParser::ParseFile -> Component: {compName} was created for Element: {currentElement.Name}", EPrintMessageType.PRINT_Custom, ConsoleColor.DarkGreen);
                         var addComponentInMethod = typeof(Element).GetMethod("AddComponent").MakeGenericMethod(compInstance.GetType());
                         addComponentInMethod.Invoke(currentElement, new object[] { compInstance });
+
+                        if(_currentComponent != null)
+                        {
+                            _componentReferences.Add(_currentComponent);
+                            _currentComponent = null;
+                        }
                         i += relatedLines.Count - 1;
                         continue;
                     }
@@ -97,6 +113,7 @@ public static class VortexSceneReader
             }
         }
 
+        AssignReferences(requested);
         requested.FinishLoadingResources();
     }
 
@@ -120,6 +137,42 @@ public static class VortexSceneReader
         }
 
         return relatedLines;
+    }
+
+    private static void AssignReferences(ResourceManager requested)
+    {
+        foreach(var comp in _componentReferences)
+        {
+            foreach(var prop in comp.ComponentProperties)
+            {
+                EDataType type;
+                object vtObject;
+
+                requested.FindObject(prop.PropertyIdValue, out type, out vtObject);
+                if(vtObject != null)
+                {
+                    SetPropertyValue(comp.ComponentReference, prop.PropertyName, vtObject);   
+                }
+
+            }
+        }
+
+        foreach(var e in _elementReferences)
+        {
+            foreach(var prop in e.elementProperties)
+            {
+                EDataType type;
+                object vtObject;
+
+                requested.FindObject(prop.PropertyIdValue, out type, out vtObject);
+                if(vtObject != null)
+                    SetPropertyValue(e.ElementRef, prop.PropertyName, vtObject);
+            }
+        }
+
+        // Clear references as not required anymore
+        _componentReferences.Clear();
+        _elementReferences.Clear();
     }
 
     public static object ParseData(List<string> lines, EDataType dataType)
@@ -150,13 +203,34 @@ public static class VortexSceneReader
                 {
                     var value = ReplaceStrValueWithType(splitData[1]);                 // Remove the value type to get the raw value
 
-                    // Create the property
-                    properties.Add(new SceneFileDataContainer
+                    var lowerData = splitData[0].ToLower();
+                    if(lowerData.Contains("_id"))
                     {
-                        Name = splitData[0].ToString(),
-                        type = type,
-                        Value = value
-                    });
+                        var propRef = splitData[0].Replace("_id", "");
+                        if(dataType == EDataType.SCENE_PROP_Component)
+                        {
+                            if(_currentComponent == null)
+                                _currentComponent = new ComponentDataContainer();
+
+                            _currentComponent.ComponentProperties.Add(new PropertyIdData(propRef, splitData[0], (string)value));
+
+                        } else if(dataType == EDataType.SCENE_PROP_Element)
+                        {
+                            if(_currentElement == null)
+                                _currentElement = new ElementDataContainer();
+                            
+                            _currentElement.elementProperties.Add(new PropertyIdData(propRef, splitData[0], (string)value));
+                        }
+                    } else 
+                    {
+                        // Create the property
+                        properties.Add(new SceneFileDataContainer
+                        {
+                            Name = splitData[0].ToString(),
+                            type = type,
+                            Value = value
+                        });
+                    }
                 }
 
                 
@@ -280,9 +354,13 @@ public static class VortexSceneReader
                 }
                 break;
             case EDataType.SCENE_PROP_Element:
-                var element = new Element(objectName);
+                var element = new Element(objectName);                  // Create the element
+                // Set any properties
                 foreach(var prop in properties)
                     SetPropertyValue(element, prop.Name, prop.Value); 
+                // Set the element reference to load data
+                if(_currentElement != null)
+                    _currentElement.ElementRef = element;
                 return element;
             case EDataType.SCENE_PROP_Component:
                 var filteredClassName = className.Replace("@", "");
@@ -315,8 +393,18 @@ public static class VortexSceneReader
 
                 var componentInstance = Activator.CreateInstance(classType);
                 if(componentInstance != null)
+                {
                     foreach(var prop in properties)
                         SetPropertyValue(componentInstance, prop.Name, prop.Value);
+                    
+                    if(_currentComponent != null)
+                    {
+                        if(componentInstance is Component compT)
+                            _currentComponent.ComponentReference = compT;
+                    }
+
+                    
+                }
                 return componentInstance;
 
         }
@@ -421,7 +509,13 @@ public static class VortexSceneReader
 
         if(propInfo != null && propInfo.CanWrite)
         {
-            propInfo.SetValue(instance, Convert.ChangeType(value, propInfo.PropertyType));
+            if(value is Component || value is Element || value is AssetData)
+            {
+                propInfo.SetValue(instance, value);
+            } else 
+            {
+                propInfo.SetValue(instance, Convert.ChangeType(value, propInfo.PropertyType));
+            }
         } else 
         {
             if(propInfo == null)
@@ -444,4 +538,30 @@ public class SceneFileDataContainer
     public string Name;
     public Type type;
     public object Value;
+}
+
+public class ComponentDataContainer
+{
+    public Component? ComponentReference;                       // Reference to the component property                  
+    public List<PropertyIdData> ComponentProperties = new List<PropertyIdData>();
+}
+
+public class PropertyIdData
+{
+    public string? PropertyName;                            // Name of the property we will set
+    public string? PropertyIdRef;                           // reference to the properties id
+    public string? PropertyIdValue;                                 // ID String reference value
+
+    public PropertyIdData(string name, string reference, string value)
+    {
+        PropertyName = name;
+        PropertyIdRef = reference;
+        PropertyIdValue = value;
+    }
+}
+
+public class ElementDataContainer
+{
+    public Element ElementRef;
+    public List<PropertyIdData> elementProperties = new List<PropertyIdData>();
 }

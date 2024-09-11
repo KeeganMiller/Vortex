@@ -6,13 +6,47 @@ namespace Vortex;
 
 public class TextComponent : UIComponent
 {
-    public Font NormalFont;
-    public Font HoverFont;
+    private FontAsset? _normalFont;
+    private FontAsset? _hoverFont;
+    public FontAsset? NormalFont
+    {
+        get => _normalFont;
+        set 
+        {
+            _normalFont = value;
+            CalculateTextSize();
+        }
+    }
+
+    public FontAsset? HoverFont
+    {
+        get => _hoverFont;
+        set 
+        {
+            _hoverFont = value;
+        }
+    }
     private Font _activeFont;
-    public Shader FontShader;
-    private string NormalFontId { get; set; } = "";
-    private string HoverFontId { get; set; } = "";
-    private string ShaderId { get; set; } = "";
+    private Font ActiveFont
+    {
+        get => _activeFont;
+        set 
+        {
+            _activeFont = value;
+            CalculateTextSize();
+        }
+    }
+    
+    private ShaderAsset? _fontShader { get; set; }
+    public ShaderAsset _fontShaderAsset 
+    {
+        get => _fontShader;
+        set 
+        {
+            _fontShader = value;
+            CalculateTextSize();
+        }
+    }
 
     private int _fontSize = 16;
     public int FontSize
@@ -21,9 +55,7 @@ public class TextComponent : UIComponent
         set 
         {
             _fontSize = value;
-            var componentSize = Raylib.MeasureTextEx(NormalFont, Text, FontSize, 1);
-            Width = componentSize.X;
-            Height = componentSize.Y;
+            CalculateTextSize();
             SetOriginAndAnchor(_origin, _anchor);
         }
     }
@@ -35,9 +67,7 @@ public class TextComponent : UIComponent
         set 
         {
             _text = value;
-            var componentSize = Raylib.MeasureTextEx(NormalFont, value, FontSize, 1);
-            Width = componentSize.X;
-            Height = componentSize.Y;
+            CalculateTextSize();
             SetOriginAndAnchor(_origin, _anchor);
         }
     }
@@ -46,43 +76,19 @@ public class TextComponent : UIComponent
     public override void Constructor(ResourceManager resources)
     {
         base.Constructor(resources);
-        // Get and assign the shader
-        if(!string.IsNullOrEmpty(ShaderId))
-        {
-            var shaderAsset = SceneManager.GlobalResources.GetAssetById<ShaderAsset>(ShaderId);
-            if(shaderAsset != null && shaderAsset.IsValid)
-                FontShader = shaderAsset.LoadedShader;
-        }
-
-        // Get and assign the font
-        if(!string.IsNullOrEmpty(NormalFontId))
-        {
-            var fontAsset = SceneManager.GlobalResources.GetAssetById<FontAsset>(NormalFontId);
-            if(fontAsset != null)
-            {
-                NormalFont = fontAsset.LoadedFont;
-                _activeFont = NormalFont;
-            }
-        }
-
-        if(!string.IsNullOrEmpty(HoverFontId))
-        {
-            var fontAsset = SceneManager.GlobalResources.GetAssetById<FontAsset>(HoverFontId);
-            if(fontAsset != null)
-            {
-                HoverFont = fontAsset.LoadedFont;
-                OnMouseEnter += () => _activeFont = HoverFont;
-                OnMouseExit += () => _activeFont = NormalFont;
-            }
-        }
-
         CalculateTextSize();
+
+        if(HoverFont != null && HoverFont.IsValid)
+        {
+            OnMouseEnter += () => _activeFont = _hoverFont!.LoadedFont;
+            OnMouseExit += () => _activeFont = _normalFont!.LoadedFont;
+        }
     }
 
     public override void Start()
     {
         base.Start();
-        _activeFont = NormalFont;
+        _activeFont = NormalFont.LoadedFont;
     }
 
     public override void Update(float dt)
@@ -93,19 +99,24 @@ public class TextComponent : UIComponent
     public override void Draw()
     {
         base.Draw();
-        
+
         if(Owner.Transform == null)
             return;
 
-        if(FontShader.Id > 0)
-            Raylib.BeginShaderMode(FontShader);
+        var usingShader = false;
 
-        if(NormalFont.Texture.Id > 0)
+        if(_fontShader != null &&_fontShader.LoadedShader.Id > 0)
+        {
+            Raylib.BeginShaderMode(_fontShader.LoadedShader);
+            usingShader = true;
+        }
+
+        if(_normalFont != null && _normalFont.LoadedFont.Texture.Id > 0)
             Raylib.DrawTextEx(_activeFont, Text, Owner.Transform.Position, FontSize, 1, FontColor);
         else
-            Raylib.DrawTextEx(new Font(), Text, Owner.Transform.Position, FontSize, 1, FontColor);
+            Raylib.DrawText(Text, (int)Owner.Transform.Position.X, (int)Owner.Transform.Position.Y, FontSize, FontColor);
 
-        if(FontShader.Id > 0)
+        if(usingShader)
             Raylib.EndShaderMode();
     }
 
@@ -114,9 +125,22 @@ public class TextComponent : UIComponent
     /// </summary>
     public void CalculateTextSize()
     {
-        var componentSize = Raylib.MeasureTextEx(NormalFont, _text, FontSize, 1);
+        if(NormalFont == null || !NormalFont.IsValid)
+            return;
+
+        var componentSize = Raylib.MeasureTextEx(NormalFont.LoadedFont, _text, FontSize, 1);
         Width = componentSize.X;
         Height = componentSize.Y;
         SetOriginAndAnchor(_origin, _anchor);
+    }
+
+    public Font GetNormalFont()
+    {
+        return NormalFont != null && NormalFont.IsValid ? NormalFont.LoadedFont : new Font();
+    }
+
+    public Font GetHoverFont()
+    {
+        return HoverFont != null && HoverFont.IsValid ? HoverFont.LoadedFont : new Font();
     }
 }

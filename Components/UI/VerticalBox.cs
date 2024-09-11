@@ -8,7 +8,6 @@ namespace Vortex;
 public class VerticalBox : UIComponent
 {
     public UIComponent? OwningUI { get; private set; }
-    public string? OwningUiCompId { get; set; }
 
     protected float _prevWidth;
     protected float _prevHeight;
@@ -32,15 +31,6 @@ public class VerticalBox : UIComponent
     public float HorizontalAlignmentOffset { get; set; }
     public bool UseChildrenWidth { get; set; } = false;
     public bool UseChildrenHeight { get; set; } = false;
-
-    public override void Initialize(Element owner)
-    {
-        base.Initialize(owner);
-        if(!string.IsNullOrEmpty(OwningUiCompId))
-        {
-            OwningUI = (UIComponent)Owner.GetComponent(OwningUiCompId);
-        }
-    }
 
     public override void Update(float dt)
     {
