@@ -360,9 +360,9 @@ public class UIComponent : Component
 
         var mousePos = Input.GetMousePosition(false);
         var compLeft = Owner.Transform.Position.X;
-        var compRight = compLeft + (this.Width * Owner.Transform.Scale.X);
+        var compRight = compLeft + (this.Width);
         var compTop = Owner.Transform.Position.Y;
-        var compBottom = compTop + (this.Height * Owner.Transform.Scale.Y);
+        var compBottom = compTop + (this.Height);
 
         if(mousePos.X >= compLeft && mousePos.X < compRight)
         {

@@ -27,15 +27,6 @@ public class TextComponent : UIComponent
         }
     }
     private Font _activeFont;
-    private Font ActiveFont
-    {
-        get => _activeFont;
-        set 
-        {
-            _activeFont = value;
-            CalculateTextSize();
-        }
-    }
     
     private ShaderAsset? _fontShader { get; set; }
     public ShaderAsset _fontShaderAsset 
@@ -78,17 +69,18 @@ public class TextComponent : UIComponent
         base.Constructor(resources);
         CalculateTextSize();
 
-        if(HoverFont != null && HoverFont.IsValid)
+        if(_hoverFont != null && _hoverFont.IsValid)
         {
-            OnMouseEnter += () => _activeFont = _hoverFont!.LoadedFont;
-            OnMouseExit += () => _activeFont = _normalFont!.LoadedFont;
+            OnMouseEnter += () => this._activeFont = _hoverFont!.LoadedFont;
+            OnMouseExit += () => this._activeFont = _normalFont!.LoadedFont;
         }
     }
 
     public override void Start()
     {
         base.Start();
-        _activeFont = NormalFont.LoadedFont;
+        if(_normalFont != null)
+            _activeFont = _normalFont.LoadedFont;
     }
 
     public override void Update(float dt)
