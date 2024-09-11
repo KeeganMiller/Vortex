@@ -124,6 +124,12 @@ public class Element
     /// </summary>
     public virtual void Destroy()
     {
+        foreach(var comp in _components)
+            comp.Destroy();
+
+        foreach(var child in _children)
+            child.Destroy();
+        
         if(Owner != null)
             Owner.RemoveElement(this);
     }
