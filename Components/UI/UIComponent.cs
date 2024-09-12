@@ -54,7 +54,7 @@ public class UIComponent : Component
     public float Height { get; set; }
     public float PaddingLeft { get; set; } = 0f;
     public float PaddingTop { get; set; } = 0f;
-    public int ZIndex = 0;
+    public int ZIndex { get; set; } = 0;
     protected Vector2 _offset = Vector2.Zero;
     public Vector2 Offset
     {
@@ -79,6 +79,7 @@ public class UIComponent : Component
 
 
     public bool IsMouseOver { get; private set; } = false;
+    public bool UseScaleForMouseDetection { get; set; } = true;
     public bool IsClickable { get; set; } = false;                    // Flag if the component is clickable
 
     public Action OnClick;
@@ -110,14 +111,6 @@ public class UIComponent : Component
     {
         base.Update(dt);
         DetectMouseEnterAndExit();
-
-        if(IsClickable)
-        {
-            if(IsMouseOver && Input.IsMouseButtonClicked(EMouseButton.MOUSE_Left))
-            {
-                OnClick?.Invoke();
-            }
-        }
             
     }
 
@@ -360,9 +353,9 @@ public class UIComponent : Component
 
         var mousePos = Input.GetMousePosition(false);
         var compLeft = Owner.Transform.Position.X;
-        var compRight = compLeft + (this.Width);
+        var compRight = compLeft + (UseScaleForMouseDetection ? (this.Width * Owner.Transform.Scale.X) : this.Width);
         var compTop = Owner.Transform.Position.Y;
-        var compBottom = compTop + (this.Height);
+        var compBottom = compTop + (UseScaleForMouseDetection ? this.Height * Owner.Transform.Scale.Y : this.Height);
 
         if(mousePos.X >= compLeft && mousePos.X < compRight)
         {
@@ -372,6 +365,8 @@ public class UIComponent : Component
                 {
                     IsMouseOver = true;
                     OnMouseEnter?.Invoke();
+                    if(IsClickable)
+                        UIManager.CurrentlyOver.Add(this);
                 }
             } else 
             {
@@ -379,6 +374,8 @@ public class UIComponent : Component
                 {
                     IsMouseOver = false;
                     OnMouseExit?.Invoke();
+                    if(IsClickable)
+                        UIManager.CurrentlyOver.Remove(this);
                 }
             }
         } else 
@@ -387,6 +384,8 @@ public class UIComponent : Component
             {
                 IsMouseOver = false;
                 OnMouseExit?.Invoke();
+                if(IsClickable)
+                        UIManager.CurrentlyOver.Remove(this);
             }
         }
     }

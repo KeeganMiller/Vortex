@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Numerics;
 using Raylib_cs;
 using Vortex;
 
@@ -74,6 +75,8 @@ public class TextComponent : UIComponent
             OnMouseEnter += () => this._activeFont = _hoverFont!.LoadedFont;
             OnMouseExit += () => this._activeFont = _normalFont!.LoadedFont;
         }
+
+        Owner.Transform.ScaleUpdateEvent += CalculateTextSize;
     }
 
     public override void Start()
@@ -121,8 +124,8 @@ public class TextComponent : UIComponent
             return;
 
         var componentSize = Raylib.MeasureTextEx(NormalFont.LoadedFont, _text, FontSize, 1);
-        Width = componentSize.X;
-        Height = componentSize.Y;
+        Width = componentSize.X / Owner.Transform.Scale.X;
+        Height = componentSize.Y / Owner.Transform.Scale.Y;
         SetOriginAndAnchor(Origin, Anchor);
     }
 

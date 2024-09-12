@@ -70,6 +70,8 @@ public static class SceneManager
         {
             GlobalResources.Update(Raylib.GetFrameTime());
         }
+
+        UIManager.Update(Raylib.GetFrameTime());
     }
 
     public static void Draw()
@@ -205,6 +207,41 @@ public static class SceneManager
             if(comp.IsActive && comp.Owner.IsActive && comp.HasStarted)
                 comp.Draw();
         }
+    }
+
+    public static UIComponent GetTopUiComponent(List<UIComponent> comps)
+    {
+        var uiList = new List<UIComponent>();
+        foreach(var scene in _activeScenes.ToList())
+        {
+            foreach(var c in scene.Resources.GetUiComponents())
+                uiList.Add(c);
+        }
+
+        foreach(var c in GlobalResources.GetUiComponents())
+            uiList.Add(c);
+
+        var sortedUi = SortUi(uiList);
+        UIComponent? comp = comps[0];
+
+        foreach(var c in sortedUi)
+        {
+            if(c.HasStarted && c.IsActive && IsRelaventUiComp(comps, c))
+                comp = c;
+        }
+
+        return comp;
+    }
+
+    private static bool IsRelaventUiComp(List<UIComponent> comps, UIComponent comp)
+    {
+        foreach(var c in comps)
+        {
+            if(c == comp)
+                return true;
+        }
+
+        return false;
     }
 
     public static List<Element> SortElements(List<Element> elements)
