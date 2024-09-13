@@ -7,8 +7,8 @@ namespace Vortex;
 
 public class TextComponent : UIComponent
 {
-    private FontAsset? _normalFont;
-    private FontAsset? _hoverFont;
+    protected FontAsset? _normalFont;
+    protected FontAsset? _hoverFont;
     public FontAsset? NormalFont
     {
         get => _normalFont;
@@ -27,9 +27,9 @@ public class TextComponent : UIComponent
             _hoverFont = value;
         }
     }
-    private Font _activeFont;
+    protected Font _activeFont;
     
-    private ShaderAsset? _fontShader { get; set; }
+    protected ShaderAsset? _fontShader { get; set; }
     public ShaderAsset _fontShaderAsset 
     {
         get => _fontShader;
@@ -40,7 +40,7 @@ public class TextComponent : UIComponent
         }
     }
 
-    private int _fontSize = 16;
+    protected int _fontSize = 16;
     public int FontSize
     {
         get => _fontSize;
@@ -52,7 +52,7 @@ public class TextComponent : UIComponent
         }
     }
 
-    private string _text = "";
+    protected string _text = "";
     public string Text 
     {
         get => _text;
@@ -84,11 +84,13 @@ public class TextComponent : UIComponent
         base.Start();
         if(_normalFont != null)
             _activeFont = _normalFont.LoadedFont;
+
     }
 
     public override void Update(float dt)
     {
         base.Update(dt);
+        
     }
 
     public override void Draw()
@@ -120,7 +122,7 @@ public class TextComponent : UIComponent
     /// </summary>
     public void CalculateTextSize()
     {
-        if(NormalFont == null || !NormalFont.IsValid)
+        if(NormalFont == null || !NormalFont.IsValid || Owner == null)
             return;
 
         var componentSize = Raylib.MeasureTextEx(NormalFont.LoadedFont, _text, FontSize, 1);
