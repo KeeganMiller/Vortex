@@ -271,6 +271,18 @@ public class ResourceManager
         return null;
     }
 
+    public T GetComponent<T>() where T : Component
+    {
+        foreach(var e in _elements)
+        {
+            var comp = e.GetComponent<T>();
+            if(comp != null)
+                return comp;
+        }
+
+        return null;
+    }
+
     public void FindObject(string objectId, out EDataType type, out object vtObject)
     {
 
