@@ -101,11 +101,12 @@ public class ResourceManager
             // Check if the element is Camera relative
             if(e.IsCameraRelated)
             {
-                var spriteComp = e.GetComponent<SpriteComponent>();                 // Get the sprite component from the element (if it exist)
+                var spriteComp = e.GetComponents<SpriteComponent>();                 // Get the sprite component from the element (if it exist)
                 // Check that the sprite component is valid
                 // and add it to the list of sprite components
                 if(spriteComp != null)
-                    sprites.Add(spriteComp);
+                    foreach(var comp in spriteComp)
+                        sprites.Add(comp);
             }
         }
 
@@ -127,11 +128,12 @@ public class ResourceManager
             if(!e.IsCameraRelated)
             {
                 // Get the sprite component on the element
-                var spritecomp = e.GetComponent<SpriteComponent>();
+                var spritecomp = e.GetComponents<SpriteComponent>();
                 // Check that the sprite component exist
                 // and add it to the list of sprites
                 if(spritecomp != null)
-                    sprites.Add(spritecomp);
+                    foreach(var comp in spritecomp)
+                        sprites.Add(comp);
             }
         }
 
@@ -150,10 +152,11 @@ public class ResourceManager
         foreach(var e in _elements)
         {
             // Get the UI Component
-            var uiComp = e.GetComponent<UIComponent>();
+            var uiComp = e.GetComponents<UIComponent>();
             // If the ui component is valid add it to the list
             if(uiComp != null)
-                ui.Add(uiComp);
+                foreach(var comp in uiComp)
+                    ui.Add(comp);
         }
 
         // Return the list of UI Components
