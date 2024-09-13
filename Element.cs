@@ -76,7 +76,19 @@ public class Element
     private bool _hasComponentToStart = false;
     public TransformComponent Transform { get; private set; }                            // Reference to the transform component
 
-    public int ZIndex = 0;
+    private int _zIndex = 0;
+    public int ZIndex 
+    {
+        get => _zIndex;
+        set 
+        {
+            _zIndex = value;
+            for(var i = 1; i < _children.Count + 1; ++i)
+            {
+                _children[i - 1].ZIndex += i;
+            }
+        }
+    }
 
     public Element(string name = "Element")
     {

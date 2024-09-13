@@ -275,7 +275,7 @@ public static class SceneManager
             var lowestSprite = sprites[0];
             for(var i = 1; i < sprites.Count; ++i)
             {
-                if(sprites[i].ZIndex < lowestSprite.ZIndex)
+                if(sprites[i].Owner.ZIndex < lowestSprite.Owner.ZIndex)
                 {
                     lowestSprite = sprites[i];
                 }
@@ -298,7 +298,7 @@ public static class SceneManager
             var highest = comps[0];
             for(var i = 1; i < comps.Count; ++i)
             {
-                if(comps[i].ZIndex < highest.ZIndex)
+                if(comps[i].Owner.ZIndex < highest.Owner.ZIndex)
                     highest = comps[i];
             }
 
