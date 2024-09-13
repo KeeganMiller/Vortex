@@ -8,6 +8,7 @@ public class Component
     public string ComponentId { get; set; }
     public string Name;
     public Element Owner { get; private set; }
+    public bool IsSoloComponent { get; set; } = false;
 
 
     // == Active Status == //
