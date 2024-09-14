@@ -8,7 +8,12 @@ public enum EAssetType
 {
     ASSET_Sprite = 0,
     ASSET_Font = 1,
-    ASSET_Shader = 2
+    ASSET_Shader = 2,
+    ASSET_Code = 3,
+    ASSET_Scene = 4,
+    ASSET_Prefab = 5,
+    ASSET_Sound = 6,
+    ASSET_Error = 7,
 }
 
 public abstract class AssetData
